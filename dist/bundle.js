@@ -88,19 +88,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let grid = Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["default"])(4,4)
-  let root = [0,0];
-  let unvisited = [];
-  grid[root] = true
-  grid[[1,1]] = true
-  for (let key in grid) {
-    if (grid[key] === false) {
-      unvisited.push(key)
-    }
-  }
-  let queue = [root];
-  console.log(grid)
-
+  console.log(_maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["generate"](4, 4, [0,3]));
 });
 
 
@@ -110,43 +98,57 @@ document.addEventListener('DOMContentLoaded', () => {
 /*!********************************!*\
   !*** ./maze_generators/bfs.js ***!
   \********************************/
-/*! no exports provided */
+/*! exports provided: generate, unvisited, children */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generate", function() { return generate; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unvisited", function() { return unvisited; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "children", function() { return children; });
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
 
 
 
-class BFS {
-  constructor (width, height) {
-    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["default"])(width, height)
+const generate = (width, height, root) => {
+  let grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["default"])(width, height)
+  let queue = [root];
+  // mark first node as visited
+  grid[root] = true;
+  while (queue.length) {
+    let visited = queue.shift();
+    grid[visited] = true;
+    if (!children(visited, grid)) {
+      continue;
+    }
+    for (let i = 0; i < children(visited, grid).length; i++) {
+      queue.push(children(visited, grid)[i]);
+    }
   }
+  // return grid;
+  return unvisited(grid);
+};
 
-  generate (root) {
-    let queue = [root];
-    let unvisited = [];
-    for (let key in this.grid) {
-      if (this.grid[key] === false) {
-        unvisited.push(key)
-      };
+const unvisited = (grid) => {
+  let unvisited = [];
+  for (let key in grid) {
+    if (grid[key] === false) {
+      unvisited.push(key)
+    };
+  }
+  return unvisited;
+}
+
+const children = (node, grid) => {
+  let childrenNodes = [];
+  for (let i = 0; i < grid.length; i++) {
+    if ((grid[i][0] === (node[0] + 1)) || (grid[i][1] === node[1] + 1)) {
+      childrenNodes.push(grid[i]);
     }
-    // mark first node as visited
-    this.grid[root] = true;
-    while (queue.length) {
-      visited = queue.shift();
-      this.grid[visited] = true;
-      if (!visited.children) {
-        continue;
-      }
-      for (let i = 0; i < visited.children.length; i++) {
-        queue.push(visited.children[i]);
-      }
-    }
-  };
+  }
+  return childrenNodes;
 }
 
 
@@ -192,11 +194,12 @@ function createGrid (width, height) {
 /*!************************************!*\
   !*** ./maze_generators/kruskal.js ***!
   \************************************/
-/*! exports provided: default */
+/*! exports provided: Kruskal */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Kruskal", function() { return Kruskal; });
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
@@ -212,8 +215,6 @@ class Kruskal {
 
 
 }
-
-/* harmony default export */ __webpack_exports__["default"] = (Kruskal);
 
 
 /***/ }),

@@ -1,7 +1,7 @@
 import * as manhattan from 'manhattan';
 import createGrid from './create_grid';
 
-class Kruskal {
+export class Kruskal {
   constructor (width, height) {
     this.grid = createGrid(width, height)
   }
@@ -10,5 +10,3 @@ class Kruskal {
 
 
 }
-
-export default Kruskal;

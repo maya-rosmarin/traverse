@@ -4,6 +4,7 @@ import createGrid from './create_grid';
 export const generate = (width, height, root) => {
   let grid = createGrid(width, height)
   let queue = [root];
+  let visitedNodes = [];
   // mark first node as visited
   grid[root] = true;
   while (queue.length) {
@@ -16,7 +17,6 @@ export const generate = (width, height, root) => {
       queue.push(children(visited, grid)[i]);
     }
   }
-  // return grid;
   return unvisited(grid);
 };
 
