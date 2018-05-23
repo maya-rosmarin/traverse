@@ -81,12 +81,109 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./maze_generators/kruskal */ "./maze_generators/kruskal.js");
+/* harmony import */ var _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/bfs */ "./maze_generators/bfs.js");
+/* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
+
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let a = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_0__["default"];
-  a.createGrid(4,4)
+  let grid = Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["default"])(4,4)
+  let root = [0,0];
+  let unvisited = [];
+  grid[root] = true
+  grid[[1,1]] = true
+  for (let key in grid) {
+    if (grid[key] === false) {
+      unvisited.push(key)
+    }
+  }
+  let queue = [root];
+  console.log(grid)
+
 });
+
+
+/***/ }),
+
+/***/ "./maze_generators/bfs.js":
+/*!********************************!*\
+  !*** ./maze_generators/bfs.js ***!
+  \********************************/
+/*! no exports provided */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
+/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
+
+
+
+class BFS {
+  constructor (width, height) {
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["default"])(width, height)
+  }
+
+  generate (root) {
+    let queue = [root];
+    let unvisited = [];
+    for (let key in this.grid) {
+      if (this.grid[key] === false) {
+        unvisited.push(key)
+      };
+    }
+    // mark first node as visited
+    this.grid[root] = true;
+    while (queue.length) {
+      visited = queue.shift();
+      this.grid[visited] = true;
+      if (!visited.children) {
+        continue;
+      }
+      for (let i = 0; i < visited.children.length; i++) {
+        queue.push(visited.children[i]);
+      }
+    }
+  };
+}
+
+
+/***/ }),
+
+/***/ "./maze_generators/create_grid.js":
+/*!****************************************!*\
+  !*** ./maze_generators/create_grid.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
+/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function createGrid (width, height) {
+  let nodes = {};
+  let xCoords = [];
+  let yCoords = [];
+  for (let i = 0; i < width; i++) {
+    xCoords.push(i)
+  }
+  for (let j = 0; j < height; j++) {
+    yCoords.push(j)
+  }
+  for (let i = 0; i < xCoords.length; i++) {
+    for (let j = 0; j < yCoords.length; j++) {
+      nodes[[xCoords[i], yCoords[j]]] = false
+    }
+  }
+  return nodes;
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (createGrid);
 
 
 /***/ }),
@@ -102,29 +199,17 @@ document.addEventListener('DOMContentLoaded', () => {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
+
 
 
 class Kruskal {
-  constructor () {
+  constructor (width, height) {
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["default"])(width, height)
   }
 
-  createGrid (width, height) {
-    let nodes = [];
-    let xCoords = [];
-    let yCoords = [];
-    for (let i = 0; i < width; i++) {
-      xCoords.push(i)
-    }
-    for (let j = 0; j < height; j++) {
-      yCoords.push(j)
-    }
-    for (let i = 0; i < xCoords.length; i++) {
-      for (let j = 0; j < yCoords.length; j++) {
-        nodes.push([xCoords[i], yCoords[j]])
-      }
-    }
-    return nodes;
-  }
+
+
 
 }
 

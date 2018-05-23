@@ -1,26 +1,13 @@
 import * as manhattan from 'manhattan';
+import createGrid from './create_grid';
 
 class Kruskal {
-  constructor () {
+  constructor (width, height) {
+    this.grid = createGrid(width, height)
   }
 
-  createGrid (width, height) {
-    let nodes = [];
-    let xCoords = [];
-    let yCoords = [];
-    for (let i = 0; i < width; i++) {
-      xCoords.push(i)
-    }
-    for (let j = 0; j < height; j++) {
-      yCoords.push(j)
-    }
-    for (let i = 0; i < xCoords.length; i++) {
-      for (let j = 0; j < yCoords.length; j++) {
-        nodes.push([xCoords[i], yCoords[j]])
-      }
-    }
-    return nodes;
-  }
+
+
 
 }
 
