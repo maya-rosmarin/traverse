@@ -89,7 +89,8 @@ __webpack_require__.r(__webpack_exports__);
 
 document.addEventListener('DOMContentLoaded', () => {
   let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["default"](4,4);
-  console.log(bfs.generate([3,3]));
+  // bfs.generate([0,0])
+  // console.log(bfs.generate([1,2]));
 });
 
 
@@ -119,22 +120,29 @@ class BFS {
     let queue = [root];
     let visitedNodes = [];
     // mark first node as visited
-    this.grid[root] = true;
     while (queue.length) {
       let visited = queue.shift();
+      if (typeof visited === "string") {
+        visited = visited.split(",").map(i => Number(i));
+      }
       this.grid[visited] = true;
-      if (!visited.children) {
+      let children = this.children(visited)
+      if (!children) {
         continue;
       }
-      for (let i = 0; i < visited.children, this.grid.length; i++) {
-        queue.push(visited.children[i]);
+      for (let i = 0; i < children.length; i++) {
+        if (!visitedNodes.includes(children[i])) {
+          queue.push(children[i]);
+          visitedNodes.push(children[i])
+        }
       }
+      console.log(queue)
     }
-    let unvisited = this.unvisited(this.grid);
-    return root;
+    // let unvisited = this.unvisited(this.grid);
+    return visitedNodes;
   };
 
-  unvisited (grid) {
+  unvisited () {
     let unvisited = [];
     for (let key in this.grid) {
       if (this.grid[key] === false) {
@@ -144,13 +152,14 @@ class BFS {
     return unvisited;
   }
 
-  children (node, grid) {
+  children (node) {
     let childrenNodes = [];
-    for (let i = 0; i < this.grid.length; i++) {
-      if ((this.grid[i][0] === (node[0] + 1)) || (this.grid[i][1] === node[1] + 1)) {
-        childrenNodes.push(this.grid[i]);
+      Object.keys(this.grid).map(key => {
+        if ((key[0] == node[0] && key[2] == node[1] + 1) || (key[0] == node[0] && key[2] == node[1] - 1) || (key[0] == node[0] + 1 && key[2] == node[1]) || (key[0] == node[0] - 1 && key[2] == node[1])) {
+          childrenNodes.push(key);
+        }
       }
-    }
+    )
     return childrenNodes;
   }
 }

@@ -4,5 +4,6 @@ import createGrid from './maze_generators/create_grid';
 
 document.addEventListener('DOMContentLoaded', () => {
   let bfs = new BFS(4,4);
-  console.log(bfs.generate([3,3]));
+  // bfs.generate([0,0])
+  // console.log(bfs.generate([1,2]));
 });
