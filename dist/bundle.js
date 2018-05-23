@@ -88,7 +88,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  console.log(_maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["generate"](4, 4, [0,3]));
+  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["default"](4,4);
+  console.log(bfs.generate([3,3]));
 });
 
 
@@ -98,58 +99,63 @@ document.addEventListener('DOMContentLoaded', () => {
 /*!********************************!*\
   !*** ./maze_generators/bfs.js ***!
   \********************************/
-/*! exports provided: generate, unvisited, children */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "generate", function() { return generate; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "unvisited", function() { return unvisited; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "children", function() { return children; });
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
 
 
 
-const generate = (width, height, root) => {
-  let grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["default"])(width, height)
-  let queue = [root];
-  // mark first node as visited
-  grid[root] = true;
-  while (queue.length) {
-    let visited = queue.shift();
-    grid[visited] = true;
-    if (!children(visited, grid)) {
-      continue;
-    }
-    for (let i = 0; i < children(visited, grid).length; i++) {
-      queue.push(children(visited, grid)[i]);
-    }
+class BFS {
+  constructor (width, height) {
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["default"])(width, height)
   }
-  // return grid;
-  return unvisited(grid);
-};
 
-const unvisited = (grid) => {
-  let unvisited = [];
-  for (let key in grid) {
-    if (grid[key] === false) {
-      unvisited.push(key)
-    };
+  generate (root) {
+    let queue = [root];
+    let visitedNodes = [];
+    // mark first node as visited
+    this.grid[root] = true;
+    while (queue.length) {
+      let visited = queue.shift();
+      this.grid[visited] = true;
+      if (!visited.children) {
+        continue;
+      }
+      for (let i = 0; i < visited.children, this.grid.length; i++) {
+        queue.push(visited.children[i]);
+      }
+    }
+    let unvisited = this.unvisited(this.grid);
+    return root;
+  };
+
+  unvisited (grid) {
+    let unvisited = [];
+    for (let key in this.grid) {
+      if (this.grid[key] === false) {
+        unvisited.push(key)
+      };
+    }
+    return unvisited;
   }
-  return unvisited;
+
+  children (node, grid) {
+    let childrenNodes = [];
+    for (let i = 0; i < this.grid.length; i++) {
+      if ((this.grid[i][0] === (node[0] + 1)) || (this.grid[i][1] === node[1] + 1)) {
+        childrenNodes.push(this.grid[i]);
+      }
+    }
+    return childrenNodes;
+  }
 }
 
-const children = (node, grid) => {
-  let childrenNodes = [];
-  for (let i = 0; i < grid.length; i++) {
-    if ((grid[i][0] === (node[0] + 1)) || (grid[i][1] === node[1] + 1)) {
-      childrenNodes.push(grid[i]);
-    }
-  }
-  return childrenNodes;
-}
+/* harmony default export */ __webpack_exports__["default"] = (BFS);
 
 
 /***/ }),
