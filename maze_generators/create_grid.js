@@ -1,4 +1,5 @@
 import * as manhattan from 'manhattan';
+import BFS from './bfs';
 
 export const createGridArray = (width, height) => {
   let nodes = {};
@@ -23,9 +24,11 @@ export const createGridGraphic = (width, height) => {
   let context = canvas.getContext("2d");
   context.fillStyle = 'pink';
   context.fillRect(0, 0, 400, 400);
-  let bw = 400;
-  let bh = 400;
+  let bw = width;
+  let bh = height;
   let p = 0;
+  context.fillStyle = 'black';
+  context.fillRect(0, 0, 40, 40);
   function drawGrid () {
     for (let i = 0; i <= bw; i += 40) {
       context.moveTo(0.5 + i, 0);

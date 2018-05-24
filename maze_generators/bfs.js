@@ -6,6 +6,20 @@ class BFS {
     this.grid = createGridArray(width, height)
   }
 
+  animate (coords) {
+    let canvas = document.getElementById("canvas");
+    let context = canvas.getContext("2d");
+    let i = 0;
+    setInterval( () => {
+      if (i < 225) {
+      context.fillStyle='black';
+      context.fillRect(40*coords[i][0], 40*coords[i][1], 40, 40);
+      i++; } else {
+        clearInterval();
+      }
+    }, 100)
+  }
+
   generate (root) {
     let queue = [[root]];
     let visitedNodes = [root];

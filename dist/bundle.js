@@ -88,9 +88,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["default"](12,12);
-  console.log(bfs.generate([0,0]));
-  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridGraphic"])();
+  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["default"](15,15);
+  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridGraphic"])(400, 400);
+  bfs.animate(bfs.generate([0,0]));
 });
 
 
@@ -114,6 +114,20 @@ __webpack_require__.r(__webpack_exports__);
 class BFS {
   constructor (width, height) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height)
+  }
+
+  animate (coords) {
+    let canvas = document.getElementById("canvas");
+    let context = canvas.getContext("2d");
+    let i = 0;
+    setInterval( () => {
+      if (i < 225) {
+      context.fillStyle='black';
+      context.fillRect(40*coords[i][0], 40*coords[i][1], 40, 40);
+      i++; } else {
+        clearInterval();
+      }
+    }, 100)
   }
 
   generate (root) {
@@ -182,6 +196,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridGraphic", function() { return createGridGraphic; });
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _bfs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bfs */ "./maze_generators/bfs.js");
+
 
 
 const createGridArray = (width, height) => {
@@ -207,9 +223,11 @@ const createGridGraphic = (width, height) => {
   let context = canvas.getContext("2d");
   context.fillStyle = 'pink';
   context.fillRect(0, 0, 400, 400);
-  let bw = 400;
-  let bh = 400;
+  let bw = width;
+  let bh = height;
   let p = 0;
+  context.fillStyle = 'black';
+  context.fillRect(0, 0, 40, 40);
   function drawGrid () {
     for (let i = 0; i <= bw; i += 40) {
       context.moveTo(0.5 + i, 0);
