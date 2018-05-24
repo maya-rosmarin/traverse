@@ -86,8 +86,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__["default"](10, 10);
-  // createGridGraphic(400, 400);
+  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__["default"](80, 80);
+  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(400, 400);
   // bfs.animate(bfs.generate([0,0]));
   // console.log(bfs.unvisited().length);
   // console.log(bfs.nextStep([5,5]))
@@ -117,6 +117,8 @@ __webpack_require__.r(__webpack_exports__);
 class BFS {
   constructor (width, height) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height)
+    this.grid.width = width;
+    this.grid.height = height;
     Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*5, height*5);
   }
 
@@ -161,20 +163,31 @@ class BFS {
     let pathCells = [startNode];
     while (queue.length) {
       let current = queue.shift();
-      let children = this.children(current[0]);
-        debugger
-        children = children.filter(child => { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) })
-        let randomIndex = Math.floor(Math.random() * children.length)
-        debugger
-        this.grid[children[randomIndex]] = true;
-        pathCells.push(children[randomIndex]);
-        queue.push([children[randomIndex]])
-        context.fillStyle='black';
-        context.fillRect(5*children[randomIndex][0], 5*children[randomIndex][1], 5, 5);
-        debugger
+      if (current) {
+        let children = this.children(current[0]);
+          children = children.filter(child => { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) })
+          let randomIndex = Math.floor(Math.random() * children.length)
+          this.grid[children[randomIndex]] = true;
+          pathCells.push(children[randomIndex]);
+          queue.push([children[randomIndex]])
+          context.fillStyle='black';
+          context.fillRect(5*children[randomIndex][0], 5*children[randomIndex][1], 5, 5);
+          debugger
+        }
       }
+      ensureLongPath(pathCells);
       return pathCells;
     };
+
+    ensureLongPath (pathCells) {
+      let filtered = pathCells.filter(cell => cell[1] === this.grid.width-1)
+      if (!filtered) {
+        let sorted = pathCells.sort((el1, el2) => {
+          return el1[1] - el2[1];
+        })
+      }
+      generatePaths(sorted[sorted.length-1]);
+    }
 
 
 
