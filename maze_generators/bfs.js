@@ -1,13 +1,12 @@
 import * as manhattan from 'manhattan';
-import createGrid from './create_grid';
+import { createGridArray } from './create_grid';
 
 class BFS {
   constructor (width, height) {
-    this.grid = createGrid(width, height)
+    this.grid = createGridArray(width, height)
   }
 
   generate (root) {
-    debugger
     let queue = [[root]];
     let visitedNodes = [root];
     while (queue.length) {
@@ -18,13 +17,11 @@ class BFS {
         visited = visited[0];
       }
       this.grid[visited] = true;
-      debugger
       let children = this.children(visited)
       if (!children.length) {
         continue;
       }
       for (let i = 0; i < children.length; i++) {
-        debugger
         if (!this.arrayIncludes(visitedNodes, children[i])) {
           queue.push(children[i]);
           visitedNodes.push(children[i])
@@ -43,16 +40,6 @@ class BFS {
     return false;
   }
 
-  unvisited () {
-    let unvisited = [];
-    for (let key in this.grid) {
-      if (this.grid[key] === false) {
-        unvisited.push(key)
-      };
-    }
-    return unvisited;
-  }
-
   children (node) {
     let childrenNodes = [];
       Object.keys(this.grid).map(key => {
@@ -64,6 +51,7 @@ class BFS {
     )
     return childrenNodes;
   }
+
 }
 
 export default BFS

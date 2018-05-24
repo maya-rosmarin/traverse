@@ -1,13 +1,13 @@
 import * as manhattan from 'manhattan';
-import createGrid from './create_grid';
+import { createGridArray } from './create_grid';
 
 export default class BFS {
   constructor (width, height) {
-    this.grid = createGrid(width, height)
+    this.grid = createGridArray(width, height)
   }
 
   generate (root) {
-    let this.grid = createGrid(width, height)
+    let this.grid = createGridArray(width, height)
     let queue = [root];
     let visitedNodes = [];
     // mark first node as visited

@@ -90,6 +90,7 @@ __webpack_require__.r(__webpack_exports__);
 document.addEventListener('DOMContentLoaded', () => {
   let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["default"](12,12);
   console.log(bfs.generate([0,0]));
+  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridGraphic"])();
 });
 
 
@@ -112,11 +113,10 @@ __webpack_require__.r(__webpack_exports__);
 
 class BFS {
   constructor (width, height) {
-    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["default"])(width, height)
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height)
   }
 
   generate (root) {
-    debugger
     let queue = [[root]];
     let visitedNodes = [root];
     while (queue.length) {
@@ -127,13 +127,11 @@ class BFS {
         visited = visited[0];
       }
       this.grid[visited] = true;
-      debugger
       let children = this.children(visited)
       if (!children.length) {
         continue;
       }
       for (let i = 0; i < children.length; i++) {
-        debugger
         if (!this.arrayIncludes(visitedNodes, children[i])) {
           queue.push(children[i]);
           visitedNodes.push(children[i])
@@ -152,16 +150,6 @@ class BFS {
     return false;
   }
 
-  unvisited () {
-    let unvisited = [];
-    for (let key in this.grid) {
-      if (this.grid[key] === false) {
-        unvisited.push(key)
-      };
-    }
-    return unvisited;
-  }
-
   children (node) {
     let childrenNodes = [];
       Object.keys(this.grid).map(key => {
@@ -173,6 +161,7 @@ class BFS {
     )
     return childrenNodes;
   }
+
 }
 
 /* harmony default export */ __webpack_exports__["default"] = (BFS);
@@ -184,16 +173,18 @@ class BFS {
 /*!****************************************!*\
   !*** ./maze_generators/create_grid.js ***!
   \****************************************/
-/*! exports provided: default */
+/*! exports provided: createGridArray, createGridGraphic */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridArray", function() { return createGridArray; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridGraphic", function() { return createGridGraphic; });
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
 
 
-function createGrid (width, height) {
+const createGridArray = (width, height) => {
   let nodes = {};
   let xCoords = [];
   let yCoords = [];
@@ -211,7 +202,28 @@ function createGrid (width, height) {
   return nodes;
 }
 
-/* harmony default export */ __webpack_exports__["default"] = (createGrid);
+const createGridGraphic = (width, height) => {
+  let canvas = document.getElementById("canvas");
+  let context = canvas.getContext("2d");
+  context.fillStyle = 'pink';
+  context.fillRect(0, 0, 400, 400);
+  let bw = 400;
+  let bh = 400;
+  let p = 0;
+  function drawGrid () {
+    for (let i = 0; i <= bw; i += 40) {
+      context.moveTo(0.5 + i, 0);
+      context.lineTo(0.5 + i, bh);
+    }
+    for (let j = 0; j <= bh; j += 40) {
+      context.moveTo(0, 0.5 + j);
+      context.lineTo(bw, 0.5 + j);
+    }
+    context.strokeStyle = 'black';
+    context.stroke();
+  }
+  drawGrid();
+}
 
 
 /***/ }),
@@ -234,7 +246,7 @@ __webpack_require__.r(__webpack_exports__);
 
 class Kruskal {
   constructor (width, height) {
-    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["default"])(width, height)
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height)
   }
 
 
