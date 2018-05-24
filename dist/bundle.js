@@ -88,9 +88,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["default"](4,4);
-  // bfs.generate([0,0])
-  // console.log(bfs.generate([1,2]));
+  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["default"](12,12);
+  console.log(bfs.generate([0,0]));
 });
 
 
@@ -117,30 +116,41 @@ class BFS {
   }
 
   generate (root) {
-    let queue = [root];
-    let visitedNodes = [];
-    // mark first node as visited
+    debugger
+    let queue = [[root]];
+    let visitedNodes = [root];
     while (queue.length) {
       let visited = queue.shift();
       if (typeof visited === "string") {
         visited = visited.split(",").map(i => Number(i));
+      } else if (visited.length === 1) {
+        visited = visited[0];
       }
       this.grid[visited] = true;
+      debugger
       let children = this.children(visited)
-      if (!children) {
+      if (!children.length) {
         continue;
       }
       for (let i = 0; i < children.length; i++) {
-        if (!visitedNodes.includes(children[i])) {
+        debugger
+        if (!this.arrayIncludes(visitedNodes, children[i])) {
           queue.push(children[i]);
           visitedNodes.push(children[i])
         }
       }
-      console.log(queue)
     }
-    // let unvisited = this.unvisited(this.grid);
     return visitedNodes;
   };
+
+  arrayIncludes (array, node) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][0] == node[0] && array[i][1] == node[1]) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   unvisited () {
     let unvisited = [];
@@ -155,8 +165,9 @@ class BFS {
   children (node) {
     let childrenNodes = [];
       Object.keys(this.grid).map(key => {
-        if ((key[0] == node[0] && key[2] == node[1] + 1) || (key[0] == node[0] && key[2] == node[1] - 1) || (key[0] == node[0] + 1 && key[2] == node[1]) || (key[0] == node[0] - 1 && key[2] == node[1])) {
-          childrenNodes.push(key);
+        let coord = key.split(',').map(i => Number(i));
+        if ((coord[0] == node[0] && coord[1] == node[1] + 1) || (coord[0] == node[0] && coord[1] == node[1] - 1) || (coord[0] == node[0] + 1 && coord[1] == node[1]) || (coord[0] == node[0] - 1 && coord[1] == node[1])) {
+          childrenNodes.push(coord);
         }
       }
     )
