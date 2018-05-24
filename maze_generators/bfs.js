@@ -10,14 +10,32 @@ class BFS {
     let canvas = document.getElementById("canvas");
     let context = canvas.getContext("2d");
     let i = 0;
-    setInterval( () => {
-      if (i < 225) {
-      context.fillStyle='black';
-      context.fillRect(40*coords[i][0], 40*coords[i][1], 40, 40);
-      i++; } else {
-        clearInterval();
+      let interval = setInterval( () => {
+        context.fillStyle='black';
+        context.fillRect(5*coords[i][0], 5*coords[i][1], 5, 5);
+        i++;
+      }, 100);
+      if (i >= coords.length) {
+        clearInterval(interval);
       }
-    }, 100)
+  }
+
+  unvisited () {
+    let unvisited = [];
+    for (let key in this.grid) {
+      if (this.grid[key] === false) {
+        unvisited.push(key)
+      };
+    }
+    return unvisited;
+  }
+
+  nextStep (currentNode) {
+    let children = this.children(currentNode);
+    children = children.filter(child => { this.children(child) >= 2 && this.arrayIncludes(this.unvisited(), child) })
+    let randomIndex = Math.floor(Math.random() * children.length)
+    this.grid[children[randomIndex]] = true;
+    return children[randomIndex];
   }
 
   generate (root) {

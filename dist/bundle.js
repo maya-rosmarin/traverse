@@ -80,17 +80,18 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./maze_generators/kruskal */ "./maze_generators/kruskal.js");
-/* harmony import */ var _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/bfs */ "./maze_generators/bfs.js");
-/* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
-
+/* harmony import */ var _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./maze_generators/bfs */ "./maze_generators/bfs.js");
+/* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
 
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_1__["default"](15,15);
-  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridGraphic"])(400, 400);
+  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__["default"](15,15);
+  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(400, 400);
   bfs.animate(bfs.generate([0,0]));
+  // console.log(bfs.unvisited().length);
+  // console.log(bfs.nextStep([5,5]))
+  // console.log(bfs.unvisited().length);
 });
 
 
@@ -120,14 +121,32 @@ class BFS {
     let canvas = document.getElementById("canvas");
     let context = canvas.getContext("2d");
     let i = 0;
-    setInterval( () => {
-      if (i < 225) {
-      context.fillStyle='black';
-      context.fillRect(40*coords[i][0], 40*coords[i][1], 40, 40);
-      i++; } else {
-        clearInterval();
+      let interval = setInterval( () => {
+        context.fillStyle='black';
+        context.fillRect(5*coords[i][0], 5*coords[i][1], 5, 5);
+        i++;
+      }, 100);
+      if (i >= coords.length) {
+        clearInterval(interval);
       }
-    }, 100)
+  }
+
+  unvisited () {
+    let unvisited = [];
+    for (let key in this.grid) {
+      if (this.grid[key] === false) {
+        unvisited.push(key)
+      };
+    }
+    return unvisited;
+  }
+
+  nextStep (currentNode) {
+    let children = this.children(currentNode);
+    children = children.filter(child => { this.children(child) >= 2 && this.arrayIncludes(this.unvisited(), child) })
+    let randomIndex = Math.floor(Math.random() * children.length)
+    this.grid[children[randomIndex]] = true;
+    return children[randomIndex];
   }
 
   generate (root) {
@@ -222,18 +241,18 @@ const createGridGraphic = (width, height) => {
   let canvas = document.getElementById("canvas");
   let context = canvas.getContext("2d");
   context.fillStyle = 'pink';
-  context.fillRect(0, 0, 400, 400);
+  context.fillRect(0, 0, width, height);
   let bw = width;
   let bh = height;
   let p = 0;
   context.fillStyle = 'black';
-  context.fillRect(0, 0, 40, 40);
+  context.fillRect(0, 0, 5, 5);
   function drawGrid () {
-    for (let i = 0; i <= bw; i += 40) {
+    for (let i = 0; i <= bw; i += 5) {
       context.moveTo(0.5 + i, 0);
       context.lineTo(0.5 + i, bh);
     }
-    for (let j = 0; j <= bh; j += 40) {
+    for (let j = 0; j <= bh; j += 5) {
       context.moveTo(0, 0.5 + j);
       context.lineTo(bw, 0.5 + j);
     }
@@ -241,35 +260,6 @@ const createGridGraphic = (width, height) => {
     context.stroke();
   }
   drawGrid();
-}
-
-
-/***/ }),
-
-/***/ "./maze_generators/kruskal.js":
-/*!************************************!*\
-  !*** ./maze_generators/kruskal.js ***!
-  \************************************/
-/*! exports provided: Kruskal */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Kruskal", function() { return Kruskal; });
-/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
-/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
-
-
-
-class Kruskal {
-  constructor (width, height) {
-    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height)
-  }
-
-
-
-
 }
 
 
