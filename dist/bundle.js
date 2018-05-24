@@ -86,12 +86,12 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__["default"](15,15);
-  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(400, 400);
-  bfs.animate(bfs.generate([0,0]));
+  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__["default"](100, 100);
+  // createGridGraphic(400, 400);
+  // bfs.animate(bfs.generate([0,0]));
   // console.log(bfs.unvisited().length);
   // console.log(bfs.nextStep([5,5]))
-  // console.log(bfs.unvisited().length);
+  // console.log(bfs.unvisited().length);  console.log(bfs.nextStep([5,6]))
 });
 
 
@@ -115,7 +115,10 @@ __webpack_require__.r(__webpack_exports__);
 class BFS {
   constructor (width, height) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height)
+    Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*5, height*5);
   }
+
+
 
   animate (coords) {
     let canvas = document.getElementById("canvas");
@@ -141,13 +144,15 @@ class BFS {
     return unvisited;
   }
 
-  nextStep (currentNode) {
-    let children = this.children(currentNode);
-    children = children.filter(child => { this.children(child) >= 2 && this.arrayIncludes(this.unvisited(), child) })
-    let randomIndex = Math.floor(Math.random() * children.length)
-    this.grid[children[randomIndex]] = true;
-    return children[randomIndex];
+  generateSteps (startNode) {
+    let path = [];
+    let children = this.children(startNode);
+    for (i = 0; i < children.length; i++) {
+      
+    }
   }
+
+  // if not already labeled as an open path, deault to wall
 
   generate (root) {
     let queue = [[root]];
@@ -175,7 +180,13 @@ class BFS {
   };
 
   arrayIncludes (array, node) {
+    if (typeof node === 'string') {
+      node = node.split(',').map(i => Number(i));
+    }
     for (let i = 0; i < array.length; i++) {
+      if (typeof array[i] === 'string') {
+        array[i] = array[i].split(',').map(i => Number(i));
+      }
       if (array[i][0] == node[0] && array[i][1] == node[1]) {
         return true;
       }

@@ -6,6 +6,14 @@ export default class BFS {
     this.grid = createGridArray(width, height)
   }
 
+  nextStep (currentNode) {
+    let children = this.children(currentNode);
+    children = children.filter(child => { return this.children(child).length >= 2 && this.arrayIncludes(this.unvisited(), child) })
+    let randomIndex = Math.floor(Math.random() * children.length)
+    this.grid[children[randomIndex]] = true;
+    return children[randomIndex];
+  }
+
   generate (root) {
     let this.grid = createGridArray(width, height)
     let queue = [root];
