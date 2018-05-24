@@ -34,7 +34,7 @@ class BFS {
     let context = canvas.getContext("2d");
     let i = 0;
     let interval = setInterval( () => {
-      context.fillStyle='black';
+      context.fillStyle='white';
       context.fillRect(5*coords[i][0], 5*coords[i][1], 5, 5);
       i++;
     }, 100);
@@ -48,48 +48,47 @@ class BFS {
     let context = canvas.getContext("2d");
     let queue = [[startNode]];
     let pathCells = [startNode];
+    let interval;
     while (queue.length) {
       let current = queue.shift();
       if (current) {
         let children = this.children(current[0]);
+        if (children) {
           children = children.filter(child => { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) })
           let randomIndex = Math.floor(Math.random() * children.length)
           this.grid[children[randomIndex]] = true;
           pathCells.push(children[randomIndex]);
           queue.push([children[randomIndex]])
-          context.fillStyle='black';
-          context.fillRect(5*children[randomIndex][0], 5*children[randomIndex][1], 5, 5);
-          debugger
+          let i = 0;
+          if (children[randomIndex]) {
+            interval = setInterval( () => {
+            context.fillStyle='white';
+            context.fillRect(5*children[randomIndex][0], 5*children[randomIndex][1], 5, 5);
+            i++;
+          }, 100);
+          if (i >= pathCells.length) {
+            clearInterval(interval);
+          }
+          }
+        }
         }
       }
-      ensureLongPath(pathCells);
+      this.ensureLongPath(pathCells);
       return pathCells;
     };
 
     ensureLongPath (pathCells) {
+      let sorted;
+      debugger
+      pathCells.splice(-1, 1);
       let filtered = pathCells.filter(cell => cell[1] === this.grid.width-1)
-      if (!filtered) {
-        let sorted = pathCells.sort((el1, el2) => {
+      if (!filtered.length) {
+        sorted = pathCells.sort((el1, el2) => {
           return el1[1] - el2[1];
         })
+        this.generatePaths(sorted.pop);
       }
-      generatePaths(sorted[sorted.length-1]);
     }
-
-
-
-  //     for (let i = 0; i < children.length; i++) {
-  //       if (this.children(children[i]).length >= 2) {
-  //         queue.push(children[i]);
-  //         pathCells.push(children[i]);
-  //         context.fillStyle='black';
-  //         context.fillRect(5*children[i][0], 5*children[i][1], 5, 5);
-  //       }
-  //     }
-  //   }
-  //   console.log(pathCells);
-  //   console.log(queue);
-  // }
 
   // if not already labeled as an open path, default to wall
 
@@ -134,6 +133,7 @@ class BFS {
   }
 
   children (node) {
+    if (node) {
     let childrenNodes = [];
       Object.keys(this.grid).map(key => {
         let coord = key.split(',').map(i => Number(i));
@@ -143,6 +143,7 @@ class BFS {
       }
     )
     return childrenNodes;
+  }
   }
 
 }

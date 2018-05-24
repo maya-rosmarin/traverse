@@ -27,7 +27,7 @@ export const createGridGraphic = (width, height) => {
   let bw = width;
   let bh = height;
   let p = 0;
-  context.fillStyle = 'black';
+  context.fillStyle = 'white';
   context.fillRect(0, 0, 5, 5);
   function drawGrid () {
     for (let i = 0; i <= bw; i += 5) {
