@@ -13,7 +13,7 @@ export const createGridArray = (width, height) => {
   }
   for (let i = 0; i < xCoords.length; i++) {
     for (let j = 0; j < yCoords.length; j++) {
-      nodes[[xCoords[i], yCoords[j]]] = false
+      nodes[[xCoords[i], yCoords[j]]] = 'empty';
     }
   }
   return nodes;
