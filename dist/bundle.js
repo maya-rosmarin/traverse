@@ -86,14 +86,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__["default"](80, 80);
-  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(400, 400);
-  // bfs.animate(bfs.generate([0,0]));
-  // console.log(bfs.unvisited().length);
-  // console.log(bfs.nextStep([5,5]))
-  // console.log(bfs.unvisited().length);  console.log(bfs.nextStep([5,6]))
+  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__["default"](15, 15);
   bfs.generatePaths([0,0]);
-  // bfs.nextStep([0,0])
 });
 
 
@@ -134,12 +128,11 @@ class BFS {
   }
 
   nextStep (currentNode) {
-    debugger
     let children = this.children(currentNode);
     children = children.filter(child => { return this.children(child).length >= 2 && this.arrayIncludes(this.unvisited(), child) })
     let randomIndex = Math.floor(Math.random() * children.length)
     this.grid[children[randomIndex]] = true;
-    console.log(children[randomIndex]);
+    return children[randomIndex];
   }
 
   animate (coords) {
@@ -175,7 +168,7 @@ class BFS {
           let i = 0;
           if (children[randomIndex]) {
             interval = setInterval( () => {
-            context.fillStyle='white';
+            context.fillStyle='black';
             context.fillRect(5*children[randomIndex][0], 5*children[randomIndex][1], 5, 5);
             i++;
           }, 100);
@@ -192,14 +185,13 @@ class BFS {
 
     ensureLongPath (pathCells) {
       let sorted;
-      debugger
       pathCells.splice(-1, 1);
-      let filtered = pathCells.filter(cell => cell[1] === this.grid.width-1)
+      let filtered = pathCells.filter(cell => cell[0] === this.grid.width-1)
       if (!filtered.length) {
         sorted = pathCells.sort((el1, el2) => {
-          return el1[1] - el2[1];
+          return el1[0] - el2[0];
         })
-        this.generatePaths(sorted.pop);
+        this.generatePaths(sorted.pop());
       }
     }
 
@@ -295,7 +287,7 @@ const createGridArray = (width, height) => {
   }
   for (let i = 0; i < xCoords.length; i++) {
     for (let j = 0; j < yCoords.length; j++) {
-      nodes[[xCoords[i], yCoords[j]]] = 'empty';
+      nodes[[xCoords[i], yCoords[j]]] = false;
     }
   }
   return nodes;
@@ -309,7 +301,7 @@ const createGridGraphic = (width, height) => {
   let bw = width;
   let bh = height;
   let p = 0;
-  context.fillStyle = 'white';
+  context.fillStyle = 'black';
   context.fillRect(0, 0, 5, 5);
   function drawGrid () {
     for (let i = 0; i <= bw; i += 5) {

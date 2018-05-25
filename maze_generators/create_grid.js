@@ -13,7 +13,7 @@ export const createGridArray = (width, height) => {
   }
   for (let i = 0; i < xCoords.length; i++) {
     for (let j = 0; j < yCoords.length; j++) {
-      nodes[[xCoords[i], yCoords[j]]] = 'empty';
+      nodes[[xCoords[i], yCoords[j]]] = false;
     }
   }
   return nodes;
@@ -27,7 +27,7 @@ export const createGridGraphic = (width, height) => {
   let bw = width;
   let bh = height;
   let p = 0;
-  context.fillStyle = 'white';
+  context.fillStyle = 'black';
   context.fillRect(0, 0, 5, 5);
   function drawGrid () {
     for (let i = 0; i <= bw; i += 5) {
