@@ -9,7 +9,6 @@ class BFS {
     createGridGraphic(width*10, height*10);
   }
 
-
   unvisited () {
     let unvisited = [];
     for (let key in this.grid) {
@@ -52,31 +51,27 @@ class BFS {
     let interval, walls;
     while (queue.length) {
       let current = queue.shift();
-        let children = this.children(current[0]);
-        if (children) {
-          children = children.filter(child => { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) && !this.arrayIncludes(wallCells, child)})
-          let randomIndex = Math.floor(Math.random() * children.length)
-          wallCells = wallCells.concat(children.slice(0, randomIndex).concat(children.slice(randomIndex + 1)))
+        let child = this.selectRandomPathChild(this.children(current[0]), pathCells, wallCells, queue);
           debugger
-          this.grid[children[randomIndex]] = true;
-          pathCells.push(children[randomIndex]);
-          queue.push([children[randomIndex]])
+          // this.grid[child] = true;
+          // pathCells.push(child);
+          // queue.push([child])
           // this.generateTangentPaths(wallCells[randomIndex], this.unvisited())
           let i = 0;
-          if (children[randomIndex]) {
+          if (child) {
             interval = setInterval( () => {
             context.fillStyle='white';
-            context.fillRect(10*children[randomIndex][0], 10*children[randomIndex][1], 10, 10);
+            context.fillRect(10*child[0], 10*child[1], 10, 10);
             i++;
           }, 200);
           if (i >= pathCells.length) {
             clearInterval(interval);
           }
-          for (let j = 0; j < wallCells.length; j++) {
-            context.fillStyle='black';
-            context.fillRect(10*wallCells[j][0], 10*wallCells[j][1], 10, 10);
-          }
-        }
+          // for (let j = 0; j < wallCells.length; j++) {
+          //   context.fillStyle='black';
+          //   context.fillRect(10*wallCells[j][0], 10*wallCells[j][1], 10, 10);
+          // }
+        // }
       }
     }
     this.ensureLongPath(pathCells);
@@ -90,6 +85,22 @@ class BFS {
     while (length) {
       this.generatePaths(startNode);
     }
+  }
+
+  selectRandomPathChild (children, pathCells, wallCells, queue) {
+    debugger
+    if (children) {
+    let randomIndex = Math.floor(Math.random() * children.length)
+      children = children.filter(child => { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) && !this.arrayIncludes(wallCells, child)});
+      wallCells = wallCells.concat(children.slice(0, randomIndex).concat(children.slice(randomIndex + 1)))
+      let child = children[randomIndex];
+      pathCells.push(child);
+      queue.push([child])
+      this.grid[child] = true;
+      return child;
+      debugger
+    }
+    debugger
   }
 
   ensureLongPath (pathCells) {
