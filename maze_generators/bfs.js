@@ -6,7 +6,7 @@ class BFS {
     this.grid = createGridArray(width, height)
     this.grid.width = width;
     this.grid.height = height;
-    createGridGraphic(width*5, height*5);
+    createGridGraphic(width*10, height*10);
   }
 
 
@@ -21,8 +21,9 @@ class BFS {
   }
 
   nextStep (currentNode) {
+    let unvisited = this.unvisited();
     let children = this.children(currentNode);
-    children = children.filter(child => { return this.children(child).length >= 2 && this.arrayIncludes(this.unvisited(), child) })
+    children = children.filter(child => { return this.children(child).length >= 2 && this.arrayIncludes(unvisited, child) })
     let randomIndex = Math.floor(Math.random() * children.length)
     this.grid[children[randomIndex]] = true;
     return children[randomIndex];
@@ -34,7 +35,7 @@ class BFS {
     let i = 0;
     let interval = setInterval( () => {
       context.fillStyle='white';
-      context.fillRect(5*coords[i][0], 5*coords[i][1], 5, 5);
+      context.fillRect(10*coords[i][0], 10*coords[i][1], 10, 10);
       i++;
     }, 100);
     if (i >= coords.length) {
@@ -47,48 +48,61 @@ class BFS {
     let context = canvas.getContext("2d");
     let queue = [[startNode]];
     let pathCells = [startNode];
-    let interval;
+    let wallCells = [];
+    let interval, walls;
     while (queue.length) {
       let current = queue.shift();
-      if (current) {
         let children = this.children(current[0]);
         if (children) {
-          children = children.filter(child => { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) })
+          children = children.filter(child => { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) && !this.arrayIncludes(wallCells, child)})
           let randomIndex = Math.floor(Math.random() * children.length)
+          wallCells = wallCells.concat(children.slice(0, randomIndex).concat(children.slice(randomIndex + 1)))
+          debugger
           this.grid[children[randomIndex]] = true;
           pathCells.push(children[randomIndex]);
           queue.push([children[randomIndex]])
+          // this.generateTangentPaths(wallCells[randomIndex], this.unvisited())
           let i = 0;
           if (children[randomIndex]) {
             interval = setInterval( () => {
-            context.fillStyle='black';
-            context.fillRect(5*children[randomIndex][0], 5*children[randomIndex][1], 5, 5);
+            context.fillStyle='white';
+            context.fillRect(10*children[randomIndex][0], 10*children[randomIndex][1], 10, 10);
             i++;
-          }, 100);
+          }, 200);
           if (i >= pathCells.length) {
             clearInterval(interval);
           }
+          for (let j = 0; j < wallCells.length; j++) {
+            context.fillStyle='black';
+            context.fillRect(10*wallCells[j][0], 10*wallCells[j][1], 10, 10);
           }
         }
-        }
-      }
-      this.ensureLongPath(pathCells);
-      return pathCells;
-    };
-
-    ensureLongPath (pathCells) {
-      let sorted;
-      pathCells.splice(-1, 1);
-      let filtered = pathCells.filter(cell => cell[0] === this.grid.width-1)
-      if (!filtered.length) {
-        sorted = pathCells.sort((el1, el2) => {
-          return el1[0] - el2[0];
-        })
-        this.generatePaths(sorted.pop());
       }
     }
+    this.ensureLongPath(pathCells);
+    console.log(`wallcells: ${wallCells.length}`);
+    console.log(`unvisited: ${this.unvisited().length}`);
+    console.log(`pathcells: ${pathCells.length}`);
+  };
 
-  // if not already labeled as an open path, default to wall
+  generateTangentPaths (startNode, unvisited) {
+    let length = unvisited.length;
+    while (length) {
+      this.generatePaths(startNode);
+    }
+  }
+
+  ensureLongPath (pathCells) {
+    let sorted;
+    pathCells.splice(-1, 1);
+    let filtered = pathCells.filter(cell => cell[0] === this.grid.width-1)
+    if (!filtered.length) {
+      sorted = pathCells.sort((el1, el2) => {
+        return el1[0] - el2[0];
+      })
+      this.generatePaths(sorted.pop());
+    }
+  }
 
   generate (root) {
     let queue = [[root]];
@@ -129,6 +143,20 @@ class BFS {
     }
     return false;
   }
+
+
+  // animatePath (node, limit) {
+  //   let i = 0;
+  //   let interval = setInterval( () => {
+  //     context.fillStyle='white';
+  //     context.fillRect(10*node[0], 10*node[1], 10, 10);
+  //     i++;
+  //     },
+  //   2000);
+  //   if (i >= limit) {
+  //     clearInterval(interval);
+  //   }
+  // }
 
   children (node) {
     if (node) {
