@@ -150,42 +150,53 @@ class BFS {
   }
 
   generatePaths (startNode) {
-    let canvas = document.getElementById("canvas");
-    let context = canvas.getContext("2d");
     let queue = [[startNode]];
     let pathCells = [startNode];
     let wallCells = [];
-    let interval, walls;
+    let walls;
     while (queue.length) {
       let current = queue.shift();
         let child = this.selectRandomPathChild(this.children(current[0]), pathCells, wallCells, queue);
           debugger
-          // this.grid[child] = true;
-          // pathCells.push(child);
-          // queue.push([child])
-          // this.generateTangentPaths(wallCells[randomIndex], this.unvisited())
-          let i = 0;
-          if (child) {
-            interval = setInterval( () => {
-            context.fillStyle='white';
-            context.fillRect(10*child[0], 10*child[1], 10, 10);
-            i++;
-          }, 200);
-          if (i >= pathCells.length) {
-            clearInterval(interval);
-          }
+        this.animateChild(child, pathCells);
+          // let i = 0;
+          // if (child) {
+          //   interval = setInterval( () => {
+          //   context.fillStyle='white';
+          //   context.fillRect(10*child[0], 10*child[1], 10, 10);
+          //   i++;
+          // }, 200);
+          // if (i >= pathCells.length) {
+          //   clearInterval(interval);
+          // }
           // for (let j = 0; j < wallCells.length; j++) {
           //   context.fillStyle='black';
           //   context.fillRect(10*wallCells[j][0], 10*wallCells[j][1], 10, 10);
           // }
         // }
       }
-    }
     this.ensureLongPath(pathCells);
     console.log(`wallcells: ${wallCells.length}`);
     console.log(`unvisited: ${this.unvisited().length}`);
     console.log(`pathcells: ${pathCells.length}`);
   };
+
+  animateChild (child, pathCells) {
+    let canvas = document.getElementById("canvas");
+    let context = canvas.getContext("2d");
+    debugger
+    let i = 0;
+    if (child) {
+      let interval = setInterval( () => {
+      context.fillStyle='white';
+      context.fillRect(10*child[0], 10*child[1], 10, 10);
+      i++;
+    }, 200);
+    if (i >= pathCells.length) {
+      clearInterval(interval);
+      }
+    }
+  }
 
   generateTangentPaths (startNode, unvisited) {
     let length = unvisited.length;
@@ -195,10 +206,10 @@ class BFS {
   }
 
   selectRandomPathChild (children, pathCells, wallCells, queue) {
-    debugger
     if (children) {
     let randomIndex = Math.floor(Math.random() * children.length)
-      children = children.filter(child => { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) && !this.arrayIncludes(wallCells, child)});
+      children = children.filter(child =>
+        { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) && !this.arrayIncludes(wallCells, child)});
       wallCells = wallCells.concat(children.slice(0, randomIndex).concat(children.slice(randomIndex + 1)))
       let child = children[randomIndex];
       pathCells.push(child);
@@ -207,7 +218,6 @@ class BFS {
       return child;
       debugger
     }
-    debugger
   }
 
   ensureLongPath (pathCells) {
