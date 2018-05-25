@@ -111,12 +111,32 @@ __webpack_require__.r(__webpack_exports__);
 class BFS {
   constructor (width, height) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height)
-    this.grid.width = width;
-    this.grid.height = height;
+    this.width = width;
+    this.height = height;
     Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*10, height*10);
   }
 
+  // push all children of every node visited to queue
+
+  generatePaths (startNode) {
+    let queue = [[startNode]];
+    let pathCells = [startNode];
+    // let wallCells = [];
+    // let walls;
+    while (queue.length > 0) {
+      debugger
+      let current = queue.shift();
+      let child = this.selectRandomPathChild(this.children(current[0]), pathCells, queue);
+      this.animateChild(child, pathCells);
+    }
+    debugger
+    this.ensureLongPath(pathCells);
+    let tangent = this.generateTangentPaths(this.selectRandomUnvisitedCell());
+    // console.log(tangent);
+  };
+
   unvisited () {
+    debugger
     let unvisited = [];
     for (let key in this.grid) {
       if (this.grid[key] === false) {
@@ -126,13 +146,15 @@ class BFS {
     return unvisited;
   }
 
-  nextStep (currentNode) {
-    let unvisited = this.unvisited();
+  nextStep (currentNode, unvisited) {
+    debugger
     let children = this.children(currentNode);
-    children = children.filter(child => { return this.children(child).length >= 2 && this.arrayIncludes(unvisited, child) })
-    let randomIndex = Math.floor(Math.random() * children.length)
-    this.grid[children[randomIndex]] = true;
-    return children[randomIndex];
+    if (children) {
+      children = children.filter(child => { return this.children(child).length >= 1 && this.arrayIncludes(unvisited, child) })
+      let randomIndex = Math.floor(Math.random() * children.length)
+      this.grid[children[randomIndex]] = true;
+      return children[randomIndex];
+    }
   }
 
   animate (coords) {
@@ -149,46 +171,14 @@ class BFS {
     }
   }
 
-  generatePaths (startNode) {
-    let queue = [[startNode]];
-    let pathCells = [startNode];
-    let wallCells = [];
-    let walls;
-    while (queue.length) {
-      let current = queue.shift();
-        let child = this.selectRandomPathChild(this.children(current[0]), pathCells, wallCells, queue);
-          debugger
-        this.animateChild(child, pathCells);
-          // let i = 0;
-          // if (child) {
-          //   interval = setInterval( () => {
-          //   context.fillStyle='white';
-          //   context.fillRect(10*child[0], 10*child[1], 10, 10);
-          //   i++;
-          // }, 200);
-          // if (i >= pathCells.length) {
-          //   clearInterval(interval);
-          // }
-          // for (let j = 0; j < wallCells.length; j++) {
-          //   context.fillStyle='black';
-          //   context.fillRect(10*wallCells[j][0], 10*wallCells[j][1], 10, 10);
-          // }
-        // }
-      }
-    this.ensureLongPath(pathCells);
-    console.log(`wallcells: ${wallCells.length}`);
-    console.log(`unvisited: ${this.unvisited().length}`);
-    console.log(`pathcells: ${pathCells.length}`);
-  };
 
   animateChild (child, pathCells) {
     let canvas = document.getElementById("canvas");
     let context = canvas.getContext("2d");
-    debugger
     let i = 0;
     if (child) {
       let interval = setInterval( () => {
-      context.fillStyle='white';
+      context.fillStyle='black';
       context.fillRect(10*child[0], 10*child[1], 10, 10);
       i++;
     }, 200);
@@ -198,37 +188,61 @@ class BFS {
     }
   }
 
-  generateTangentPaths (startNode, unvisited) {
-    let length = unvisited.length;
-    while (length) {
-      this.generatePaths(startNode);
+  generateTangentPaths (startNode) {
+    let canvas = document.getElementById("canvas");
+    let context = canvas.getContext("2d");
+    // debugger
+    let unvisited = this.unvisited();
+    let steps = [];
+    if (unvisited) {
+      debugger
+      let nextStep = this.nextStep(startNode, unvisited);
+      for (let i = 0; i < 5; i++) {
+        steps.push(nextStep);
+        nextStep = this.nextStep(nextStep, unvisited);
+      }
     }
+    const array = steps.filter(step => step)
+    array.forEach(step => {
+      console.log(step)
+      this.grid[step] = true;
+      context.fillStyle='white';
+      context.fillRect(10*step[0], 10*step[1], 10, 10);
+    })
+    return array
   }
 
-  selectRandomPathChild (children, pathCells, wallCells, queue) {
+  selectRandomUnvisitedCell () {
+    // debugger
+    let unvisited = this.unvisited();
+    let randomIndex = (Math.floor(Math.random() * unvisited.length));
+    this.grid[Object.keys(this.grid)[randomIndex]] = true;
+    return Object.keys(this.grid)[randomIndex];
+  }
+
+  selectRandomPathChild (children, pathCells, queue) {
     if (children) {
     let randomIndex = Math.floor(Math.random() * children.length)
       children = children.filter(child =>
-        { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child) && !this.arrayIncludes(wallCells, child)});
-      wallCells = wallCells.concat(children.slice(0, randomIndex).concat(children.slice(randomIndex + 1)))
+        { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child)});
       let child = children[randomIndex];
       pathCells.push(child);
       queue.push([child])
       this.grid[child] = true;
       return child;
-      debugger
     }
   }
 
   ensureLongPath (pathCells) {
     let sorted;
     pathCells.splice(-1, 1);
-    let filtered = pathCells.filter(cell => cell[0] === this.grid.width-1)
+    let filtered = pathCells.filter(cell => cell[0] === this.width-1)
     if (!filtered.length) {
       sorted = pathCells.sort((el1, el2) => {
         return el1[0] - el2[0];
       })
-      this.generatePaths(sorted.pop());
+      // this.nextStep(sorted.pop(), this.unvisited());
+      this.generatePaths(sorted.pop())
     }
   }
 
@@ -288,6 +302,9 @@ class BFS {
 
   children (node) {
     if (node) {
+      if (typeof node === 'string') {
+        node = node.split(',').map(i => Number(i))
+      }
     let childrenNodes = [];
       Object.keys(this.grid).map(key => {
         let coord = key.split(',').map(i => Number(i));
