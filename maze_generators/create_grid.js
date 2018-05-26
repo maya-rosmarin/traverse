@@ -3,8 +3,8 @@ import BFS from './bfs';
 
 export const createGridArray = (width, height) => {
   let nodes = [];
-  for (let i = 0; i < width; i++) {
-    for (let j = 0; j < height; j++) {
+  for (let i = 0; i < width; i+=2) {
+    for (let j = 0; j < height; j+=2) {
       nodes.push([i, j, false]);
     }
   }
@@ -19,8 +19,6 @@ export const createGridGraphic = (width, height) => {
   let bw = width;
   let bh = height;
   let p = 0;
-  context.fillStyle = 'black';
-  context.fillRect(0, 0, 10, 10);
   function drawGrid () {
     for (let i = 0; i <= bw; i += 10) {
       context.moveTo(0.5 + i, 0);

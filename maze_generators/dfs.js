@@ -12,26 +12,48 @@ export default class DFS {
     let canvas = document.getElementById("canvas");
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);
+    let connector;
     let i = 0;
     let interval = setInterval( () => {
-      context.fillStyle='white';
+      if (i === 0) {
+        connector = null;
+      } else {
+        connector = this.connector(path[i-1], path[i])
+      }
+      context.fillStyle="white";
+      if (connector) {
+        context.fillRect(10*connector[0], 10*connector[1], 10, 10)
+      }
       context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
       i++;
     }, 100);
-    if (i >= path.length) {
+    if (i >= path.length - 1) {
+      debugger
       clearInterval(interval);
     }
   }
 
+  connector (startNode, node) {
+    let connector;
+      if (startNode[0] == node[0] && startNode[1] == node[1] + 2) {
+        connector = [node[0], node[1] + 1];
+      } else if (startNode[0] == node[0] && startNode[1] == node[1] - 2) {
+        connector = [node[0], node[1] - 1];
+      } else if (startNode[0] == node[0] + 2 && startNode[1] == node[1]) {
+        connector = [node[0] + 1, node[1]];
+      } else if (startNode[0] == node[0] - 2 && startNode[1] == node[1]) {
+        connector = [node[0] - 1, node[1]];
+      }
+    return connector;
+  }
+
   generatePaths (startNode) {
-    debugger
     startNode[2] = true;
     this.stack.push(startNode);
     let last = startNode;
     while (this.unvisited().length) {
       let step = this.nextStep(last);
       if (!step) {
-        debugger
         last = this.backtrack(-1);
       } else {
         step[2] = true;
@@ -39,13 +61,11 @@ export default class DFS {
         last = this.stack.slice(-1)[0];
       }
     }
-
-    console.log(this.stack)
     return this.stack;
   }
 
   nextStep (startNode) {
-    let neighbors = this.neighbors(startNode).filter(neighbor => !this.is_visited(neighbor));
+    let neighbors = this.neighbors(startNode).filter(neighbor => !this.isVisited(neighbor));
     if (neighbors == null || neighbors.length == 0) {
       return null;
     }
@@ -54,37 +74,33 @@ export default class DFS {
   }
 
   unvisited () {
-    return this.grid.filter(cell => !this.is_visited(cell))
+    return this.grid.filter(cell => !this.isVisited(cell))
   }
 
-  is_visited(cell) {
+  isVisited(cell) {
     return cell[2] === true
   }
 
   backtrack (n) {
-    debugger
-    // if (n < -(this.stack.length)) {
-      let current = this.stack.slice(n)[0];
-      if (this.nextStep(current)) {
-        this.stack.push(current)
-        return current;
-      } else {
-        n--;
-        return this.backtrack(n);
-      }
-    // }
+    let current = this.stack.slice(n)[0];
+    if (this.nextStep(current)) {
+      this.stack.push(current)
+      return current;
+    } else {
+      n--;
+      return this.backtrack(n);
+    }
   }
 
   neighbors (startNode) {
     let nodes = [];
     this.grid.forEach((node) => {
-      if ((startNode[0] == node[0] && startNode[1] == node[1] + 1) || (startNode[0] == node[0] && startNode[1] == node[1] - 1) || (startNode[0] == node[0] + 1 && startNode[1] == node[1]) || (startNode[0] == node[0] - 1 && startNode[1] == node[1])) {
+      if ((startNode[0] == node[0] && startNode[1] == node[1] + 2) || (startNode[0] == node[0] && startNode[1] == node[1] - 2) || (startNode[0] == node[0] + 2 && startNode[1] == node[1]) || (startNode[0] == node[0] - 2 && startNode[1] == node[1])) {
         nodes.push(node);
       }
     })
     return nodes;
   }
-
 
 }
 
