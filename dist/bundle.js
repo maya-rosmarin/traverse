@@ -81,13 +81,18 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./maze_generators/bfs */ "./maze_generators/bfs.js");
-/* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
+/* harmony import */ var _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/dfs */ "./maze_generators/dfs.js");
+/* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
+
 
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let bfs = new _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__["default"](20, 20);
-  bfs.generatePaths([0,0]);
+  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_1__["default"](20, 20);
+  // console.log(dfs.neighbors([5,5]))
+  // console.log(dfs.nextStep([5,5]));
+  // dfs.generatePaths([0,0]);
+  dfs.animate([0, 0]);
 });
 
 
@@ -127,11 +132,18 @@ class BFS {
       debugger
       let current = queue.shift();
       let child = this.selectRandomPathChild(this.children(current[0]), pathCells, queue);
+      console.log("visiting " + child)
+      // queue.push(this.children(current[0]))
+      // pathCells.push(this.children(current[0]))
+      // let children = this.children(current)
+      // debugger
+      // queue = queue.concat(children);
+      // pathCells = pathCells.concat(children);
       this.animateChild(child, pathCells);
     }
     debugger
     this.ensureLongPath(pathCells);
-    let tangent = this.generateTangentPaths(this.selectRandomUnvisitedCell());
+    //let tangent = this.generateTangentPaths(this.selectRandomUnvisitedCell());
     // console.log(tangent);
   };
 
@@ -221,10 +233,11 @@ class BFS {
   }
 
   selectRandomPathChild (children, pathCells, queue) {
-    if (children) {
-    let randomIndex = Math.floor(Math.random() * children.length)
-      children = children.filter(child =>
-        { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child)});
+    children = children.filter(child =>
+      { return this.children(child).length > 0 && !this.arrayIncludes(pathCells, child)});
+
+    if (children && children.length > 0) {
+      let randomIndex = Math.floor(Math.random() * children.length)
       let child = children[randomIndex];
       pathCells.push(child);
       queue.push([child])
@@ -342,18 +355,10 @@ __webpack_require__.r(__webpack_exports__);
 
 
 const createGridArray = (width, height) => {
-  let nodes = {};
-  let xCoords = [];
-  let yCoords = [];
+  let nodes = [];
   for (let i = 0; i < width; i++) {
-    xCoords.push(i)
-  }
-  for (let j = 0; j < height; j++) {
-    yCoords.push(j)
-  }
-  for (let i = 0; i < xCoords.length; i++) {
-    for (let j = 0; j < yCoords.length; j++) {
-      nodes[[xCoords[i], yCoords[j]]] = false;
+    for (let j = 0; j < height; j++) {
+      nodes.push([i, j, false]);
     }
   }
   return nodes;
@@ -367,7 +372,7 @@ const createGridGraphic = (width, height) => {
   let bw = width;
   let bh = height;
   let p = 0;
-  context.fillStyle = 'white';
+  context.fillStyle = 'black';
   context.fillRect(0, 0, 10, 10);
   function drawGrid () {
     for (let i = 0; i <= bw; i += 10) {
@@ -382,6 +387,120 @@ const createGridGraphic = (width, height) => {
     context.stroke();
   }
   drawGrid();
+}
+
+
+/***/ }),
+
+/***/ "./maze_generators/dfs.js":
+/*!********************************!*\
+  !*** ./maze_generators/dfs.js ***!
+  \********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return DFS; });
+/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
+/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
+
+
+
+class DFS {
+  constructor (width, height) {
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height);
+    Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*10, height*10);
+    this.stack = []
+  }
+
+  animate (startNode) {
+    let canvas = document.getElementById("canvas");
+    let context = canvas.getContext("2d");
+    let path = this.generatePaths(startNode);
+    let i = 0;
+    let interval = setInterval( () => {
+      context.fillStyle='white';
+      context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
+      i++;
+    }, 100);
+    if (i >= path.length) {
+      clearInterval(interval);
+    }
+  }
+
+  generatePaths (startNode) {
+    debugger
+    startNode[2] = true;
+    this.stack.push(startNode);
+    let last = startNode;
+    while (this.unvisited().length) {
+      let step = this.nextStep(last);
+      if (!step) {
+        debugger
+        last = this.backtrack(-1);
+      } else {
+        step[2] = true;
+        this.stack.push(step);
+        last = this.stack.slice(-1)[0];
+      }
+    }
+
+    console.log(this.stack)
+    return this.stack;
+  }
+
+  nextStep (startNode) {
+    let neighbors = this.neighbors(startNode).filter(neighbor => !this.is_visited(neighbor));
+    if (neighbors == null || neighbors.length == 0) {
+      return null;
+    }
+    let randomIndex = Math.floor(Math.random() * neighbors.length);
+    return neighbors[randomIndex];
+  }
+
+  unvisited () {
+    return this.grid.filter(cell => !this.is_visited(cell))
+  }
+
+  is_visited(cell) {
+    return cell[2] === true
+  }
+
+  backtrack (n) {
+    debugger
+    // if (n < -(this.stack.length)) {
+      let current = this.stack.slice(n)[0];
+      if (this.nextStep(current)) {
+        this.stack.push(current)
+        return current;
+      } else {
+        n--;
+        return this.backtrack(n);
+      }
+    // }
+  }
+
+  neighbors (startNode) {
+    let nodes = [];
+    this.grid.forEach((node) => {
+      if ((startNode[0] == node[0] && startNode[1] == node[1] + 1) || (startNode[0] == node[0] && startNode[1] == node[1] - 1) || (startNode[0] == node[0] + 1 && startNode[1] == node[1]) || (startNode[0] == node[0] - 1 && startNode[1] == node[1])) {
+        nodes.push(node);
+      }
+    })
+    return nodes;
+  }
+
+
+}
+
+class Node {
+  constructor(row, col) {
+    this.row = row
+    this.col = col
+    this.visited = false
+  }
 }
 
 

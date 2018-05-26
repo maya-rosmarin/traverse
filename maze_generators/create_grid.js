@@ -2,18 +2,10 @@ import * as manhattan from 'manhattan';
 import BFS from './bfs';
 
 export const createGridArray = (width, height) => {
-  let nodes = {};
-  let xCoords = [];
-  let yCoords = [];
+  let nodes = [];
   for (let i = 0; i < width; i++) {
-    xCoords.push(i)
-  }
-  for (let j = 0; j < height; j++) {
-    yCoords.push(j)
-  }
-  for (let i = 0; i < xCoords.length; i++) {
-    for (let j = 0; j < yCoords.length; j++) {
-      nodes[[xCoords[i], yCoords[j]]] = false;
+    for (let j = 0; j < height; j++) {
+      nodes.push([i, j, false]);
     }
   }
   return nodes;
@@ -27,7 +19,7 @@ export const createGridGraphic = (width, height) => {
   let bw = width;
   let bh = height;
   let p = 0;
-  context.fillStyle = 'white';
+  context.fillStyle = 'black';
   context.fillRect(0, 0, 10, 10);
   function drawGrid () {
     for (let i = 0; i <= bw; i += 10) {

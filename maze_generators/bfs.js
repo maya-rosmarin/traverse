@@ -20,11 +20,18 @@ class BFS {
       debugger
       let current = queue.shift();
       let child = this.selectRandomPathChild(this.children(current[0]), pathCells, queue);
+      console.log("visiting " + child)
+      // queue.push(this.children(current[0]))
+      // pathCells.push(this.children(current[0]))
+      // let children = this.children(current)
+      // debugger
+      // queue = queue.concat(children);
+      // pathCells = pathCells.concat(children);
       this.animateChild(child, pathCells);
     }
     debugger
     this.ensureLongPath(pathCells);
-    let tangent = this.generateTangentPaths(this.selectRandomUnvisitedCell());
+    //let tangent = this.generateTangentPaths(this.selectRandomUnvisitedCell());
     // console.log(tangent);
   };
 
@@ -114,10 +121,11 @@ class BFS {
   }
 
   selectRandomPathChild (children, pathCells, queue) {
-    if (children) {
-    let randomIndex = Math.floor(Math.random() * children.length)
-      children = children.filter(child =>
-        { return this.children(child).length >= 1 && !this.arrayIncludes(pathCells, child)});
+    children = children.filter(child =>
+      { return this.children(child).length > 0 && !this.arrayIncludes(pathCells, child)});
+
+    if (children && children.length > 0) {
+      let randomIndex = Math.floor(Math.random() * children.length)
       let child = children[randomIndex];
       pathCells.push(child);
       queue.push([child])
