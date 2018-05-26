@@ -88,7 +88,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_1__["default"](20, 20);
+  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_1__["default"](60, 60);
   dfs.animate([0, 0]);
   // console.log(dfs.connector([2,2], [0,2]))
 });
@@ -365,24 +365,11 @@ const createGridArray = (width, height) => {
 const createGridGraphic = (width, height) => {
   let canvas = document.getElementById("canvas");
   let context = canvas.getContext("2d");
-  context.fillStyle = 'pink';
-  context.fillRect(0, 0, width, height);
+  context.fillStyle = 'black';
+  context.fillRect(0, 0, width + 10, height + 10);
   let bw = width;
   let bh = height;
   let p = 0;
-  function drawGrid () {
-    for (let i = 0; i <= bw; i += 10) {
-      context.moveTo(0.5 + i, 0);
-      context.lineTo(0.5 + i, bh);
-    }
-    for (let j = 0; j <= bh; j += 10) {
-      context.moveTo(0, 0.5 + j);
-      context.lineTo(bw, 0.5 + j);
-    }
-    context.strokeStyle = 'white';
-    context.stroke();
-  }
-  drawGrid();
 }
 
 
@@ -408,6 +395,8 @@ class DFS {
   constructor (width, height) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height);
     Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*10, height*10);
+    this.width = width;
+    this.height = height;
     this.stack = []
   }
 
@@ -425,15 +414,21 @@ class DFS {
       }
       context.fillStyle="white";
       if (connector) {
-        context.fillRect(10*connector[0], 10*connector[1], 10, 10)
+        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
       }
-      context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
+      context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
       i++;
-    }, 100);
-    if (i >= path.length - 1) {
-      debugger
-      clearInterval(interval);
-    }
+      if (i >= path.length) {
+        // context.fillStyle="green";
+        // context.fillRect(0, 0, 10, 10);
+        // context.fillStyle="white";
+        // context.fillRect(10*this.width - 10, 10*this.height - 20, 10, 10);
+        context.fillStyle = 'white';
+        context.fillRect(0, 10, 10, 10);
+        context.fillRect(width, height - 10, 10, 10);
+        clearInterval(interval);
+      }
+    }, 10);
   }
 
   connector (startNode, node) {

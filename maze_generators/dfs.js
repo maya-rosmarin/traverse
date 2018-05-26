@@ -5,6 +5,8 @@ export default class DFS {
   constructor (width, height) {
     this.grid = createGridArray(width, height);
     createGridGraphic(width*10, height*10);
+    this.width = width;
+    this.height = height;
     this.stack = []
   }
 
@@ -22,15 +24,21 @@ export default class DFS {
       }
       context.fillStyle="white";
       if (connector) {
-        context.fillRect(10*connector[0], 10*connector[1], 10, 10)
+        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
       }
-      context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
+      context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
       i++;
-    }, 100);
-    if (i >= path.length - 1) {
-      debugger
-      clearInterval(interval);
-    }
+      if (i >= path.length) {
+        // context.fillStyle="green";
+        // context.fillRect(0, 0, 10, 10);
+        // context.fillStyle="white";
+        // context.fillRect(10*this.width - 10, 10*this.height - 20, 10, 10);
+        context.fillStyle = 'white';
+        context.fillRect(0, 10, 10, 10);
+        context.fillRect(width, height - 10, 10, 10);
+        clearInterval(interval);
+      }
+    }, 10);
   }
 
   connector (startNode, node) {
