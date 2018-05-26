@@ -14,10 +14,7 @@ class BFS {
   generatePaths (startNode) {
     let queue = [[startNode]];
     let pathCells = [startNode];
-    // let wallCells = [];
-    // let walls;
     while (queue.length > 0) {
-      debugger
       let current = queue.shift();
       let child = this.selectRandomPathChild(this.children(current[0]), pathCells, queue);
       console.log("visiting " + child)
@@ -30,7 +27,7 @@ class BFS {
       this.animateChild(child, pathCells);
     }
     debugger
-    this.ensureLongPath(pathCells);
+    // this.ensureLongPath(pathCells);
     //let tangent = this.generateTangentPaths(this.selectRandomUnvisitedCell());
     // console.log(tangent);
   };

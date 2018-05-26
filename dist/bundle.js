@@ -80,17 +80,17 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _maze_generators_bfs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./maze_generators/bfs */ "./maze_generators/bfs.js");
-/* harmony import */ var _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/dfs */ "./maze_generators/dfs.js");
-/* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
+/* harmony import */ var _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./maze_generators/dfs */ "./maze_generators/dfs.js");
+/* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
+/* harmony import */ var _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_solvers/bfs */ "./maze_solvers/bfs.js");
 
 
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_1__["default"](60, 60);
-  dfs.animate([0, 0]);
-  // console.log(dfs.connector([2,2], [0,2]))
+  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_2__["default"]([0, 0], [20, 20]);
+  bfs.exploreNodes();
+  bfs.moves();
 });
 
 
@@ -124,10 +124,7 @@ class BFS {
   generatePaths (startNode) {
     let queue = [[startNode]];
     let pathCells = [startNode];
-    // let wallCells = [];
-    // let walls;
     while (queue.length > 0) {
-      debugger
       let current = queue.shift();
       let child = this.selectRandomPathChild(this.children(current[0]), pathCells, queue);
       console.log("visiting " + child)
@@ -140,7 +137,7 @@ class BFS {
       this.animateChild(child, pathCells);
     }
     debugger
-    this.ensureLongPath(pathCells);
+    // this.ensureLongPath(pathCells);
     //let tangent = this.generateTangentPaths(this.selectRandomUnvisitedCell());
     // console.log(tangent);
   };
@@ -367,9 +364,25 @@ const createGridGraphic = (width, height) => {
   let context = canvas.getContext("2d");
   context.fillStyle = 'black';
   context.fillRect(0, 0, width + 10, height + 10);
-  let bw = width;
-  let bh = height;
-  let p = 0;
+  context.fillStyle = 'white';
+  context.fillRect(0, 10, 10, 10);
+  context.fillRect(width, height - 10, 10, 10);
+  // let bw = width;
+  // let bh = height;
+  // let p = 0;
+  // function drawGrid () {
+  //   for (let i = 0; i <= bw; i += 10) {
+  //     context.moveTo(0.5 + i, 0);
+  //     context.lineTo(0.5 + i, bh);
+  //   }
+  //   for (let j = 0; j <= bh; j += 10) {
+  //     context.moveTo(0, 0.5 + j);
+  //     context.lineTo(bw, 0.5 + j);
+  //   }
+  //   // context.strokeStyle = 'black';
+  //   context.stroke();
+  // }
+  // drawGrid();
 }
 
 
@@ -419,13 +432,9 @@ class DFS {
       context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
       i++;
       if (i >= path.length) {
-        // context.fillStyle="green";
-        // context.fillRect(0, 0, 10, 10);
-        // context.fillStyle="white";
-        // context.fillRect(10*this.width - 10, 10*this.height - 20, 10, 10);
         context.fillStyle = 'white';
         context.fillRect(0, 10, 10, 10);
-        context.fillRect(width, height - 10, 10, 10);
+        context.fillRect(this.width, this.height - 10, 10, 10);
         clearInterval(interval);
       }
     }, 10);
@@ -508,6 +517,97 @@ class Node {
     this.col = col
     this.visited = false
   }
+}
+
+
+/***/ }),
+
+/***/ "./maze_solvers/bfs.js":
+/*!*****************************!*\
+  !*** ./maze_solvers/bfs.js ***!
+  \*****************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return BFS; });
+/* harmony import */ var _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../maze_generators/dfs */ "./maze_generators/dfs.js");
+
+
+class BFS {
+  constructor (startNode, targetNode) {
+    this.startNode = startNode;
+    this.targetNode = targetNode;
+    let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](20, 20);
+    debugger
+    dfs.animate([0, 0]);
+    this.maze = dfs.generatePaths([0,0]);
+  }
+
+  exploreNodes () {
+    let canvas = document.getElementById("canvas");
+    let context = canvas.getContext("2d");
+    let queue = [this.startNode];
+    let visited = [this.startNode];
+    while (queue.length) {
+      let current = queue.shift();
+      if (this.neighbors(current)) {
+        this.neighbors(current).map(neighbor => {
+          if (this.isSameNode(neighbor, this.targetNode)) {
+            return visited;
+          }
+          if (!this.arrayIncludes(visited, neighbor)) {
+            queue.push(neighbor);
+            visited.push(neighbor);
+          }
+        })
+      };
+    }
+    // console.log(visited)
+    visited.map(node => {
+
+      // context.fillStyle="pink";
+      // context.fillRect(10*node[0], 10*node[1], 10, 10);
+    })
+  }
+
+  neighbors (startNode) {
+    let neighbors = [];
+    this.maze.forEach((node) => {
+      if ((startNode[0] == node[0] && startNode[1] == node[1] + 2) || (startNode[0] == node[0] && startNode[1] == node[1] - 2) || (startNode[0] == node[0] + 2 && startNode[1] == node[1]) || (startNode[0] == node[0] - 2 && startNode[1] == node[1])) {
+        neighbors.push(node);
+      }
+    })
+    return neighbors;
+  }
+
+  moves () {
+    let moves = [];
+    this.maze.forEach((node, idx) => {
+        if (idx === 0) {
+          return;
+        } else {
+          moves.push([this.maze[idx-1], node])
+        }
+      }
+    )
+    console.log(moves);
+  }
+
+  isSameNode (node1, node2) {
+    return node1[0] === node2[0] && node1[1] === node2[1];
+  }
+
+  arrayIncludes (array, node) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][0] == node[0] && array[i][1] == node[1]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }
 
 

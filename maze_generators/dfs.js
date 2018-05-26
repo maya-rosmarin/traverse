@@ -29,13 +29,9 @@ export default class DFS {
       context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
       i++;
       if (i >= path.length) {
-        // context.fillStyle="green";
-        // context.fillRect(0, 0, 10, 10);
-        // context.fillStyle="white";
-        // context.fillRect(10*this.width - 10, 10*this.height - 20, 10, 10);
         context.fillStyle = 'white';
         context.fillRect(0, 10, 10, 10);
-        context.fillRect(width, height - 10, 10, 10);
+        context.fillRect(this.width, this.height - 10, 10, 10);
         clearInterval(interval);
       }
     }, 10);
