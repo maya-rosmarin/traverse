@@ -13,5 +13,5 @@ document.addEventListener('DOMContentLoaded', () => {
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
     dfs.animate([0, 0]);
   // }
-  let bfs = new BFS([0, 0], [38, 38])
+  let bfs = new BFS([0, 0], [18, 18])
 });

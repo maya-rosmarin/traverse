@@ -4,17 +4,25 @@ export default class BFS {
   constructor (startNode, targetNode) {
     this.startNode = startNode;
     this.targetNode = targetNode;
-    this.dfs = new DFS(20, 20, 'canvas-5');
-    this.dfs.animate([0, 0]);
+    this.dfs = new DFS(40, 40, 'canvas-5');
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
-    this.exploreNodes();
+    this.animate(this.exploreNodes());
+  }
+
+  animate (path) {
+    this.dfs.animate([0, 0]);
+    let canvas = document.getElementById("canvas-5");
+    let context = canvas.getContext("2d");
+    context.fillStyle='black';
+    context.fillRect(0, 0, 410, 410);
+    context.fillStyle='white';
+    context.fillRect(0, 10, 10, 10);
+    context.fillRect(400, 390, 10, 10);
+    
   }
 
   exploreNodes () {
-    debugger
-    let canvas = document.getElementById("canvas-5");
-    let context = canvas.getContext("2d");
     let queue = [this.startNode];
     let visited = [this.startNode];
     let path = [this.startNode];
@@ -28,14 +36,13 @@ export default class BFS {
           visited.push(neighbors[i]);
         };
         if (this.isSameNode(neighbors[i], this.targetNode)) {
+          queue.push(neighbors[i]);
+          path.push(neighbors[i]);
+          visited.push(neighbors[i]);
           return path;
         }
       }
     }
-    console.log(path);
-    console.log(this.maze);
-    context.fillStyle='pink';
-    context.fillRect(10, 10, this.dfs.height, this.dfs.width);
   }
 
   neighbors (startNode) {

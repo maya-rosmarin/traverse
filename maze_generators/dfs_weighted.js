@@ -12,11 +12,9 @@ export default class DFSWeighted {
   }
 
   animate (startNode) {
-    debugger
     let canvas = document.getElementById("canvas-4");
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);
-    debugger
     let connector;
     let i = 0;
     let interval = setInterval( () => {
