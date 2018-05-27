@@ -9,6 +9,7 @@ export default class DFS {
     this.width = width;
     this.height = height;
     this.stack = []
+    this.animate([0, 0]);
   }
 
   animate (startNode) {

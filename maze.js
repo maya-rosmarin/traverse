@@ -8,10 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   createGridStatic();
   init();
   let weighted = new DFSWeighted(40, 40);
-  weighted.animate([0, 0]);
   let dfs = new DFS(40, 40, 'canvas-1');
-  // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
-    dfs.animate([0, 0]);
-  // }
   let bfs = new BFS([0, 0], [18, 18])
+  // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
+  // }
 });

@@ -95,12 +95,10 @@ document.addEventListener('DOMContentLoaded', () => {
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridStatic"])();
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["init"])();
   let weighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
-  weighted.animate([0, 0]);
   let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
-  // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
-    dfs.animate([0, 0]);
-  // }
   let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_3__["default"]([0, 0], [18, 18])
+  // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
+  // }
 });
 
 
@@ -339,11 +337,12 @@ document.addEventListener('DOMContentLoaded', () => {
 /*!****************************************!*\
   !*** ./maze_generators/create_grid.js ***!
   \****************************************/
-/*! exports provided: createGridArray, createGridGraphic, createGridStatic, init, isScrolledIntoView */
+/*! exports provided: mazeVis, createGridArray, createGridGraphic, createGridStatic, init, isScrolledIntoView */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mazeVis", function() { return mazeVis; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridArray", function() { return createGridArray; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridGraphic", function() { return createGridGraphic; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridStatic", function() { return createGridStatic; });
@@ -355,6 +354,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _bfs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_bfs__WEBPACK_IMPORTED_MODULE_1__);
 
 
+
+const mazeVis = () => {
+  undefined.createGridStatic(500, 500);
+  undefined.init();
+}
 
 const createGridArray = (width, height) => {
   let nodes = [];
@@ -503,6 +507,7 @@ class DFS {
     this.width = width;
     this.height = height;
     this.stack = []
+    this.animate([0, 0]);
   }
 
   animate (startNode) {
@@ -637,6 +642,7 @@ class DFSWeighted {
     this.width = width;
     this.height = height;
     this.stack = []
+    this.animate([0, 0]);
   }
 
   animate (startNode) {
@@ -801,7 +807,6 @@ class BFS {
   }
 
   animate (path) {
-    this.dfs.animate([0, 0]);
     let canvas = document.getElementById("canvas-5");
     let context = canvas.getContext("2d");
     context.fillStyle='black';
@@ -809,7 +814,25 @@ class BFS {
     context.fillStyle='white';
     context.fillRect(0, 10, 10, 10);
     context.fillRect(400, 390, 10, 10);
-    
+    context.fillStyle='pink';
+    let connector;
+    let i = 0;
+    let interval = setInterval(() => {
+      if (i === 0) {
+        connector = null;
+      } else {
+        connector = this.dfs.connector(path[i-1], path[i])
+      }
+      if (connector) {
+        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
+      }
+      debugger
+      context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+      i++;
+      if (i >= path.length) {
+        clearInterval(interval);
+      }
+    }, 30)
   }
 
   exploreNodes () {

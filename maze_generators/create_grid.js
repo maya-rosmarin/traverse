@@ -1,6 +1,11 @@
 import * as manhattan from 'manhattan';
 import BFS from './bfs';
 
+export const mazeVis = () => {
+  this.createGridStatic(500, 500);
+  this.init();
+}
+
 export const createGridArray = (width, height) => {
   let nodes = [];
   for (let i = 0; i < width; i+=2) {

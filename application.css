@@ -53,3 +53,7 @@ body {
   display: flex;
   flex-direction: row;
 }
+
+#canvas-5 {
+  margin-left: 50px;
+}
