@@ -66,7 +66,17 @@ function updateCanvas () {
     var heightCount = parseInt(height/gaps);
     for(var x=0; x<widthCount;x++){
       for(var y=0; y<heightCount;y++){
-        context.fillStyle = 'pink'
+        if (x % 2 === 0 || y % 2 === 0) {
+          context.fillStyle = 'gray';
+        } else {
+          context.fillStyle = 'lightgray'
+        }
+        // if (y % 2 === 0) {
+        //   let interval = setInterval(() => {
+        //     context.fillStyle = 'gray'
+        //   }, 500)
+        // }
+        // context.fillStyle = 'pink'
         context.beginPath();
         context.arc(rad+gaps*x,rad+ gaps*y, rad, 0, Math.PI*2, true );
         context.closePath();
