@@ -4,37 +4,38 @@ export default class BFS {
   constructor (startNode, targetNode) {
     this.startNode = startNode;
     this.targetNode = targetNode;
-    let dfs = new DFS(20, 20);
-    // dfs.animate([0, 0]);
-    this.maze = dfs.generatePaths([0,0]);
+    this.dfs = new DFS(20, 20, 'canvas-5');
+    this.dfs.animate([0, 0]);
+    this.maze = this.dfs.generatePaths([0,0]);
+    this.mazePaths = this.moves();
+    this.exploreNodes();
   }
 
   exploreNodes () {
     debugger
-    let canvas = document.getElementById("canvas-1");
+    let canvas = document.getElementById("canvas-5");
     let context = canvas.getContext("2d");
     let queue = [this.startNode];
     let visited = [this.startNode];
+    let path = [this.startNode];
     while (queue.length) {
       let current = queue.shift();
-      if (this.neighbors(current)) {
-        this.neighbors(current).map(neighbor => {
-          if (this.isSameNode(neighbor, this.targetNode)) {
-            return visited;
-          }
-          if (!this.arrayIncludes(visited, neighbor)) {
-            queue.push(neighbor);
-            visited.push(neighbor);
-          }
-        })
-      };
+      let neighbors = this.neighbors(current);
+      for (let i = 0; i < neighbors.length; i++) {
+        if (!this.arrayIncludes(visited, neighbors[i]) && this.mazePathsIncludes([current, neighbors[i]])) {
+          queue.push(neighbors[i]);
+          path.push(neighbors[i]);
+          visited.push(neighbors[i]);
+        };
+        if (this.isSameNode(neighbors[i], this.targetNode)) {
+          return path;
+        }
+      }
     }
-    // console.log(visited)
-    visited.map(node => {
-
-      // context.fillStyle="pink";
-      // context.fillRect(10*node[0], 10*node[1], 10, 10);
-    })
+    console.log(path);
+    console.log(this.maze);
+    context.fillStyle='pink';
+    context.fillRect(10, 10, this.dfs.height, this.dfs.width);
   }
 
   neighbors (startNode) {
@@ -57,7 +58,7 @@ export default class BFS {
         }
       }
     )
-    console.log(moves);
+    return moves;
   }
 
   isSameNode (node1, node2) {
@@ -67,6 +68,15 @@ export default class BFS {
   arrayIncludes (array, node) {
     for (let i = 0; i < array.length; i++) {
       if (array[i][0] == node[0] && array[i][1] == node[1]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  mazePathsIncludes (nodesArr) {
+    for (let i = 0; i < this.mazePaths.length; i++) {
+      if (this.arrayIncludes(this.mazePaths[i], nodesArr[0]) && this.arrayIncludes(this.mazePaths[i], nodesArr[1])) {
         return true;
       }
     }

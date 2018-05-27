@@ -4,6 +4,7 @@
 
 h1 {
   font-size: 50px;
+  /* margin-left: 50px; */
 }
 
 body {
@@ -14,28 +15,41 @@ body {
   display: flex;
   flex-direction: row;
   margin: 50px;
-}
-
-canvas {
-  margin: 0 auto;
+  justify-content: center;
+  align-items: center;
 }
 
 #canvas-2 {
   border-right: 1px solid black;
   border-bottom: 1px solid black;
+  margin-right: 50px;
 }
 
 #canvas-4 {
-  margin-left: 30px;
+  margin-left: 50px;
+  margin-top: 50px;
 }
 
 .explanation-block {
   display: flex;
   flex-direction: column;
-  width: calc(100vw - 510px);
+  width: calc(100vw - 560px);
+  justify-content: center;
+  align-items: center;
+  margin-left: 50px;
+  margin-right: 50px;
 }
 
 .exp-and-maze {
+  display: flex;
+  flex-direction: row;
+}
+
+#canvas-1 {
+  margin-left: 50px;
+}
+
+.dfs-block {
   display: flex;
   flex-direction: row;
 }

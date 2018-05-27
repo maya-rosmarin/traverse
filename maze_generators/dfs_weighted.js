@@ -52,7 +52,6 @@ export default class DFSWeighted {
   }
 
   generatePaths (startNode) {
-    debugger
     startNode[2] = true;
     this.stack.push(startNode);
     let last = startNode;
@@ -66,7 +65,6 @@ export default class DFSWeighted {
         last = this.stack.slice(-1)[0];
       }
     }
-    console.log(this.stack);
     return this.stack;
   }
 

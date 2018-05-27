@@ -24,7 +24,7 @@ export const createGridGraphic = (width, height) => {
 export const createGridStatic = (width, height) => {
   let canvas = document.getElementById("canvas-2");
   let context = canvas.getContext("2d");
-  context.fillStyle = 'white';
+  context.fillStyle = 'lightgray';
   context.fillRect(0, 0, 500, 500);
   let bw = 500;
   let bh = 500;
@@ -41,7 +41,24 @@ export const createGridStatic = (width, height) => {
     context.strokeStyle = 'black';
     context.stroke();
   }
-  drawGrid();
+  context.fillStyle = 'gray';
+  for (let k = 0; k < 450; k += 100) {
+    context.fillRect(k, 0, 50, 2000)
+    context.fillRect(0, k, 2000, 50)
+  }
+  context.fillStyle = 'lightgray';
+  let l = 100;
+  let m = 50;
+  let interval = setInterval(() => {
+    context.fillRect(l, m, 50, 50)
+    if (l > 250) {
+      l = 0;
+      m += 100;
+    } else if (m > 350) {
+      clearInterval(interval);
+    }
+    l += 100;
+  }, 670)
 }
 
 export const init = () => {
@@ -72,12 +89,6 @@ function updateCanvas () {
         } else {
           context.fillStyle = 'lightgray'
         }
-        // context.fillStyle = 'pink'
-        // if (y === 1 && x !== 0 && x !== 24) {
-        //   // let interval = setInterval(() => {
-        //   context.fillStyle = 'lightgray'
-        //   // }, 500)
-        // }
         context.beginPath();
         context.arc(rad+gaps*x,rad+ gaps*y, rad, 0, Math.PI*2, true );
         context.closePath();
@@ -100,4 +111,12 @@ function updateCanvas () {
       }, 100)
       context.fillStyle = 'lightgray';
     }
+}
+
+export const isScrolledIntoView = (el) => {
+    let rect = el.getBoundingClientRect();
+    let elemTop = rect.top;
+    let elemBottom = rect.bottom;
+    let isVisible = (elemTop >= 0) && (elemBottom <= window.innerHeight);
+    return isVisible;
 }

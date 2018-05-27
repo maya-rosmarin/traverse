@@ -2,16 +2,17 @@ import * as manhattan from 'manhattan';
 import { createGridArray, createGridGraphic } from './create_grid';
 
 export default class DFS {
-  constructor (width, height) {
+  constructor (width, height, canvasId) {
     this.grid = createGridArray(width, height);
     createGridGraphic(width*10, height*10);
+    this.canvasId = canvasId;
     this.width = width;
     this.height = height;
     this.stack = []
   }
 
   animate (startNode) {
-    let canvas = document.getElementById("canvas-1");
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);
     let connector;

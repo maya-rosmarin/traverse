@@ -92,12 +92,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40);
-  dfs.animate([0,0]);
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridStatic"])();
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["init"])();
   let weighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
-  weighted.animate([0,0]);
+  weighted.animate([0, 0]);
+  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
+  // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
+    dfs.animate([0, 0]);
+  // }
+  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_3__["default"]([0, 0], [38, 38])
 });
 
 
@@ -336,7 +339,7 @@ document.addEventListener('DOMContentLoaded', () => {
 /*!****************************************!*\
   !*** ./maze_generators/create_grid.js ***!
   \****************************************/
-/*! exports provided: createGridArray, createGridGraphic, createGridStatic, init */
+/*! exports provided: createGridArray, createGridGraphic, createGridStatic, init, isScrolledIntoView */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -345,6 +348,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridGraphic", function() { return createGridGraphic; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridStatic", function() { return createGridStatic; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "isScrolledIntoView", function() { return isScrolledIntoView; });
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _bfs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bfs */ "./maze_generators/bfs.js");
@@ -375,7 +379,7 @@ const createGridGraphic = (width, height) => {
 const createGridStatic = (width, height) => {
   let canvas = document.getElementById("canvas-2");
   let context = canvas.getContext("2d");
-  context.fillStyle = 'white';
+  context.fillStyle = 'lightgray';
   context.fillRect(0, 0, 500, 500);
   let bw = 500;
   let bh = 500;
@@ -392,7 +396,24 @@ const createGridStatic = (width, height) => {
     context.strokeStyle = 'black';
     context.stroke();
   }
-  drawGrid();
+  context.fillStyle = 'gray';
+  for (let k = 0; k < 450; k += 100) {
+    context.fillRect(k, 0, 50, 2000)
+    context.fillRect(0, k, 2000, 50)
+  }
+  context.fillStyle = 'lightgray';
+  let l = 100;
+  let m = 50;
+  let interval = setInterval(() => {
+    context.fillRect(l, m, 50, 50)
+    if (l > 250) {
+      l = 0;
+      m += 100;
+    } else if (m > 350) {
+      clearInterval(interval);
+    }
+    l += 100;
+  }, 670)
 }
 
 const init = () => {
@@ -423,12 +444,6 @@ function updateCanvas () {
         } else {
           context.fillStyle = 'lightgray'
         }
-        // context.fillStyle = 'pink'
-        // if (y === 1 && x !== 0 && x !== 24) {
-        //   // let interval = setInterval(() => {
-        //   context.fillStyle = 'lightgray'
-        //   // }, 500)
-        // }
         context.beginPath();
         context.arc(rad+gaps*x,rad+ gaps*y, rad, 0, Math.PI*2, true );
         context.closePath();
@@ -453,6 +468,14 @@ function updateCanvas () {
     }
 }
 
+const isScrolledIntoView = (el) => {
+    let rect = el.getBoundingClientRect();
+    let elemTop = rect.top;
+    let elemBottom = rect.bottom;
+    let isVisible = (elemTop >= 0) && (elemBottom <= window.innerHeight);
+    return isVisible;
+}
+
 
 /***/ }),
 
@@ -473,16 +496,17 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class DFS {
-  constructor (width, height) {
+  constructor (width, height, canvasId) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height);
     Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*10, height*10);
+    this.canvasId = canvasId;
     this.width = width;
     this.height = height;
     this.stack = []
   }
 
   animate (startNode) {
-    let canvas = document.getElementById("canvas-1");
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);
     let connector;
@@ -656,7 +680,6 @@ class DFSWeighted {
   }
 
   generatePaths (startNode) {
-    debugger
     startNode[2] = true;
     this.stack.push(startNode);
     let last = startNode;
@@ -670,7 +693,6 @@ class DFSWeighted {
         last = this.stack.slice(-1)[0];
       }
     }
-    console.log(this.stack);
     return this.stack;
   }
 
@@ -774,37 +796,38 @@ class BFS {
   constructor (startNode, targetNode) {
     this.startNode = startNode;
     this.targetNode = targetNode;
-    let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](20, 20);
-    // dfs.animate([0, 0]);
-    this.maze = dfs.generatePaths([0,0]);
+    this.dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](20, 20, 'canvas-5');
+    this.dfs.animate([0, 0]);
+    this.maze = this.dfs.generatePaths([0,0]);
+    this.mazePaths = this.moves();
+    this.exploreNodes();
   }
 
   exploreNodes () {
     debugger
-    let canvas = document.getElementById("canvas-1");
+    let canvas = document.getElementById("canvas-5");
     let context = canvas.getContext("2d");
     let queue = [this.startNode];
     let visited = [this.startNode];
+    let path = [this.startNode];
     while (queue.length) {
       let current = queue.shift();
-      if (this.neighbors(current)) {
-        this.neighbors(current).map(neighbor => {
-          if (this.isSameNode(neighbor, this.targetNode)) {
-            return visited;
-          }
-          if (!this.arrayIncludes(visited, neighbor)) {
-            queue.push(neighbor);
-            visited.push(neighbor);
-          }
-        })
-      };
+      let neighbors = this.neighbors(current);
+      for (let i = 0; i < neighbors.length; i++) {
+        if (!this.arrayIncludes(visited, neighbors[i]) && this.mazePathsIncludes([current, neighbors[i]])) {
+          queue.push(neighbors[i]);
+          path.push(neighbors[i]);
+          visited.push(neighbors[i]);
+        };
+        if (this.isSameNode(neighbors[i], this.targetNode)) {
+          return path;
+        }
+      }
     }
-    // console.log(visited)
-    visited.map(node => {
-
-      // context.fillStyle="pink";
-      // context.fillRect(10*node[0], 10*node[1], 10, 10);
-    })
+    console.log(path);
+    console.log(this.maze);
+    context.fillStyle='pink';
+    context.fillRect(10, 10, this.dfs.height, this.dfs.width);
   }
 
   neighbors (startNode) {
@@ -827,7 +850,7 @@ class BFS {
         }
       }
     )
-    console.log(moves);
+    return moves;
   }
 
   isSameNode (node1, node2) {
@@ -837,6 +860,15 @@ class BFS {
   arrayIncludes (array, node) {
     for (let i = 0; i < array.length; i++) {
       if (array[i][0] == node[0] && array[i][1] == node[1]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  mazePathsIncludes (nodesArr) {
+    for (let i = 0; i < this.mazePaths.length; i++) {
+      if (this.arrayIncludes(this.mazePaths[i], nodesArr[0]) && this.arrayIncludes(this.mazePaths[i], nodesArr[1])) {
         return true;
       }
     }
