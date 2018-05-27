@@ -71,11 +71,11 @@ function updateCanvas () {
         } else {
           context.fillStyle = 'lightgray'
         }
-        // if (y % 2 === 0) {
-        //   let interval = setInterval(() => {
-        //     context.fillStyle = 'gray'
-        //   }, 500)
-        // }
+        if (y === 2 && x % 2 !== 0) {
+          // let interval = setInterval(() => {
+            context.fillStyle = 'gray'
+          // }, 500)
+        }
         // context.fillStyle = 'pink'
         context.beginPath();
         context.arc(rad+gaps*x,rad+ gaps*y, rad, 0, Math.PI*2, true );

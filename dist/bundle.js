@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridStatic"])();
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["init"])();
   let weighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
-  // weighted.animate([0,0]);
+  weighted.animate([0,0]);
 });
 
 
@@ -422,11 +422,11 @@ function updateCanvas () {
         } else {
           context.fillStyle = 'lightgray'
         }
-        // if (y % 2 === 0) {
-        //   let interval = setInterval(() => {
-        //     context.fillStyle = 'gray'
-        //   }, 500)
-        // }
+        if (y === 2 && x % 2 !== 0) {
+          // let interval = setInterval(() => {
+            context.fillStyle = 'gray'
+          // }, 500)
+        }
         // context.fillStyle = 'pink'
         context.beginPath();
         context.arc(rad+gaps*x,rad+ gaps*y, rad, 0, Math.PI*2, true );
@@ -613,7 +613,11 @@ class DFSWeighted {
         connector = this.connector(path[i-1], path[i])
       }
       if (connector) {
-        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10) }
+        console.log(path[i-1])
+        console.log(path[i])
+        console.log(connector)
+        debugger
+        context.fillRect(10*connector[0], 10*connector[1], 10, 10) }
         context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
         i++;
         if (i >= path.length) {

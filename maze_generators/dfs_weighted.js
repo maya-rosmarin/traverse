@@ -26,7 +26,11 @@ export default class DFSWeighted {
         connector = this.connector(path[i-1], path[i])
       }
       if (connector) {
-        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10) }
+        console.log(path[i-1])
+        console.log(path[i])
+        console.log(connector)
+        debugger
+        context.fillRect(10*connector[0], 10*connector[1], 10, 10) }
         context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
         i++;
         if (i >= path.length) {

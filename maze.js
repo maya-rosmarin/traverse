@@ -10,5 +10,5 @@ document.addEventListener('DOMContentLoaded', () => {
   createGridStatic();
   init();
   let weighted = new DFSWeighted(40, 40);
-  // weighted.animate([0,0]);
+  weighted.animate([0,0]);
 });
