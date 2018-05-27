@@ -1,0 +1,26 @@
+.explanation {
+  font-size: 20px;
+}
+
+h1 {
+  font-size: 50px;
+}
+
+body {
+  font-family: 'Source Serif Pro', serif;
+}
+
+.grids {
+  display: flex;
+  flex-direction: row;
+  margin: 50px;
+}
+
+canvas {
+  margin: 0 auto;
+}
+
+#canvas-2 {
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+}

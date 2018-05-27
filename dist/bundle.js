@@ -83,14 +83,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./maze_generators/dfs */ "./maze_generators/dfs.js");
 /* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
 /* harmony import */ var _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_solvers/bfs */ "./maze_solvers/bfs.js");
+/* harmony import */ var _maze_generators_random__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./maze_generators/random */ "./maze_generators/random.js");
+
 
 
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_2__["default"]([0, 0], [20, 20]);
-  bfs.exploreNodes();
-  bfs.moves();
+  // let bfs = new BFS([0, 0], [20, 20]);
+  // bfs.exploreNodes();
+  // bfs.moves();
+  // let random = new Random(20, 20);
+  // random.generatePaths([0,0]);
+  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40);
+  dfs.animate([0,0]);
+  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridStatic"])();
+  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_1__["init"])();
 });
 
 
@@ -100,234 +108,227 @@ document.addEventListener('DOMContentLoaded', () => {
 /*!********************************!*\
   !*** ./maze_generators/bfs.js ***!
   \********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/*! no static exports found */
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
-/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
-
-
-
-class BFS {
-  constructor (width, height) {
-    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height)
-    this.width = width;
-    this.height = height;
-    Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*10, height*10);
-  }
-
-  // push all children of every node visited to queue
-
-  generatePaths (startNode) {
-    let queue = [[startNode]];
-    let pathCells = [startNode];
-    while (queue.length > 0) {
-      let current = queue.shift();
-      let child = this.selectRandomPathChild(this.children(current[0]), pathCells, queue);
-      console.log("visiting " + child)
-      // queue.push(this.children(current[0]))
-      // pathCells.push(this.children(current[0]))
-      // let children = this.children(current)
-      // debugger
-      // queue = queue.concat(children);
-      // pathCells = pathCells.concat(children);
-      this.animateChild(child, pathCells);
-    }
-    debugger
-    // this.ensureLongPath(pathCells);
-    //let tangent = this.generateTangentPaths(this.selectRandomUnvisitedCell());
-    // console.log(tangent);
-  };
-
-  unvisited () {
-    debugger
-    let unvisited = [];
-    for (let key in this.grid) {
-      if (this.grid[key] === false) {
-        unvisited.push(key)
-      };
-    }
-    return unvisited;
-  }
-
-  nextStep (currentNode, unvisited) {
-    debugger
-    let children = this.children(currentNode);
-    if (children) {
-      children = children.filter(child => { return this.children(child).length >= 1 && this.arrayIncludes(unvisited, child) })
-      let randomIndex = Math.floor(Math.random() * children.length)
-      this.grid[children[randomIndex]] = true;
-      return children[randomIndex];
-    }
-  }
-
-  animate (coords) {
-    let canvas = document.getElementById("canvas");
-    let context = canvas.getContext("2d");
-    let i = 0;
-    let interval = setInterval( () => {
-      context.fillStyle='white';
-      context.fillRect(10*coords[i][0], 10*coords[i][1], 10, 10);
-      i++;
-    }, 100);
-    if (i >= coords.length) {
-      clearInterval(interval);
-    }
-  }
-
-
-  animateChild (child, pathCells) {
-    let canvas = document.getElementById("canvas");
-    let context = canvas.getContext("2d");
-    let i = 0;
-    if (child) {
-      let interval = setInterval( () => {
-      context.fillStyle='black';
-      context.fillRect(10*child[0], 10*child[1], 10, 10);
-      i++;
-    }, 200);
-    if (i >= pathCells.length) {
-      clearInterval(interval);
-      }
-    }
-  }
-
-  generateTangentPaths (startNode) {
-    let canvas = document.getElementById("canvas");
-    let context = canvas.getContext("2d");
-    // debugger
-    let unvisited = this.unvisited();
-    let steps = [];
-    if (unvisited) {
-      debugger
-      let nextStep = this.nextStep(startNode, unvisited);
-      for (let i = 0; i < 5; i++) {
-        steps.push(nextStep);
-        nextStep = this.nextStep(nextStep, unvisited);
-      }
-    }
-    const array = steps.filter(step => step)
-    array.forEach(step => {
-      console.log(step)
-      this.grid[step] = true;
-      context.fillStyle='white';
-      context.fillRect(10*step[0], 10*step[1], 10, 10);
-    })
-    return array
-  }
-
-  selectRandomUnvisitedCell () {
-    // debugger
-    let unvisited = this.unvisited();
-    let randomIndex = (Math.floor(Math.random() * unvisited.length));
-    this.grid[Object.keys(this.grid)[randomIndex]] = true;
-    return Object.keys(this.grid)[randomIndex];
-  }
-
-  selectRandomPathChild (children, pathCells, queue) {
-    children = children.filter(child =>
-      { return this.children(child).length > 0 && !this.arrayIncludes(pathCells, child)});
-
-    if (children && children.length > 0) {
-      let randomIndex = Math.floor(Math.random() * children.length)
-      let child = children[randomIndex];
-      pathCells.push(child);
-      queue.push([child])
-      this.grid[child] = true;
-      return child;
-    }
-  }
-
-  ensureLongPath (pathCells) {
-    let sorted;
-    pathCells.splice(-1, 1);
-    let filtered = pathCells.filter(cell => cell[0] === this.width-1)
-    if (!filtered.length) {
-      sorted = pathCells.sort((el1, el2) => {
-        return el1[0] - el2[0];
-      })
-      // this.nextStep(sorted.pop(), this.unvisited());
-      this.generatePaths(sorted.pop())
-    }
-  }
-
-  generate (root) {
-    let queue = [[root]];
-    let visitedNodes = [root];
-    while (queue.length) {
-      let visited = queue.shift();
-      if (typeof visited === "string") {
-        visited = visited.split(",").map(i => Number(i));
-      } else if (visited.length === 1) {
-        visited = visited[0];
-      }
-      this.grid[visited] = true;
-      let children = this.children(visited)
-      if (!children.length) {
-        continue;
-      }
-      for (let i = 0; i < children.length; i++) {
-        if (!this.arrayIncludes(visitedNodes, children[i])) {
-          queue.push(children[i]);
-          visitedNodes.push(children[i])
-        }
-      }
-    }
-    return visitedNodes;
-  };
-
-  arrayIncludes (array, node) {
-    if (typeof node === 'string') {
-      node = node.split(',').map(i => Number(i));
-    }
-    for (let i = 0; i < array.length; i++) {
-      if (typeof array[i] === 'string') {
-        array[i] = array[i].split(',').map(i => Number(i));
-      }
-      if (array[i][0] == node[0] && array[i][1] == node[1]) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-
-  // animatePath (node, limit) {
-  //   let i = 0;
-  //   let interval = setInterval( () => {
-  //     context.fillStyle='white';
-  //     context.fillRect(10*node[0], 10*node[1], 10, 10);
-  //     i++;
-  //     },
-  //   2000);
-  //   if (i >= limit) {
-  //     clearInterval(interval);
-  //   }
-  // }
-
-  children (node) {
-    if (node) {
-      if (typeof node === 'string') {
-        node = node.split(',').map(i => Number(i))
-      }
-    let childrenNodes = [];
-      Object.keys(this.grid).map(key => {
-        let coord = key.split(',').map(i => Number(i));
-        if ((coord[0] == node[0] && coord[1] == node[1] + 1) || (coord[0] == node[0] && coord[1] == node[1] - 1) || (coord[0] == node[0] + 1 && coord[1] == node[1]) || (coord[0] == node[0] - 1 && coord[1] == node[1])) {
-          childrenNodes.push(coord);
-        }
-      }
-    )
-    return childrenNodes;
-  }
-  }
-
-}
-
-/* harmony default export */ __webpack_exports__["default"] = (BFS);
+// import * as manhattan from 'manhattan';
+// import { createGridArray, createGridGraphic } from './create_grid';
+//
+// class BFS {
+//   constructor (width, height) {
+//     this.grid = createGridArray(width, height)
+//     this.width = width;
+//     this.height = height;
+//     createGridGraphic(width*10, height*10);
+//   }
+//
+//   // push all children of every node visited to queue
+//
+//   generatePaths (startNode) {
+//     let queue = [[startNode]];
+//     let pathCells = [startNode];
+//     while (queue.length > 0) {
+//       let current = queue.shift();
+//       let child = this.selectRandomPathChild(this.children(current[0]), pathCells, queue);
+//       console.log("visiting " + child)
+//       // queue.push(this.children(current[0]))
+//       // pathCells.push(this.children(current[0]))
+//       // let children = this.children(current)
+//       // debugger
+//       // queue = queue.concat(children);
+//       // pathCells = pathCells.concat(children);
+//       this.animateChild(child, pathCells);
+//     }
+//     debugger
+//     // this.ensureLongPath(pathCells);
+//     //let tangent = this.generateTangentPaths(this.selectRandomUnvisitedCell());
+//     // console.log(tangent);
+//   };
+//
+//   unvisited () {
+//     debugger
+//     let unvisited = [];
+//     for (let key in this.grid) {
+//       if (this.grid[key] === false) {
+//         unvisited.push(key)
+//       };
+//     }
+//     return unvisited;
+//   }
+//
+//   nextStep (currentNode, unvisited) {
+//     debugger
+//     let children = this.children(currentNode);
+//     if (children) {
+//       children = children.filter(child => { return this.children(child).length >= 1 && this.arrayIncludes(unvisited, child) })
+//       let randomIndex = Math.floor(Math.random() * children.length)
+//       this.grid[children[randomIndex]] = true;
+//       return children[randomIndex];
+//     }
+//   }
+//
+//   animate (coords) {
+//     let canvas = document.getElementById("canvas-1");
+//     let context = canvas.getContext("2d");
+//     let i = 0;
+//     let interval = setInterval( () => {
+//       context.fillStyle='white';
+//       context.fillRect(10*coords[i][0], 10*coords[i][1], 10, 10);
+//       i++;
+//     }, 100);
+//     if (i >= coords.length) {
+//       clearInterval(interval);
+//     }
+//   }
+//
+//
+//   animateChild (child, pathCells) {
+//     let canvas = document.getElementById("canvas-1");
+//     let context = canvas.getContext("2d");
+//     let i = 0;
+//     if (child) {
+//       let interval = setInterval( () => {
+//       context.fillStyle='black';
+//       context.fillRect(10*child[0], 10*child[1], 10, 10);
+//       i++;
+//     }, 200);
+//     if (i >= pathCells.length) {
+//       clearInterval(interval);
+//       }
+//     }
+//   }
+//
+//   generateTangentPaths (startNode) {
+//     let canvas-1 = document.getElementById("canvas-1");
+//     let context = canvas.getContext("2d");
+//     let unvisited = this.unvisited();
+//     let steps = [];
+//     if (unvisited) {
+//       debugger
+//       let nextStep = this.nextStep(startNode, unvisited);
+//       for (let i = 0; i < 5; i++) {
+//         steps.push(nextStep);
+//         nextStep = this.nextStep(nextStep, unvisited);
+//       }
+//     }
+//     const array = steps.filter(step => step)
+//     array.forEach(step => {
+//       console.log(step)
+//       this.grid[step] = true;
+//       context.fillStyle='white';
+//       context.fillRect(10*step[0], 10*step[1], 10, 10);
+//     })
+//     return array
+//   }
+//
+//   selectRandomUnvisitedCell () {
+//     let unvisited = this.unvisited();
+//     let randomIndex = (Math.floor(Math.random() * unvisited.length));
+//     this.grid[Object.keys(this.grid)[randomIndex]] = true;
+//     return Object.keys(this.grid)[randomIndex];
+//   }
+//
+//   selectRandomPathChild (children, pathCells, queue) {
+//     children = children.filter(child =>
+//       { return this.children(child).length > 0 && !this.arrayIncludes(pathCells, child)});
+//
+//     if (children && children.length > 0) {
+//       let randomIndex = Math.floor(Math.random() * children.length)
+//       let child = children[randomIndex];
+//       pathCells.push(child);
+//       queue.push([child])
+//       this.grid[child] = true;
+//       return child;
+//     }
+//   }
+//
+//   ensureLongPath (pathCells) {
+//     let sorted;
+//     pathCells.splice(-1, 1);
+//     let filtered = pathCells.filter(cell => cell[0] === this.width-1)
+//     if (!filtered.length) {
+//       sorted = pathCells.sort((el1, el2) => {
+//         return el1[0] - el2[0];
+//       })
+//       // this.nextStep(sorted.pop(), this.unvisited());
+//       this.generatePaths(sorted.pop())
+//     }
+//   }
+//
+//   generate (root) {
+//     let queue = [[root]];
+//     let visitedNodes = [root];
+//     while (queue.length) {
+//       let visited = queue.shift();
+//       if (typeof visited === "string") {
+//         visited = visited.split(",").map(i => Number(i));
+//       } else if (visited.length === 1) {
+//         visited = visited[0];
+//       }
+//       this.grid[visited] = true;
+//       let children = this.children(visited)
+//       if (!children.length) {
+//         continue;
+//       }
+//       for (let i = 0; i < children.length; i++) {
+//         if (!this.arrayIncludes(visitedNodes, children[i])) {
+//           queue.push(children[i]);
+//           visitedNodes.push(children[i])
+//         }
+//       }
+//     }
+//     return visitedNodes;
+//   };
+//
+//   arrayIncludes (array, node) {
+//     if (typeof node === 'string') {
+//       node = node.split(',').map(i => Number(i));
+//     }
+//     for (let i = 0; i < array.length; i++) {
+//       if (typeof array[i] === 'string') {
+//         array[i] = array[i].split(',').map(i => Number(i));
+//       }
+//       if (array[i][0] == node[0] && array[i][1] == node[1]) {
+//         return true;
+//       }
+//     }
+//     return false;
+//   }
+//
+//
+//   // animatePath (node, limit) {
+//   //   let i = 0;
+//   //   let interval = setInterval( () => {
+//   //     context.fillStyle='white';
+//   //     context.fillRect(10*node[0], 10*node[1], 10, 10);
+//   //     i++;
+//   //     },
+//   //   2000);
+//   //   if (i >= limit) {
+//   //     clearInterval(interval);
+//   //   }
+//   // }
+//
+//   children (node) {
+//     if (node) {
+//       if (typeof node === 'string') {
+//         node = node.split(',').map(i => Number(i))
+//       }
+//     let childrenNodes = [];
+//       Object.keys(this.grid).map(key => {
+//         let coord = key.split(',').map(i => Number(i));
+//         if ((coord[0] == node[0] && coord[1] == node[1] + 1) || (coord[0] == node[0] && coord[1] == node[1] - 1) || (coord[0] == node[0] + 1 && coord[1] == node[1]) || (coord[0] == node[0] - 1 && coord[1] == node[1])) {
+//           childrenNodes.push(coord);
+//         }
+//       }
+//     )
+//     return childrenNodes;
+//   }
+//   }
+//
+// }
+//
+// export default BFS
 
 
 /***/ }),
@@ -336,16 +337,19 @@ class BFS {
 /*!****************************************!*\
   !*** ./maze_generators/create_grid.js ***!
   \****************************************/
-/*! exports provided: createGridArray, createGridGraphic */
+/*! exports provided: createGridArray, createGridGraphic, createGridStatic, init */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridArray", function() { return createGridArray; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridGraphic", function() { return createGridGraphic; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridStatic", function() { return createGridStatic; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _bfs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./bfs */ "./maze_generators/bfs.js");
+/* harmony import */ var _bfs__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(_bfs__WEBPACK_IMPORTED_MODULE_1__);
 
 
 
@@ -360,29 +364,67 @@ const createGridArray = (width, height) => {
 }
 
 const createGridGraphic = (width, height) => {
-  let canvas = document.getElementById("canvas");
+  let canvas = document.getElementById("canvas-1");
   let context = canvas.getContext("2d");
   context.fillStyle = 'black';
   context.fillRect(0, 0, width + 10, height + 10);
   context.fillStyle = 'white';
   context.fillRect(0, 10, 10, 10);
   context.fillRect(width, height - 10, 10, 10);
-  // let bw = width;
-  // let bh = height;
-  // let p = 0;
-  // function drawGrid () {
-  //   for (let i = 0; i <= bw; i += 10) {
-  //     context.moveTo(0.5 + i, 0);
-  //     context.lineTo(0.5 + i, bh);
-  //   }
-  //   for (let j = 0; j <= bh; j += 10) {
-  //     context.moveTo(0, 0.5 + j);
-  //     context.lineTo(bw, 0.5 + j);
-  //   }
-  //   // context.strokeStyle = 'black';
-  //   context.stroke();
-  // }
-  // drawGrid();
+}
+
+const createGridStatic = (width, height) => {
+  let canvas = document.getElementById("canvas-2");
+  let context = canvas.getContext("2d");
+  context.fillStyle = 'white';
+  context.fillRect(0, 0, 500, 500);
+  let bw = 500;
+  let bh = 500;
+  let p = 0;
+  function drawGrid () {
+    for (let i = 0; i <= bw; i += 50) {
+      context.moveTo(0.5 + i, 0);
+      context.lineTo(0.5 + i, bh);
+    }
+    for (let j = 0; j <= bh; j += 50) {
+      context.moveTo(0, 0.5 + j);
+      context.lineTo(bw, 0.5 + j);
+    }
+    context.strokeStyle = 'black';
+    context.stroke();
+  }
+  drawGrid();
+}
+
+const init = () => {
+  updateCanvas();
+}
+
+function updateCanvas () {
+  var width = 500;
+  var height = 500;
+  var myCanvas = document.getElementById("canvas-3");
+    myCanvas.width = width;
+    myCanvas.height = height;
+
+  var context = myCanvas.getContext("2d");
+    context.clearRect(0,0,width,height);
+    context.fillStyle = "white";
+    context.fillRect(0,0,width,height);
+
+    var rad=10;
+    var gaps= rad*2;
+    var widthCount = parseInt(width/gaps);
+    var heightCount = parseInt(height/gaps);
+    for(var x=0; x<widthCount;x++){
+      for(var y=0; y<heightCount;y++){
+        context.fillStyle = 'pink'
+        context.beginPath();
+        context.arc(rad+gaps*x,rad+ gaps*y, rad, 0, Math.PI*2, true );
+        context.closePath();
+        context.fill();
+      }
+    }
 }
 
 
@@ -414,7 +456,7 @@ class DFS {
   }
 
   animate (startNode) {
-    let canvas = document.getElementById("canvas");
+    let canvas = document.getElementById("canvas-1");
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);
     let connector;
@@ -425,19 +467,18 @@ class DFS {
       } else {
         connector = this.connector(path[i-1], path[i])
       }
-      context.fillStyle="white";
       if (connector) {
         context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
       }
       context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
       i++;
       if (i >= path.length) {
-        context.fillStyle = 'white';
-        context.fillRect(0, 10, 10, 10);
-        context.fillRect(this.width, this.height - 10, 10, 10);
         clearInterval(interval);
       }
-    }, 10);
+    }, 30);
+    context.fillStyle='white';
+    context.fillRect(0, 10, 10, 10);
+    // context.fillRect(this.width, this.height - 10, 10, 10);
   }
 
   connector (startNode, node) {
@@ -484,8 +525,8 @@ class DFS {
     return this.grid.filter(cell => !this.isVisited(cell))
   }
 
-  isVisited(cell) {
-    return cell[2] === true
+  isVisited (node) {
+    return node[2] === true
   }
 
   backtrack (n) {
@@ -517,6 +558,45 @@ class Node {
     this.col = col
     this.visited = false
   }
+}
+
+
+/***/ }),
+
+/***/ "./maze_generators/random.js":
+/*!***********************************!*\
+  !*** ./maze_generators/random.js ***!
+  \***********************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Random; });
+/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
+/* harmony import */ var _dfs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dfs */ "./maze_generators/dfs.js");
+
+
+
+class Random {
+  constructor (width, height) {
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_0__["createGridArray"])(width, height);
+    Object(_create_grid__WEBPACK_IMPORTED_MODULE_0__["createGridGraphic"])(width*10, height*10);
+    this.width = width;
+    this.height = height;
+    this.path = [];
+    this.dfs = new _dfs__WEBPACK_IMPORTED_MODULE_1__["default"](width, height)
+  }
+
+  generatePaths (startNode) {
+    startNode[2] = true;
+    while (this.dfs.unvisited().length) {
+      this.path.push(startNode);
+      this.path.push(this.dfs.neighbors(startNode));
+    }
+    console.log(this.path);
+  }
+
 }
 
 

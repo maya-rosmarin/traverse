@@ -4,8 +4,17 @@
     <meta charset="utf-8">
     <title>Traverse</title>
     <script src="./dist/bundle.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Source+Serif+Pro" rel="stylesheet">
+    <link rel="stylesheet" href="application.css">
   </head>
   <body>
-    <canvas height=1100 width=1100 id="canvas"></canvas>
+    <h1>Traverse</h1>
+    <p class="explanation">To break down the problem of maze generation, it is helpful to visualize a maze as a grid or a graph of cells.</p>
+    <div class="grids">
+      <canvas height=500 width=500 id="canvas-2"></canvas>
+      <canvas height=500 width=500 id="canvas-3"></canvas>
+    </div>
+    <p class="explanation">Each cell is either a node or a wall.</p>
+    <canvas height=1100 width=1100 id="canvas-1"></canvas>
   </body>
 </html>

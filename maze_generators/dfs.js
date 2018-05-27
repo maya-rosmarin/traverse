@@ -11,7 +11,7 @@ export default class DFS {
   }
 
   animate (startNode) {
-    let canvas = document.getElementById("canvas");
+    let canvas = document.getElementById("canvas-1");
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);
     let connector;
@@ -22,19 +22,18 @@ export default class DFS {
       } else {
         connector = this.connector(path[i-1], path[i])
       }
-      context.fillStyle="white";
       if (connector) {
         context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
       }
       context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
       i++;
       if (i >= path.length) {
-        context.fillStyle = 'white';
-        context.fillRect(0, 10, 10, 10);
-        context.fillRect(this.width, this.height - 10, 10, 10);
         clearInterval(interval);
       }
-    }, 10);
+    }, 30);
+    context.fillStyle='white';
+    context.fillRect(0, 10, 10, 10);
+    // context.fillRect(this.width, this.height - 10, 10, 10);
   }
 
   connector (startNode, node) {
@@ -81,8 +80,8 @@ export default class DFS {
     return this.grid.filter(cell => !this.isVisited(cell))
   }
 
-  isVisited(cell) {
-    return cell[2] === true
+  isVisited (node) {
+    return node[2] === true
   }
 
   backtrack (n) {
