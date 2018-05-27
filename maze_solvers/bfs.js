@@ -5,13 +5,13 @@ export default class BFS {
     this.startNode = startNode;
     this.targetNode = targetNode;
     let dfs = new DFS(20, 20);
-    debugger
-    dfs.animate([0, 0]);
+    // dfs.animate([0, 0]);
     this.maze = dfs.generatePaths([0,0]);
   }
 
   exploreNodes () {
-    let canvas = document.getElementById("canvas");
+    debugger
+    let canvas = document.getElementById("canvas-1");
     let context = canvas.getContext("2d");
     let queue = [this.startNode];
     let visited = [this.startNode];

@@ -93,7 +93,7 @@ __webpack_require__.r(__webpack_exports__);
 
 document.addEventListener('DOMContentLoaded', () => {
   let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40);
-  // dfs.animate([0,0]);
+  dfs.animate([0,0]);
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridStatic"])();
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["init"])();
   let weighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
@@ -400,39 +400,56 @@ const init = () => {
 }
 
 function updateCanvas () {
-  var width = 500;
-  var height = 500;
-  var myCanvas = document.getElementById("canvas-3");
+  let width = 500;
+  let height = 500;
+  let myCanvas = document.getElementById("canvas-3");
     myCanvas.width = width;
     myCanvas.height = height;
 
-  var context = myCanvas.getContext("2d");
+  let context = myCanvas.getContext("2d");
     context.clearRect(0,0,width,height);
     context.fillStyle = "white";
     context.fillRect(0,0,width,height);
 
-    var rad=10;
-    var gaps= rad*2;
-    var widthCount = parseInt(width/gaps);
-    var heightCount = parseInt(height/gaps);
-    for(var x=0; x<widthCount;x++){
-      for(var y=0; y<heightCount;y++){
+    let rad=10;
+    let gaps= rad*2;
+    let widthCount = parseInt(width/gaps);
+    let heightCount = parseInt(height/gaps);
+    let coords = []
+    for(let x=0; x<widthCount;x++){
+      for(let y=0; y<heightCount;y++){
         if (x % 2 === 0 || y % 2 === 0) {
           context.fillStyle = 'gray';
         } else {
           context.fillStyle = 'lightgray'
         }
-        if (y === 2 && x % 2 !== 0) {
-          // let interval = setInterval(() => {
-            context.fillStyle = 'gray'
-          // }, 500)
-        }
         // context.fillStyle = 'pink'
+        // if (y === 1 && x !== 0 && x !== 24) {
+        //   // let interval = setInterval(() => {
+        //   context.fillStyle = 'lightgray'
+        //   // }, 500)
+        // }
         context.beginPath();
         context.arc(rad+gaps*x,rad+ gaps*y, rad, 0, Math.PI*2, true );
         context.closePath();
         context.fill();
       }
+      let x2 = 2;
+      let y2 = 1;
+      let interval = setInterval(() => {
+        context.beginPath();
+        context.arc(rad+gaps*x2,rad+ gaps*y2, rad, 0, Math.PI*2, true );
+        context.closePath();
+        context.fill();
+        if (x2 === 22) {
+          x2 = 0;
+          y2 += 2;
+        } else if (y2 === 22) {
+          clearInterval(interval);
+        }
+        x2++;
+      }, 100)
+      context.fillStyle = 'lightgray';
     }
 }
 
@@ -613,10 +630,6 @@ class DFSWeighted {
         connector = this.connector(path[i-1], path[i])
       }
       if (connector) {
-        console.log(path[i-1])
-        console.log(path[i])
-        console.log(connector)
-        debugger
         context.fillRect(10*connector[0], 10*connector[1], 10, 10) }
         context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
         i++;
@@ -629,7 +642,6 @@ class DFSWeighted {
   }
 
   connector (startNode, node) {
-    debugger
     let connector;
       if (startNode[0] == node[0] && startNode[1] == node[1] + 2) {
         connector = [node[0], node[1] + 1];
@@ -763,13 +775,13 @@ class BFS {
     this.startNode = startNode;
     this.targetNode = targetNode;
     let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](20, 20);
-    debugger
-    dfs.animate([0, 0]);
+    // dfs.animate([0, 0]);
     this.maze = dfs.generatePaths([0,0]);
   }
 
   exploreNodes () {
-    let canvas = document.getElementById("canvas");
+    debugger
+    let canvas = document.getElementById("canvas-1");
     let context = canvas.getContext("2d");
     let queue = [this.startNode];
     let visited = [this.startNode];

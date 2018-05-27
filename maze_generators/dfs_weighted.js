@@ -26,10 +26,6 @@ export default class DFSWeighted {
         connector = this.connector(path[i-1], path[i])
       }
       if (connector) {
-        console.log(path[i-1])
-        console.log(path[i])
-        console.log(connector)
-        debugger
         context.fillRect(10*connector[0], 10*connector[1], 10, 10) }
         context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
         i++;
@@ -42,7 +38,6 @@ export default class DFSWeighted {
   }
 
   connector (startNode, node) {
-    debugger
     let connector;
       if (startNode[0] == node[0] && startNode[1] == node[1] + 2) {
         connector = [node[0], node[1] + 1];

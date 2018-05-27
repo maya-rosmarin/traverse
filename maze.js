@@ -6,7 +6,7 @@ import Random from './maze_generators/random';
 
 document.addEventListener('DOMContentLoaded', () => {
   let dfs = new DFS(40, 40);
-  // dfs.animate([0,0]);
+  dfs.animate([0,0]);
   createGridStatic();
   init();
   let weighted = new DFSWeighted(40, 40);

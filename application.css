@@ -24,3 +24,18 @@ canvas {
   border-right: 1px solid black;
   border-bottom: 1px solid black;
 }
+
+#canvas-4 {
+  margin-left: 30px;
+}
+
+.explanation-block {
+  display: flex;
+  flex-direction: column;
+  width: calc(100vw - 510px);
+}
+
+.exp-and-maze {
+  display: flex;
+  flex-direction: row;
+}

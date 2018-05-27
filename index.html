@@ -14,8 +14,19 @@
       <canvas height=500 width=500 id="canvas-2"></canvas>
       <canvas height=500 width=500 id="canvas-3"></canvas>
     </div>
-    <p class="explanation">Each cell is either a node or a wall. In the above graph, each node is surrounded by a wall on all four sides. Generating the neighboring nodes of a given node is just a matter of incrementing or decrementing the x and y coordinates by 2.</p>
+    <div class="exp-and-maze">
+      <canvas height=500 width=500 id="canvas-4"></canvas>
+      <div class="explanation-block">
+        <p class="explanation">Each cell is either a node or a wall. In the above graph, each node is surrounded by a wall on all four sides. To connect two nodes, remove the wall separating them, or transform that wall into path.</p>
+        <p class="explanation">Now that we know how to connect two nodes, we can connect every node to one single path, essentially a spanning tree of the graph. So every node must be connected to exactly two of it's neighbors - the one that approaches it, and the one that it approaches.</p>
+        <!-- <p class="explanation">Identifying the neighboring nodes of a given node is just a matter of incrementing or decrementing the x or y coordinate by 2.</p> -->
+        <p class="explanation">Now that we have rough understanding of the mechanics of the maze, we can work on the decision engine that controls the order of the graph traversal. The principles we've discussed so far are common to every maze.</p>
+        <p class="explanation">To the left is a maze generate by an implementation of DFS.</p>
+      </div>
+    </div>
+    <p>
+
+    </p>
     <canvas height=500 width=500 id="canvas-1"></canvas>
-    <canvas height=500 width=500 id="canvas-4"></canvas>
   </body>
 </html>
