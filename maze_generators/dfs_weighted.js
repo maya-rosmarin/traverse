@@ -9,7 +9,7 @@ export default class DFSWeighted {
     this.width = width;
     this.height = height;
     this.stack = []
-    this.animate([0, 0]);
+    this.animate([-2, 0]);
   }
 
   animate (startNode) {

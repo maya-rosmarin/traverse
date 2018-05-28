@@ -96,7 +96,8 @@ document.addEventListener('DOMContentLoaded', () => {
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["init"])();
   let weighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
   let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
-  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_3__["default"]([0, 0], [18, 18])
+  dfs.animate();
+  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_3__["default"]([0, 0], [38, 38]);
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }
 });
@@ -507,32 +508,36 @@ class DFS {
     this.width = width;
     this.height = height;
     this.stack = []
-    this.animate([0, 0]);
   }
 
-  animate (startNode) {
-    let canvas = document.getElementById(this.canvasId);
-    let context = canvas.getContext("2d");
-    let path = this.generatePaths(startNode);
-    let connector;
-    let i = 0;
-    let interval = setInterval( () => {
-      if (i === 0) {
-        connector = null;
-      } else {
-        connector = this.connector(path[i-1], path[i])
-      }
-      if (connector) {
-        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
-      }
-      context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
-      i++;
-      if (i >= path.length) {
-        clearInterval(interval);
-      }
-    }, 30);
-    context.fillStyle='white';
-    context.fillRect(0, 10, 10, 10);
+  animate (startNode = [0,0]) {
+    return new Promise(() => {
+      let canvas = document.getElementById(this.canvasId);
+      let context = canvas.getContext("2d");
+      let path = this.generatePaths(startNode);
+      let connector;
+      let i = 0;
+      let interval = setInterval( () => {
+        if (i === 0) {
+          connector = null;
+        } else {
+          connector = this.connector(path[i-1], path[i])
+        }
+        if (connector) {
+          context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
+        }
+        context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+        i++;
+        if (i >= path.length) {
+          clearInterval(interval);
+          console.log('finished');
+          return 'finished';
+          debugger
+        }
+      }, 30);
+      context.fillStyle='white';
+      context.fillRect(0, 10, 10, 10);
+    })
   }
 
   connector (startNode, node) {
@@ -642,7 +647,7 @@ class DFSWeighted {
     this.width = width;
     this.height = height;
     this.stack = []
-    this.animate([0, 0]);
+    this.animate([-2, 0]);
   }
 
   animate (startNode) {
@@ -803,10 +808,14 @@ class BFS {
     this.dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-5');
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
-    this.animate(this.exploreNodes());
+    this.dfs.animate()
+    // .then(() => { return
+    this.animate(this.exploreNodes())
+    // })
   }
 
   animate (path) {
+    debugger
     let canvas = document.getElementById("canvas-5");
     let context = canvas.getContext("2d");
     context.fillStyle='black';
@@ -814,21 +823,20 @@ class BFS {
     context.fillStyle='white';
     context.fillRect(0, 10, 10, 10);
     context.fillRect(400, 390, 10, 10);
-    context.fillStyle='pink';
+    context.fillStyle='white';
     let connector;
     let i = 0;
     let interval = setInterval(() => {
-      if (i === 0) {
-        connector = null;
-      } else {
-        connector = this.dfs.connector(path[i-1], path[i])
-      }
-      if (connector) {
-        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
-      }
-      debugger
-      context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
-      i++;
+        // if (i === 0) {
+        //   connector = null;
+        // } else {
+        //   connector = this.dfs.connector(path[i-1], path[i])
+        // }
+        // if (connector) {
+        //   context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
+        // }
+        context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+        i++;
       if (i >= path.length) {
         clearInterval(interval);
       }

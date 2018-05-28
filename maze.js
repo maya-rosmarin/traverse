@@ -9,7 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
   init();
   let weighted = new DFSWeighted(40, 40);
   let dfs = new DFS(40, 40, 'canvas-1');
-  let bfs = new BFS([0, 0], [18, 18])
+  dfs.animate();
+  let bfs = new BFS([0, 0], [38, 38]);
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }
 });

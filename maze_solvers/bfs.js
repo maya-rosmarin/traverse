@@ -7,10 +7,14 @@ export default class BFS {
     this.dfs = new DFS(40, 40, 'canvas-5');
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
-    this.animate(this.exploreNodes());
+    this.dfs.animate()
+    // .then(() => { return
+    this.animate(this.exploreNodes())
+    // })
   }
 
   animate (path) {
+    debugger
     let canvas = document.getElementById("canvas-5");
     let context = canvas.getContext("2d");
     context.fillStyle='black';
@@ -18,21 +22,20 @@ export default class BFS {
     context.fillStyle='white';
     context.fillRect(0, 10, 10, 10);
     context.fillRect(400, 390, 10, 10);
-    context.fillStyle='pink';
+    context.fillStyle='white';
     let connector;
     let i = 0;
     let interval = setInterval(() => {
-      if (i === 0) {
-        connector = null;
-      } else {
-        connector = this.dfs.connector(path[i-1], path[i])
-      }
-      if (connector) {
-        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
-      }
-      debugger
-      context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
-      i++;
+        // if (i === 0) {
+        //   connector = null;
+        // } else {
+        //   connector = this.dfs.connector(path[i-1], path[i])
+        // }
+        // if (connector) {
+        //   context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
+        // }
+        context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+        i++;
       if (i >= path.length) {
         clearInterval(interval);
       }

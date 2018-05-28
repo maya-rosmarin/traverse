@@ -9,32 +9,36 @@ export default class DFS {
     this.width = width;
     this.height = height;
     this.stack = []
-    this.animate([0, 0]);
   }
 
-  animate (startNode) {
-    let canvas = document.getElementById(this.canvasId);
-    let context = canvas.getContext("2d");
-    let path = this.generatePaths(startNode);
-    let connector;
-    let i = 0;
-    let interval = setInterval( () => {
-      if (i === 0) {
-        connector = null;
-      } else {
-        connector = this.connector(path[i-1], path[i])
-      }
-      if (connector) {
-        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
-      }
-      context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
-      i++;
-      if (i >= path.length) {
-        clearInterval(interval);
-      }
-    }, 30);
-    context.fillStyle='white';
-    context.fillRect(0, 10, 10, 10);
+  animate (startNode = [0,0]) {
+    return new Promise(() => {
+      let canvas = document.getElementById(this.canvasId);
+      let context = canvas.getContext("2d");
+      let path = this.generatePaths(startNode);
+      let connector;
+      let i = 0;
+      let interval = setInterval( () => {
+        if (i === 0) {
+          connector = null;
+        } else {
+          connector = this.connector(path[i-1], path[i])
+        }
+        if (connector) {
+          context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
+        }
+        context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+        i++;
+        if (i >= path.length) {
+          clearInterval(interval);
+          console.log('finished');
+          return 'finished';
+          debugger
+        }
+      }, 30);
+      context.fillStyle='white';
+      context.fillRect(0, 10, 10, 10);
+    })
   }
 
   connector (startNode, node) {
