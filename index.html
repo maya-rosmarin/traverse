@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <title>Traverse</title>
     <script src="./dist/bundle.js"></script>
+    <link rel="icon" href="./dist/favicon-th.ico" sizes="32x32">
     <link href="https://fonts.googleapis.com/css?family=Source+Serif+Pro" rel="stylesheet">
     <link rel="stylesheet" href="application.css">
   </head>
@@ -29,18 +30,23 @@
     </div>
     <div class="dfs-block">
       <div class="explanation-block">
-        <p class="explanation">The above approach works, but in order to generate a maze that looks like a maze, we will randomly select a node from an unsorted list of neighboring nodes, rather than sorting them by proximity to the destination.</p>
+        <p class="explanation">The above approach works, but in order to generate a maze that looks like a maze, we will randomly select a node from a list of neighboring nodes, rather than sorting them by proximity to the destination.</p>
         <p class="explanation" id="real-thing"> --- </p>
       </div>
       <canvas height=400 width=400 id="canvas-1"></canvas>
     </div>
-    <div>
-      <div class="exp-and-maze">
-        <canvas height=400 width=400 id="canvas-5"></canvas>
-        <div class="explanation-block">
-          <p class="explanation">Now that we have a maze generated, let's get to work on solving it.</p>
-        </div>
+    <div class="exp-and-maze">
+      <canvas height=400 width=400 id="canvas-5"></canvas>
+      <div class="explanation-block">
+        <p class="explanation">Now that we have a maze generated, let's get to work on solving it.</p>
+        <p class="explanation">The maze solver to the left is an implementation of BFS. Provided the paths in the existing maze, the algorithm generates a queue of the starting node's neighbors, then the neighbors' neighbors and so on. It continues discovering neighboring nodes until it reaches the specified target node.</p>
       </div>
+    </div>
+    <div class="exp-and-maze">
+      <div class="explanation-block">
+        <p class="explanation"></p>
+      </div>
+      <canvas height=400 width=400 id="canvas-6"></canvas>
     </div>
   </body>
 </html>

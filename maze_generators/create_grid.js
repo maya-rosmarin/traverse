@@ -6,10 +6,10 @@ export const mazeVis = () => {
   this.init();
 }
 
-export const createGridArray = (width, height) => {
+export const createGridArray = (width, height, start1 = 0, start2 = 0) => {
   let nodes = [];
-  for (let i = 0; i < width; i+=2) {
-    for (let j = 0; j < height; j+=2) {
+  for (let i = start1; i < width; i+=2) {
+    for (let j = start2; j < height; j+=2) {
       nodes.push([i, j, false]);
     }
   }

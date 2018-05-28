@@ -82,9 +82,9 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./maze_generators/dfs */ "./maze_generators/dfs.js");
 /* harmony import */ var _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/dfs_weighted */ "./maze_generators/dfs_weighted.js");
-/* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
-/* harmony import */ var _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./maze_solvers/bfs */ "./maze_solvers/bfs.js");
-/* harmony import */ var _maze_generators_random__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./maze_generators/random */ "./maze_generators/random.js");
+/* harmony import */ var _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_generators/kruskal */ "./maze_generators/kruskal.js");
+/* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
+/* harmony import */ var _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./maze_solvers/bfs */ "./maze_solvers/bfs.js");
 
 
 
@@ -92,8 +92,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridStatic"])();
-  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["init"])();
+  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_3__["createGridStatic"])();
+  Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_3__["init"])();
   let weighted = document.getElementById('canvas-4');
   weighted.addEventListener("click", () => {
     new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
@@ -105,10 +105,13 @@ document.addEventListener('DOMContentLoaded', () => {
   })
   let bfsCanvas = document.getElementById('canvas-5');
   bfsCanvas.addEventListener("click", () => {
-    let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_3__["default"]([0, 0], [38, 38]);
+    let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_4__["default"]([0, 0], [38, 38]);
   });
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }
+  let kruskal = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_2__["default"](5, 5, 1, 1);
+  console.log(kruskal.join([0,2], [2,2]));
+  console.log(kruskal.grid);
 });
 
 
@@ -370,10 +373,10 @@ const mazeVis = () => {
   undefined.init();
 }
 
-const createGridArray = (width, height) => {
+const createGridArray = (width, height, start1 = 0, start2 = 0) => {
   let nodes = [];
-  for (let i = 0; i < width; i+=2) {
-    for (let j = 0; j < height; j+=2) {
+  for (let i = start1; i < width; i+=2) {
+    for (let j = start2; j < height; j+=2) {
       nodes.push([i, j, false]);
     }
   }
@@ -540,6 +543,7 @@ class DFS {
         i++;
         if (i >= path.length) {
           clearInterval(interval);
+          context.fillRect(410, 400, 10, 10)
           document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
           if (callback) {
             return callback();
@@ -765,39 +769,46 @@ class DFSWeighted {
 
 /***/ }),
 
-/***/ "./maze_generators/random.js":
-/*!***********************************!*\
-  !*** ./maze_generators/random.js ***!
-  \***********************************/
+/***/ "./maze_generators/kruskal.js":
+/*!************************************!*\
+  !*** ./maze_generators/kruskal.js ***!
+  \************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Random; });
-/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
-/* harmony import */ var _dfs__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./dfs */ "./maze_generators/dfs.js");
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Kruskal; });
+/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
+/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
 
 
 
-class Random {
+class Kruskal {
   constructor (width, height) {
-    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_0__["createGridArray"])(width, height);
-    Object(_create_grid__WEBPACK_IMPORTED_MODULE_0__["createGridGraphic"])(width*10, height*10);
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height);
+    this.walls = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height, 1, 1);
     this.width = width;
     this.height = height;
-    this.path = [];
-    this.dfs = new _dfs__WEBPACK_IMPORTED_MODULE_1__["default"](width, height)
   }
 
-  generatePaths (startNode) {
-    startNode[2] = true;
-    while (this.dfs.unvisited().length) {
-      this.path.push(startNode);
-      this.path.push(this.dfs.neighbors(startNode));
-    }
-    console.log(this.path);
+  join (node1, node2) {
+    let value = node2.slice();
+    this.delete(node2);
+    let nodeIdx = this.grid.indexOf(node1);
+    this.grid[nodeIdx] = [node1, value];
+    return this.grid[nodeIdx];
   }
+
+  delete (node) {
+    let index = this.grid.indexOf(node);
+    this.grid.splice(index, 1);
+  }
+
+
+
+
 
 }
 

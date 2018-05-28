@@ -32,6 +32,7 @@ export default class DFS {
         i++;
         if (i >= path.length) {
           clearInterval(interval);
+          context.fillRect(410, 400, 10, 10)
           document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
           if (callback) {
             return callback();
