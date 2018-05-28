@@ -94,10 +94,20 @@ __webpack_require__.r(__webpack_exports__);
 document.addEventListener('DOMContentLoaded', () => {
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridStatic"])();
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_2__["init"])();
-  let weighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
-  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
-  dfs.animate();
-  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_3__["default"]([0, 0], [38, 38]);
+  let weighted = document.getElementById('canvas-4');
+  weighted.addEventListener("click", () => {
+    new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
+  })
+  let dfsCanvas = document.getElementById('canvas-1');
+  dfsCanvas.addEventListener("click", () => {
+    let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
+    dfs.animate();
+  })
+  let bfsCanvas = document.getElementById('canvas-5');
+  bfsCanvas.addEventListener("click", () => {
+    let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_3__["default"]([0, 0], [38, 38]);
+    // bfs.animate();
+  });
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }
 });
@@ -510,12 +520,13 @@ class DFS {
     this.stack = []
   }
 
-  animate (startNode = [0,0]) {
+  animate (startNode, callback, fillColor) {
     return new Promise(() => {
       let canvas = document.getElementById(this.canvasId);
       let context = canvas.getContext("2d");
       let path = this.generatePaths(startNode);
       let connector;
+      context.fillStyle='white'
       let i = 0;
       let interval = setInterval( () => {
         if (i === 0) {
@@ -530,13 +541,18 @@ class DFS {
         i++;
         if (i >= path.length) {
           clearInterval(interval);
-          console.log('finished');
+          if (callback) {
+            return callback();
+          }
           return 'finished';
-          debugger
         }
       }, 30);
-      context.fillStyle='white';
-      context.fillRect(0, 10, 10, 10);
+    });
+  }
+
+  promiseTest () {
+    return new Promise(() => {
+      1+1;
     })
   }
 
@@ -808,22 +824,19 @@ class BFS {
     this.dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-5');
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
-    this.dfs.animate()
-    // .then(() => { return
-    this.animate(this.exploreNodes())
-    // })
+    this.dfs.animate([0,0], () => this.animate(this.exploreNodes(), 'pink'))
+    // .then(() => this.animate(this.exploreNodes()))
   }
 
-  animate (path) {
+  animate (path, fillColor) {
     debugger
     let canvas = document.getElementById("canvas-5");
     let context = canvas.getContext("2d");
-    context.fillStyle='black';
-    context.fillRect(0, 0, 410, 410);
-    context.fillStyle='white';
+    // context.fillStyle='black';
+    // context.fillRect(0, 0, 410, 410);
     context.fillRect(0, 10, 10, 10);
     context.fillRect(400, 390, 10, 10);
-    context.fillStyle='white';
+    context.fillStyle=fillColor;
     let connector;
     let i = 0;
     let interval = setInterval(() => {
@@ -835,6 +848,7 @@ class BFS {
         // if (connector) {
         //   context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
         // }
+        context.fillStyle=fillColor;
         context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
         i++;
       if (i >= path.length) {

@@ -11,12 +11,13 @@ export default class DFS {
     this.stack = []
   }
 
-  animate (startNode = [0,0]) {
+  animate (startNode, callback, fillColor) {
     return new Promise(() => {
       let canvas = document.getElementById(this.canvasId);
       let context = canvas.getContext("2d");
       let path = this.generatePaths(startNode);
       let connector;
+      context.fillStyle='white'
       let i = 0;
       let interval = setInterval( () => {
         if (i === 0) {
@@ -31,13 +32,18 @@ export default class DFS {
         i++;
         if (i >= path.length) {
           clearInterval(interval);
-          console.log('finished');
+          if (callback) {
+            return callback();
+          }
           return 'finished';
-          debugger
         }
       }, 30);
-      context.fillStyle='white';
-      context.fillRect(0, 10, 10, 10);
+    });
+  }
+
+  promiseTest () {
+    return new Promise(() => {
+      1+1;
     })
   }
 
