@@ -101,12 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
   let dfsCanvas = document.getElementById('canvas-1');
   dfsCanvas.addEventListener("click", () => {
     let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
-    dfs.animate();
+    dfs.animate([0,0]);
   })
   let bfsCanvas = document.getElementById('canvas-5');
   bfsCanvas.addEventListener("click", () => {
     let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_3__["default"]([0, 0], [38, 38]);
-    // bfs.animate();
   });
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }
@@ -541,6 +540,7 @@ class DFS {
         i++;
         if (i >= path.length) {
           clearInterval(interval);
+          document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
           if (callback) {
             return callback();
           }
@@ -829,11 +829,8 @@ class BFS {
   }
 
   animate (path, fillColor) {
-    debugger
     let canvas = document.getElementById("canvas-5");
     let context = canvas.getContext("2d");
-    // context.fillStyle='black';
-    // context.fillRect(0, 0, 410, 410);
     context.fillRect(0, 10, 10, 10);
     context.fillRect(400, 390, 10, 10);
     context.fillStyle=fillColor;

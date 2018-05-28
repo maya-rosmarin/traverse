@@ -14,12 +14,11 @@ document.addEventListener('DOMContentLoaded', () => {
   let dfsCanvas = document.getElementById('canvas-1');
   dfsCanvas.addEventListener("click", () => {
     let dfs = new DFS(40, 40, 'canvas-1');
-    dfs.animate();
+    dfs.animate([0,0]);
   })
   let bfsCanvas = document.getElementById('canvas-5');
   bfsCanvas.addEventListener("click", () => {
     let bfs = new BFS([0, 0], [38, 38]);
-    // bfs.animate();
   });
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }

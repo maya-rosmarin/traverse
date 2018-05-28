@@ -53,7 +53,8 @@ body {
   margin-left: 50px;
   margin-right: 50px;
   border: 1px solid black;
-  /* padding: 10px; */
+  padding-right: 10px;
+  padding-bottom: 10px;
 }
 
 .dfs-block {
@@ -63,7 +64,8 @@ body {
 
 #canvas-5 {
   margin-left: 50px;
-  border: 1px solid black;
+  border: 1px solid lightgray;
   padding: 10px;
-  background-color: black;
+  background-color: lightgray;
+  margin-top: 20px;
 }

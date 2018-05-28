@@ -12,11 +12,8 @@ export default class BFS {
   }
 
   animate (path, fillColor) {
-    debugger
     let canvas = document.getElementById("canvas-5");
     let context = canvas.getContext("2d");
-    // context.fillStyle='black';
-    // context.fillRect(0, 0, 410, 410);
     context.fillRect(0, 10, 10, 10);
     context.fillRect(400, 390, 10, 10);
     context.fillStyle=fillColor;
