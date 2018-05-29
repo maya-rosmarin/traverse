@@ -16,6 +16,19 @@ export const createGridArray = (width, height, start1 = 0, start2 = 0) => {
   return nodes;
 }
 
+export const createWallsArray = (height, width) => {
+  let walls = [];
+  for (let i = 0; i < width + 1; i++) {
+    for (let j = 0; j < height + 1; j++) {
+      // either i or j is odd
+      if (i % 2 !== 0 ^ j % 2 !== 0) {
+        walls.push([i, j])
+      }
+    }
+  }
+  return walls;
+}
+
 export const createGridGraphic = (width, height) => {
   let canvas = document.getElementById("canvas-1");
   let context = canvas.getContext("2d");

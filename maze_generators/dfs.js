@@ -12,7 +12,6 @@ export default class DFS {
   }
 
   animate (startNode, callback, fillColor) {
-    return new Promise(() => {
       let canvas = document.getElementById(this.canvasId);
       let context = canvas.getContext("2d");
       let path = this.generatePaths(startNode);
@@ -40,13 +39,6 @@ export default class DFS {
           return 'finished';
         }
       }, 30);
-    });
-  }
-
-  promiseTest () {
-    return new Promise(() => {
-      1+1;
-    })
   }
 
   connector (startNode, node) {

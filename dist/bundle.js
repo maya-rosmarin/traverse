@@ -109,9 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }
-  let kruskal = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_2__["default"](5, 5, 1, 1);
-  console.log(kruskal.join([0,2], [2,2]));
-  console.log(kruskal.grid);
+  let kruskal = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_2__["default"](5, 5);
+  // console.log(kruskal.join([0,2, false], [2,2, false]));
+  // console.log(kruskal.connectNodes());
+  console.log(kruskal.animate());
 });
 
 
@@ -350,13 +351,14 @@ document.addEventListener('DOMContentLoaded', () => {
 /*!****************************************!*\
   !*** ./maze_generators/create_grid.js ***!
   \****************************************/
-/*! exports provided: mazeVis, createGridArray, createGridGraphic, createGridStatic, init, isScrolledIntoView */
+/*! exports provided: mazeVis, createGridArray, createWallsArray, createGridGraphic, createGridStatic, init, isScrolledIntoView */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "mazeVis", function() { return mazeVis; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridArray", function() { return createGridArray; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createWallsArray", function() { return createWallsArray; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridGraphic", function() { return createGridGraphic; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createGridStatic", function() { return createGridStatic; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "init", function() { return init; });
@@ -381,6 +383,19 @@ const createGridArray = (width, height, start1 = 0, start2 = 0) => {
     }
   }
   return nodes;
+}
+
+const createWallsArray = (height, width) => {
+  let walls = [];
+  for (let i = 0; i < width + 1; i++) {
+    for (let j = 0; j < height + 1; j++) {
+      // either i or j is odd
+      if (i % 2 !== 0 ^ j % 2 !== 0) {
+        walls.push([i, j])
+      }
+    }
+  }
+  return walls;
 }
 
 const createGridGraphic = (width, height) => {
@@ -523,7 +538,6 @@ class DFS {
   }
 
   animate (startNode, callback, fillColor) {
-    return new Promise(() => {
       let canvas = document.getElementById(this.canvasId);
       let context = canvas.getContext("2d");
       let path = this.generatePaths(startNode);
@@ -551,13 +565,6 @@ class DFS {
           return 'finished';
         }
       }, 30);
-    });
-  }
-
-  promiseTest () {
-    return new Promise(() => {
-      1+1;
-    })
   }
 
   connector (startNode, node) {
@@ -781,34 +788,153 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Kruskal; });
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
+/* harmony import */ var ml_disjoint_set__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ml-disjoint-set */ "./node_modules/ml-disjoint-set/src/DisjointSet.js");
+/* harmony import */ var ml_disjoint_set__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ml_disjoint_set__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
+/* harmony import */ var _dfs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dfs */ "./maze_generators/dfs.js");
+
+
 
 
 
 class Kruskal {
   constructor (width, height) {
-    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height);
-    this.walls = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height, 1, 1);
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridArray"])(width, height);
+    this.sets = this.createSets();
+    // this.walls = createWallsArray(4, 4);
+    // this.removed = [];
     this.width = width;
     this.height = height;
+    this.dfs = new _dfs__WEBPACK_IMPORTED_MODULE_3__["default"](5, 5, 'canvas-6');
+    this.neighbors = this.dfs.neighbors;
+    this.fill = [];
+    // let a = new DisjointSet();
+    // let b = new DisjointSet();
+    // console.log(a)
+    // let c = a.add([0,0]);
+    // let d = a.add([2,2]);
+    // let f = a.add([4,4]);
+    // // console.log(a)
+    // let e = a.union(c, d)
+    // console.log(a)
   }
+
+  createSets () {
+    let sets = new ml_disjoint_set__WEBPACK_IMPORTED_MODULE_1__();
+    for (let i = 0; i < this.grid.length; i++) {
+      sets.add(this.grid[i]);
+    }
+    return sets;
+  }
+
+  getEdges () {
+    let edges = [];
+    for (let i = 0; i < this.height; i++) {
+      for (let j = 0; j < this.width; j++) {
+        if (i > 0) {
+          edges.push([i, j, N])
+        }
+      }
+    }
+  }
+
+  animate () {
+    let canvas = document.getElementById('canvas-6');
+    let context = canvas.getContext("2d");
+    let fill = this.connectNodes();
+    console.log(fill);
+    context.fillStyle='white';
+    let i = 0;
+    debugger
+    let interval = setInterval( () => {
+      context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
+      i++;
+      if (i >= fill.length) {
+        clearInterval(interval);
+      }
+    }, 10);
+  }
+
+  connectNodes () {
+    // debugger
+    // // while (this.removed.length < this.grid.length - 1) {
+    //   let current = this.randomNode(this.grid);
+    //   let walledNeighbors = [];
+    //   let neighbors = this.neighbors(current);
+    //   for (let i = 0; i < neighbors.length; i++) {
+    //     debugger
+    //     if (this.isWallUp(current, neighbors[i])) {
+    //       walledNeighbors.push(neighbors[i]);
+    //     }
+    //   }
+    //   if (walledNeighbors.length) {
+    //     debugger
+    //     let randomNeighbor = this.randomNode(walledNeighbors);
+    //     let wall = this.wall(current, randomNeighbor);
+    //        this.delete(wall, this.walls);
+    //        this.removed.push(wall);
+    //        this.fill.push(wall);
+    //        this.fill.push(current);
+    //        this.fill.push(randomNeighbor);
+    //   }
+    // // }
+    // return this.fill;
+
+  }
+
+  // if any of a nodes neighbors exist in the set, break down wall between them
 
   join (node1, node2) {
     let value = node2.slice();
-    this.delete(node2);
-    let nodeIdx = this.grid.indexOf(node1);
-    this.grid[nodeIdx] = [node1, value];
-    return this.grid[nodeIdx];
+    this.delete(node2, this.grid);
+    let nodeIdx = this.indexOf(this.grid, node1);
+    node1 = node1.concat([node2])
+    this.grid[nodeIdx] = node1;
+    return node1;
   }
 
-  delete (node) {
-    let index = this.grid.indexOf(node);
-    this.grid.splice(index, 1);
+  wall (node1, node2) {
+    let xCoord = (node1[0] + node2[0])/2;
+    let yCoord = (node1[1] + node2[1])/2;
+    return [xCoord, yCoord];
   }
 
+  isWallUp (node1, node2) {
+    if (this.arrayIncludes(this.walls, this.wall(node1, node2))) {
+      return true;
+    }
+    return false;
+  }
 
+  randomNode (arr) {
+    let length = arr.length;
+    let index = Math.floor(Math.random() * length);
+    return arr[index];
+  }
 
+  delete (node, array) {
+    let index = this.indexOf(array, node);
+    if (index !== -1) {
+      array.splice(index, 1);
+    }
+  }
 
+  indexOf (arr, el) {
+    for (let i = 0; i < arr.length; i++) {
+      if (arr[i][0] === el[0] && arr[i][1] === el[1]) {
+        return i;
+      }
+    }
+  }
+
+  arrayIncludes (array, node) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][0] == node[0] && array[i][1] == node[1]) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 }
 
@@ -836,7 +962,7 @@ class BFS {
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
     this.dfs.animate([0,0], () => this.animate(this.exploreNodes(), 'pink'))
-    // .then(() => this.animate(this.exploreNodes()))
+    // this.dfs.animate([0,0]).then(() => this.animate(this.exploreNodes(), 'pink'));
   }
 
   animate (path, fillColor) {
@@ -860,6 +986,7 @@ class BFS {
         context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
         i++;
       if (i >= path.length) {
+        document.getElementById("solved").innerHTML = 'Solved!'
         clearInterval(interval);
       }
     }, 30)
@@ -952,6 +1079,99 @@ module.exports = function distance(a, b) {
     distance += Math.abs((b[i] || 0) - (a[i] || 0))
   }
   return distance
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/ml-disjoint-set/src/DisjointSet.js":
+/*!*********************************************************!*\
+  !*** ./node_modules/ml-disjoint-set/src/DisjointSet.js ***!
+  \*********************************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+/**
+ * @class DisjointSet
+ */
+class DisjointSet {
+    constructor() {
+        this.nodes = new Map();
+    }
+
+    /**
+     * Adds an element as a new set
+     * @param {*} value
+     * @return {DisjointSetNode} Object holding the element
+     */
+    add(value) {
+        var node = this.nodes.get(value);
+        if (!node) {
+            node = new DisjointSetNode(value);
+            this.nodes.set(value, node);
+        }
+        return node;
+    }
+
+    /**
+     * Merges the sets that contain x and y
+     * @param {DisjointSetNode} x
+     * @param {DisjointSetNode} y
+     */
+    union(x, y) {
+        const rootX = this.find(x);
+        const rootY = this.find(y);
+        if (rootX === rootY) {
+            return;
+        }
+        if (rootX.rank < rootY.rank) {
+            rootX.parent = rootY;
+        } else if (rootX.rank > rootY.rank) {
+            rootY.parent = rootX;
+        } else {
+            rootY.parent = rootX;
+            rootX.rank++;
+        }
+    }
+
+    /**
+     * Finds and returns the root node of the set that contains node
+     * @param {DisjointSetNode} node
+     * @return {DisjointSetNode}
+     */
+    find(node) {
+        var rootX = node;
+        while (rootX.parent !== null) {
+            rootX = rootX.parent;
+        }
+        var toUpdateX = node;
+        while (toUpdateX.parent !== null) {
+            var toUpdateParent = toUpdateX;
+            toUpdateX = toUpdateX.parent;
+            toUpdateParent.parent = rootX;
+        }
+        return rootX;
+    }
+
+    /**
+     * Returns true if x and y belong to the same set
+     * @param {DisjointSetNode} x
+     * @param {DisjointSetNode} y
+     */
+    connected(x, y) {
+        return this.find(x) === this.find(y);
+    }
+}
+
+module.exports = DisjointSet;
+
+function DisjointSetNode(value) {
+    this.value = value;
+    this.parent = null;
+    this.rank = 0;
 }
 
 

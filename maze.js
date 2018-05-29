@@ -22,7 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }
-  let kruskal = new Kruskal(5, 5, 1, 1);
-  console.log(kruskal.join([0,2], [2,2]));
-  console.log(kruskal.grid);
+  let kruskal = new Kruskal(5, 5);
+  // console.log(kruskal.join([0,2, false], [2,2, false]));
+  // console.log(kruskal.connectNodes());
+  console.log(kruskal.animate());
 });

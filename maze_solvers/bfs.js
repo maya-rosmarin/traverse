@@ -8,7 +8,7 @@ export default class BFS {
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
     this.dfs.animate([0,0], () => this.animate(this.exploreNodes(), 'pink'))
-    // .then(() => this.animate(this.exploreNodes()))
+    // this.dfs.animate([0,0]).then(() => this.animate(this.exploreNodes(), 'pink'));
   }
 
   animate (path, fillColor) {
@@ -32,6 +32,7 @@ export default class BFS {
         context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
         i++;
       if (i >= path.length) {
+        document.getElementById("solved").innerHTML = 'Solved!'
         clearInterval(interval);
       }
     }, 30)
