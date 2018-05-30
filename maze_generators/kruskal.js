@@ -7,22 +7,10 @@ export default class Kruskal {
   constructor (width, height) {
     this.grid = createGridArray(width, height);
     this.sets = this.createSets();
-    // this.walls = createWallsArray(4, 4);
-    // this.removed = [];
-    this.width = width;
-    this.height = height;
+    this.edges = this.shuffle(this.getEdges(height, width));
     this.dfs = new DFS(5, 5, 'canvas-6');
     this.neighbors = this.dfs.neighbors;
     this.fill = [];
-    // let a = new DisjointSet();
-    // let b = new DisjointSet();
-    // console.log(a)
-    // let c = a.add([0,0]);
-    // let d = a.add([2,2]);
-    // let f = a.add([4,4]);
-    // // console.log(a)
-    // let e = a.union(c, d)
-    // console.log(a)
   }
 
   createSets () {
@@ -33,36 +21,65 @@ export default class Kruskal {
     return sets;
   }
 
-  getEdges () {
+  getEdges (height, width) {
     let edges = [];
-    for (let i = 0; i < this.height; i++) {
-      for (let j = 0; j < this.width; j++) {
+    for (let i = 0; i < height; i++) {
+      for (let j = 0; j < width; j++) {
         if (i > 0) {
-          edges.push([i, j, N])
+          edges.push([i, j, 'n'])
+        }
+        if (j > 0) {
+          edges.push([i, j, 'w'])
         }
       }
     }
+    return edges;
   }
 
   animate () {
-    let canvas = document.getElementById('canvas-6');
-    let context = canvas.getContext("2d");
-    let fill = this.connectNodes();
-    console.log(fill);
-    context.fillStyle='white';
-    let i = 0;
-    debugger
-    let interval = setInterval( () => {
-      context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
-      i++;
-      if (i >= fill.length) {
-        clearInterval(interval);
-      }
-    }, 10);
+    // let canvas = document.getElementById('canvas-6');
+    // let context = canvas.getContext("2d");
+    // let fill = this.connectNodes();
+    // console.log(fill);
+    // context.fillStyle='white';
+    // let i = 0;
+    // debugger
+    // let interval = setInterval( () => {
+    //   context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
+    //   i++;
+    //   if (i >= fill.length) {
+    //     clearInterval(interval);
+    //   }
+    // }, 10);
+  }
+
+  shuffle (array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
   }
 
   connectNodes () {
-    // debugger
+    let dY = {'e': 1, 'w': -1, 'n': 0, 's': 0};
+    let dX = {'e': 0, 'w': 0, 'n': -1, 's': 1};
+    let oppositeDirections = {'e': 'w', 'w': 'e', 'n': 's', 's': 'n'};
+    while (this.edges.length > 0) {
+      let x = this.edges[0][0];
+      let y = this.edges[0][1];
+      let direction = this.edges[0][2];
+      let nx = x + dX[direction];
+      let ny = y + dY[direction];
+      let set1 = this.sets[y][x];
+      let set2 = this.sets[ny][nx];
+      this.edges.shift();
+      if (!this.sets.connected(set1, set2)) {
+        this.sets.union(set1, set2);
+        this.grid[y][x][2] = direction;
+        this.grid[ny][nx][2] = oppositeDirections[direction];
+      }
+    }
     // // while (this.removed.length < this.grid.length - 1) {
     //   let current = this.randomNode(this.grid);
     //   let walledNeighbors = [];
@@ -90,14 +107,14 @@ export default class Kruskal {
 
   // if any of a nodes neighbors exist in the set, break down wall between them
 
-  join (node1, node2) {
-    let value = node2.slice();
-    this.delete(node2, this.grid);
-    let nodeIdx = this.indexOf(this.grid, node1);
-    node1 = node1.concat([node2])
-    this.grid[nodeIdx] = node1;
-    return node1;
-  }
+  // join (node1, node2) {
+  //   let value = node2.slice();
+  //   this.delete(node2, this.grid);
+  //   let nodeIdx = this.indexOf(this.grid, node1);
+  //   node1 = node1.concat([node2])
+  //   this.grid[nodeIdx] = node1;
+  //   return node1;
+  // }
 
   wall (node1, node2) {
     let xCoord = (node1[0] + node2[0])/2;
