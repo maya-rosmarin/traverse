@@ -6,25 +6,30 @@ import DFS from './dfs';
 export default class Kruskal {
   constructor (width, height) {
     this.grid = createGridArray(width, height);
-    this.sets = this.createSets();
+    this.sets = this.createSets()[0];
+    this.setValues = this.createSets()[1];
     this.edges = this.shuffle(this.getEdges(height, width));
     this.dfs = new DFS(5, 5, 'canvas-6');
     this.neighbors = this.dfs.neighbors;
     this.fill = [];
+    console.log(this.sets);
+    console.log(this.edges);
   }
 
   createSets () {
     let sets = new DisjointSet();
+    let setValues = [];
     for (let i = 0; i < this.grid.length; i++) {
       sets.add(this.grid[i]);
+      setValues.push(this.grid[i]);
     }
-    return sets;
+    return [sets, setValues];
   }
 
   getEdges (height, width) {
     let edges = [];
-    for (let i = 0; i < height; i++) {
-      for (let j = 0; j < width; j++) {
+    for (let i = 0; i < height; i+=2) {
+      for (let j = 0; j < width; j+=2) {
         if (i > 0) {
           edges.push([i, j, 'n'])
         }
@@ -62,10 +67,12 @@ export default class Kruskal {
   }
 
   connectNodes () {
-    let dY = {'e': 1, 'w': -1, 'n': 0, 's': 0};
-    let dX = {'e': 0, 'w': 0, 'n': -1, 's': 1};
+    debugger
+    let dY = {'e': 2, 'w': -2, 'n': 0, 's': 0};
+    let dX = {'e': 0, 'w': 0, 'n': -2, 's': 2};
     let oppositeDirections = {'e': 'w', 'w': 'e', 'n': 's', 's': 'n'};
     while (this.edges.length > 0) {
+      debugger
       let x = this.edges[0][0];
       let y = this.edges[0][1];
       let direction = this.edges[0][2];
@@ -80,6 +87,7 @@ export default class Kruskal {
         this.grid[ny][nx][2] = oppositeDirections[direction];
       }
     }
+    return this.sets;
     // // while (this.removed.length < this.grid.length - 1) {
     //   let current = this.randomNode(this.grid);
     //   let walledNeighbors = [];

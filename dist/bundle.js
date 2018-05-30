@@ -82,7 +82,7 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./maze_generators/dfs */ "./maze_generators/dfs.js");
 /* harmony import */ var _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./maze_generators/dfs_weighted */ "./maze_generators/dfs_weighted.js");
-/* harmony import */ var _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_generators/kruskal */ "./maze_generators/kruskal.js");
+/* harmony import */ var _maze_generators_kruskal2__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./maze_generators/kruskal2 */ "./maze_generators/kruskal2.js");
 /* harmony import */ var _maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./maze_generators/create_grid */ "./maze_generators/create_grid.js");
 /* harmony import */ var _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./maze_solvers/bfs */ "./maze_solvers/bfs.js");
 
@@ -109,11 +109,11 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }
-  let kruskal = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_2__["default"](5, 5);
-  kruskal.getEdges();
+  let kruskal = new _maze_generators_kruskal2__WEBPACK_IMPORTED_MODULE_2__["default"](5, 5);
+  // kruskal.getEdges();
   // console.log(kruskal.join([0,2, false], [2,2, false]));
   // console.log(kruskal.connectNodes());
-  console.log(kruskal.animate());
+  // console.log(kruskal.animate());
 });
 
 
@@ -561,11 +561,12 @@ class DFS {
           context.fillRect(410, 400, 10, 10)
           document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
           if (callback) {
+            document.getElementById("solved").innerHTML = 'Solving...'
             return callback();
           }
           return 'finished';
         }
-      }, 30);
+      }, 20);
   }
 
   connector (startNode, node) {
@@ -777,16 +778,16 @@ class DFSWeighted {
 
 /***/ }),
 
-/***/ "./maze_generators/kruskal.js":
-/*!************************************!*\
-  !*** ./maze_generators/kruskal.js ***!
-  \************************************/
+/***/ "./maze_generators/kruskal2.js":
+/*!*************************************!*\
+  !*** ./maze_generators/kruskal2.js ***!
+  \*************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Kruskal; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Kruskal2; });
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var ml_disjoint_set__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ml-disjoint-set */ "./node_modules/ml-disjoint-set/src/DisjointSet.js");
@@ -798,28 +799,46 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-class Kruskal {
+class Kruskal2 {
   constructor (width, height) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridArray"])(width, height);
-    this.sets = this.createSets();
-    this.edges = this.shuffle(this.getEdges(height, width));
-    this.dfs = new _dfs__WEBPACK_IMPORTED_MODULE_3__["default"](5, 5, 'canvas-6');
-    this.neighbors = this.dfs.neighbors;
-    this.fill = [];
+    this.sets = this.createSets(width, height);
+    this.edges = this.shuffle(this.createEdges(width, height));
+    this.connectNodes()
   }
 
-  createSets () {
-    let sets = new ml_disjoint_set__WEBPACK_IMPORTED_MODULE_1__();
+  connectNodes () {
+    let dY = {'e': 2, 'w': -2, 'n': 0, 's': 0};
+    let dX = {'e': 0, 'w': 0, 'n': -2, 's': 2};
+    let oppositeDirections = {'e': 'w', 'w': 'e', 'n': 's', 's': 'n'};
+    debugger
+    while (this.edges.length > 0) {
+      debugger
+      let x = this.edges[0][0];
+      let y = this.edges[0][1];
+      let direction = this.edges[0][2];
+      let nx = x + dX[direction];
+      let ny = y + dY[direction];
+      let set1 = this.findSetByLocation(x, y);
+      let set2 = this.findSetByLocation(nx, ny);
+      if (!set1.isConnected(set2)) {
+        set1.connect(set2);
+      }
+    }
+  }
+
+  createSets (width, height) {
+    let sets = [];
     for (let i = 0; i < this.grid.length; i++) {
-      sets.add(this.grid[i]);
+      sets.push(new Tree([this.grid[i][0],this.grid[i][1]]))
     }
     return sets;
   }
 
-  getEdges (height, width) {
+  createEdges (width, height) {
     let edges = [];
-    for (let i = 0; i < height; i++) {
-      for (let j = 0; j < width; j++) {
+    for (let i = 0; i < width; i+=2) {
+      for (let j = 0; j < height; j+=2) {
         if (i > 0) {
           edges.push([i, j, 'n'])
         }
@@ -831,23 +850,6 @@ class Kruskal {
     return edges;
   }
 
-  animate () {
-    // let canvas = document.getElementById('canvas-6');
-    // let context = canvas.getContext("2d");
-    // let fill = this.connectNodes();
-    // console.log(fill);
-    // context.fillStyle='white';
-    // let i = 0;
-    // debugger
-    // let interval = setInterval( () => {
-    //   context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
-    //   i++;
-    //   if (i >= fill.length) {
-    //     clearInterval(interval);
-    //   }
-    // }, 10);
-  }
-
   shuffle (array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -856,105 +858,40 @@ class Kruskal {
     return array;
   }
 
-  connectNodes () {
-    let dY = {'e': 1, 'w': -1, 'n': 0, 's': 0};
-    let dX = {'e': 0, 'w': 0, 'n': -1, 's': 1};
-    let oppositeDirections = {'e': 'w', 'w': 'e', 'n': 's', 's': 'n'};
-    while (this.edges.length > 0) {
-      let x = this.edges[0][0];
-      let y = this.edges[0][1];
-      let direction = this.edges[0][2];
-      let nx = x + dX[direction];
-      let ny = y + dY[direction];
-      let set1 = this.sets[y][x];
-      let set2 = this.sets[ny][nx];
-      this.edges.shift();
-      if (!this.sets.connected(set1, set2)) {
-        this.sets.union(set1, set2);
-        this.grid[y][x][2] = direction;
-        this.grid[ny][nx][2] = oppositeDirections[direction];
-      }
-    }
-    // // while (this.removed.length < this.grid.length - 1) {
-    //   let current = this.randomNode(this.grid);
-    //   let walledNeighbors = [];
-    //   let neighbors = this.neighbors(current);
-    //   for (let i = 0; i < neighbors.length; i++) {
-    //     debugger
-    //     if (this.isWallUp(current, neighbors[i])) {
-    //       walledNeighbors.push(neighbors[i]);
-    //     }
-    //   }
-    //   if (walledNeighbors.length) {
-    //     debugger
-    //     let randomNeighbor = this.randomNode(walledNeighbors);
-    //     let wall = this.wall(current, randomNeighbor);
-    //        this.delete(wall, this.walls);
-    //        this.removed.push(wall);
-    //        this.fill.push(wall);
-    //        this.fill.push(current);
-    //        this.fill.push(randomNeighbor);
-    //   }
-    // // }
-    // return this.fill;
-
-  }
-
-  // if any of a nodes neighbors exist in the set, break down wall between them
-
-  // join (node1, node2) {
-  //   let value = node2.slice();
-  //   this.delete(node2, this.grid);
-  //   let nodeIdx = this.indexOf(this.grid, node1);
-  //   node1 = node1.concat([node2])
-  //   this.grid[nodeIdx] = node1;
-  //   return node1;
-  // }
-
-  wall (node1, node2) {
-    let xCoord = (node1[0] + node2[0])/2;
-    let yCoord = (node1[1] + node2[1])/2;
-    return [xCoord, yCoord];
-  }
-
-  isWallUp (node1, node2) {
-    if (this.arrayIncludes(this.walls, this.wall(node1, node2))) {
-      return true;
-    }
-    return false;
-  }
-
-  randomNode (arr) {
-    let length = arr.length;
-    let index = Math.floor(Math.random() * length);
-    return arr[index];
-  }
-
-  delete (node, array) {
-    let index = this.indexOf(array, node);
-    if (index !== -1) {
-      array.splice(index, 1);
-    }
-  }
-
-  indexOf (arr, el) {
-    for (let i = 0; i < arr.length; i++) {
-      if (arr[i][0] === el[0] && arr[i][1] === el[1]) {
-        return i;
-      }
-    }
-  }
-
-  arrayIncludes (array, node) {
-    for (let i = 0; i < array.length; i++) {
-      if (array[i][0] == node[0] && array[i][1] == node[1]) {
-        return true;
-      }
-    }
-    return false;
+  findSetByLocation (xCoord, yCoord) {
+    return this.sets.find(set => set.location[0] === xCoord && set.location[1] === yCoord);
   }
 
 }
+
+
+class Tree {
+  constructor (location) {
+    this.parent = null;
+    this.location = location;
+  }
+
+  root () {
+    return this.parent ? this.parent.root() : this
+  }
+
+  isConnected (tree) {
+    return this.root() === tree.root();
+  }
+
+  connect (tree) {
+    return tree.root().parent = this;
+  }
+}
+
+// class Node (row, col) {
+//   constructor (row, col) {
+//     this.row = row;
+//     this.col = col;
+//     this.parent = null;
+//     this.children = [];
+//   }
+// }
 
 
 /***/ }),
@@ -1003,6 +940,8 @@ class BFS {
         context.fillStyle=fillColor;
         context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
         i++;
+        document.getElementById("solved").innerHTML = 'In progress...'
+
       if (i >= path.length) {
         document.getElementById("solved").innerHTML = 'Solved!'
         clearInterval(interval);

@@ -34,11 +34,12 @@ export default class DFS {
           context.fillRect(410, 400, 10, 10)
           document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
           if (callback) {
+            document.getElementById("solved").innerHTML = 'Solving...'
             return callback();
           }
           return 'finished';
         }
-      }, 30);
+      }, 20);
   }
 
   connector (startNode, node) {
