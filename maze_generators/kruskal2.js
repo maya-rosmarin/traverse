@@ -8,14 +8,30 @@ export default class Kruskal2 {
     this.grid = createGridArray(width, height);
     this.sets = this.createSets(width, height);
     this.edges = this.shuffle(this.createEdges(width, height));
+    this.fill = [];
     this.connectNodes()
+    this.animate();
+  }
+
+  animate () {
+    let canvas = document.getElementById('canvas-6');
+    let context = canvas.getContext("2d");
+    let fill = this.fill;
+    context.fillStyle='white';
+    let i = 0;
+    let interval = setInterval( () => {
+      context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
+      i++;
+      if (i >= fill.length) {
+        clearInterval(interval);
+      }
+    }, 2);
   }
 
   connectNodes () {
     let dY = {'e': 2, 'w': -2, 'n': 0, 's': 0};
     let dX = {'e': 0, 'w': 0, 'n': -2, 's': 2};
     let oppositeDirections = {'e': 'w', 'w': 'e', 'n': 's', 's': 'n'};
-    debugger
     while (this.edges.length > 0) {
       debugger
       let x = this.edges[0][0];
@@ -23,12 +39,19 @@ export default class Kruskal2 {
       let direction = this.edges[0][2];
       let nx = x + dX[direction];
       let ny = y + dY[direction];
+      this.edges.shift();
       let set1 = this.findSetByLocation(x, y);
       let set2 = this.findSetByLocation(nx, ny);
       if (!set1.isConnected(set2)) {
         set1.connect(set2);
+        this.fill.push(set1.location);
+        this.fill.push(set2.location);
+        this.fill.push(this.wall(set1.location, set2.location))
+        this.findCellByLocation(x, y)[2] = direction;
+        this.findCellByLocation(nx, ny)[2] = oppositeDirections[direction];
       }
     }
+    console.log(this.fill);
   }
 
   createSets (width, height) {
@@ -66,8 +89,17 @@ export default class Kruskal2 {
     return this.sets.find(set => set.location[0] === xCoord && set.location[1] === yCoord);
   }
 
-}
+  findCellByLocation (xCoord, yCoord) {
+    return this.grid.find(cell => cell[0] === xCoord && cell[1] === yCoord);
+  }
 
+  wall (node1, node2) {
+    let xCoord = (node1[0] + node2[0])/2;
+    let yCoord = (node1[1] + node2[1])/2;
+    return [xCoord, yCoord];
+  }
+
+};
 
 class Tree {
   constructor (location) {
@@ -87,12 +119,3 @@ class Tree {
     return tree.root().parent = this;
   }
 }
-
-// class Node (row, col) {
-//   constructor (row, col) {
-//     this.row = row;
-//     this.col = col;
-//     this.parent = null;
-//     this.children = [];
-//   }
-// }
