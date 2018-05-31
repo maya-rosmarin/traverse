@@ -34,7 +34,7 @@ import { createGridArray, createGridGraphic } from './create_grid';
   }
 
   export const unvisited = (grid) => {
-    return grid.filter(cell => !isVisited(cell))
+    return grid.filter(cell => cell[2] === false)
   }
 
   export const isVisited = (node) => {
