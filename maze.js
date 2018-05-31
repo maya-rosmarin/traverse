@@ -12,12 +12,11 @@ document.addEventListener('DOMContentLoaded', () => {
   weighted.addEventListener("click", () => {
     new DFSWeighted(40, 40);
   });
-  // let dfsCanvas = document.getElementById('canvas-1');
-  // dfsCanvas.addEventListener("click", () => {
-    let dfs = new DFS(5, 5, 'canvas-1');
-    dfs.generatePaths([0,0, true]);
+  let dfsCanvas = document.getElementById('canvas-1');
+  dfsCanvas.addEventListener("click", () => {
+    let dfs = new DFS(40, 40, 'canvas-1');
     dfs.animate([0,0]);
-  // });
+  });
   let bfsCanvas = document.getElementById('canvas-5');
   bfsCanvas.addEventListener("click", () => {
     let bfs = new BFS([0, 0], [38, 38]);

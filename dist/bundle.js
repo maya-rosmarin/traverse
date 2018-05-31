@@ -100,12 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
   weighted.addEventListener("click", () => {
     new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
   });
-  // let dfsCanvas = document.getElementById('canvas-1');
-  // dfsCanvas.addEventListener("click", () => {
-    let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](5, 5, 'canvas-1');
-    dfs.generatePaths([0,0, true]);
+  let dfsCanvas = document.getElementById('canvas-1');
+  dfsCanvas.addEventListener("click", () => {
+    let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
     dfs.animate([0,0]);
-  // });
+  });
   let bfsCanvas = document.getElementById('canvas-5');
   bfsCanvas.addEventListener("click", () => {
     let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_5__["default"]([0, 0], [38, 38]);
@@ -293,8 +292,111 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
 /* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
-/* harmony import */ var _dfs_util__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./dfs_util */ "./maze_generators/dfs_util.js");
-
+// import * as manhattan from 'manhattan';
+// import { createGridArray, createGridGraphic } from './create_grid';
+// import * as DFSUtil from './dfs_util';
+//
+// export default class DFS {
+//   constructor (width, height, canvasId) {
+//     this.grid = createGridArray(width, height);
+//     createGridGraphic(width*10, height*10);
+//     this.canvasId = canvasId;
+//     this.width = width;
+//     this.height = height;
+//     this.stack = []
+//     debugger
+//   }
+//
+//   animate (startNode, callback, fillColor) {
+//     debugger
+//       let canvas = document.getElementById(this.canvasId);
+//       let context = canvas.getContext("2d");
+//       let path = this.generatePaths(startNode);
+//       debugger
+//       let connector;
+//       context.fillStyle='white'
+//       let i = 0;
+//       let interval = setInterval( () => {
+//         if (i === 0) {
+//           connector = null;
+//         } else {
+//           connector = DFSUtil.connector(path[i-1], path[i])
+//         }
+//         if (connector) {
+//           context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
+//         }
+//         context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+//         i++;
+//         if (i >= path.length) {
+//           clearInterval(interval);
+//           context.fillRect(410, 400, 10, 10)
+//           document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
+//           if (callback) {
+//             document.getElementById("solved").innerHTML = 'Solving...'
+//             return callback();
+//           }
+//           return 'finished';
+//         }
+//       }, 20);
+//   }
+//
+//   generatePaths (startNode) {
+//     startNode[2] = true;
+//     this.stack.push(startNode);
+//     let last = startNode;
+//     while (this.uniqueArray(this.stack.length) < 9) {
+//       debugger
+//       console.log(this.unvisited())
+//       let step = this.nextStep(last);
+//       if (!step) {
+//         last = DFSUtil.backtrack(-1, this.stack, () => this.nextStep)
+//       } else {
+//         step[2] = true;
+//         this.stack.push(step);
+//         last = this.stack.slice(-1)[0];
+//       }
+//     }
+//     debugger
+//     return this.stack;
+//   }
+//
+//   unvisited () {
+//     return this.grid.filter(cell => cell[2] === false)
+//   }
+//
+//   nextStep (startNode) {
+//     let neighbors = DFSUtil.neighbors(startNode, this.grid).filter(neighbor => (neighbor[2] === false));
+//     if (neighbors == null || neighbors.length == 0) {
+//       return null;
+//     }
+//     let randomIndex = Math.floor(Math.random() * neighbors.length);
+//     return neighbors[randomIndex];
+//   }
+//
+//   uniqueArray (array) {
+//     var uniqObj = {};
+//     Array.from(array).forEach((item) => {
+//         uniqObj[JSON.stringify(item)] = 1;
+//     });
+//
+//     var uniqArray = [];
+//     for (let key in uniqObj) {
+//         if (uniqObj.hasOwnProperty(key)) {
+//             uniqArray.push(JSON.parse(key))
+//         }
+//     }
+//     return uniqArray;
+//   };
+//
+// }
+//
+// // class Node {
+// //   constructor(row, col) {
+// //     this.row = row
+// //     this.col = col
+// //     this.visited = false
+// //   }
+// // }
 
 
 
@@ -306,15 +408,12 @@ class DFS {
     this.width = width;
     this.height = height;
     this.stack = []
-    debugger
   }
 
   animate (startNode, callback, fillColor) {
-    debugger
       let canvas = document.getElementById(this.canvasId);
       let context = canvas.getContext("2d");
       let path = this.generatePaths(startNode);
-      debugger
       let connector;
       context.fillStyle='white'
       let i = 0;
@@ -322,7 +421,7 @@ class DFS {
         if (i === 0) {
           connector = null;
         } else {
-          connector = _dfs_util__WEBPACK_IMPORTED_MODULE_2__["connector"](path[i-1], path[i])
+          connector = this.connector(path[i-1], path[i])
         }
         if (connector) {
           context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
@@ -342,32 +441,39 @@ class DFS {
       }, 20);
   }
 
+  connector (startNode, node) {
+    let connector;
+      if (startNode[0] == node[0] && startNode[1] == node[1] + 2) {
+        connector = [node[0], node[1] + 1];
+      } else if (startNode[0] == node[0] && startNode[1] == node[1] - 2) {
+        connector = [node[0], node[1] - 1];
+      } else if (startNode[0] == node[0] + 2 && startNode[1] == node[1]) {
+        connector = [node[0] + 1, node[1]];
+      } else if (startNode[0] == node[0] - 2 && startNode[1] == node[1]) {
+        connector = [node[0] - 1, node[1]];
+      }
+    return connector;
+  }
+
   generatePaths (startNode) {
     startNode[2] = true;
     this.stack.push(startNode);
     let last = startNode;
     while (this.unvisited().length) {
-      debugger
-      console.log(this.unvisited())
       let step = this.nextStep(last);
       if (!step) {
-        last = _dfs_util__WEBPACK_IMPORTED_MODULE_2__["backtrack"](-1, this.stack, () => this.nextStep)
+        last = this.backtrack(-1);
       } else {
         step[2] = true;
         this.stack.push(step);
         last = this.stack.slice(-1)[0];
       }
     }
-    debugger
     return this.stack;
   }
 
-  unvisited () {
-    return this.grid.filter(cell => cell[2] === false)
-  }
-
   nextStep (startNode) {
-    let neighbors = _dfs_util__WEBPACK_IMPORTED_MODULE_2__["neighbors"](startNode, this.grid).filter(neighbor => !_dfs_util__WEBPACK_IMPORTED_MODULE_2__["isVisited"](neighbor));
+    let neighbors = this.neighbors(startNode).filter(neighbor => !this.isVisited(neighbor));
     if (neighbors == null || neighbors.length == 0) {
       return null;
     }
@@ -375,15 +481,36 @@ class DFS {
     return neighbors[randomIndex];
   }
 
-}
+  unvisited () {
+    return this.grid.filter(cell => !this.isVisited(cell))
+  }
 
-// class Node {
-//   constructor(row, col) {
-//     this.row = row
-//     this.col = col
-//     this.visited = false
-//   }
-// }
+  isVisited (node) {
+    return node[2] === true
+  }
+
+  backtrack (n) {
+    let current = this.stack.slice(n)[0];
+    if (this.nextStep(current)) {
+      this.stack.push(current)
+      return current;
+    } else {
+      n--;
+      return this.backtrack(n);
+    }
+  }
+
+  neighbors (startNode) {
+    let nodes = [];
+    this.grid.forEach((node) => {
+      if ((startNode[0] == node[0] && startNode[1] == node[1] + 2) || (startNode[0] == node[0] && startNode[1] == node[1] - 2) || (startNode[0] == node[0] + 2 && startNode[1] == node[1]) || (startNode[0] == node[0] - 2 && startNode[1] == node[1])) {
+        nodes.push(node);
+      }
+    })
+    return nodes;
+  }
+
+}
 
 
 /***/ }),
@@ -459,6 +586,7 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   const neighbors = (startNode, grid) => {
+    debugger
     let nodes = [];
     grid.forEach((node) => {
       if ((startNode[0] == node[0] && startNode[1] == node[1] + 2) || (startNode[0] == node[0] && startNode[1] == node[1] - 2) || (startNode[0] == node[0] + 2 && startNode[1] == node[1]) || (startNode[0] == node[0] - 2 && startNode[1] == node[1])) {
