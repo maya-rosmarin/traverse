@@ -90,6 +90,12 @@ body {
   margin-left: 190px;
 }
 
+#bfs-solver {
+  font-family: 'Source Serif Pro', serif;
+  margin-left: 190px;
+  margin-top: 50px;
+}
+
 .dfs-weighted {
   font-family: 'Source Serif Pro', sans-serif;
   background-color: #B7979C;

@@ -29,7 +29,6 @@ export const createGridGraphic = (width, height) => {
   context.fillStyle = 'black';
   context.fillRect(0, 0, width + 10, height + 10);
   context.fillStyle = '#B7979C';
-  context.fillRect(0, 10, 10, 10);
   context.fillRect(width, height - 10, 10, 10);
 }
 

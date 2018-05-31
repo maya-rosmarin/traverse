@@ -192,7 +192,6 @@ const createGridGraphic = (width, height) => {
   context.fillStyle = 'black';
   context.fillRect(0, 0, width + 10, height + 10);
   context.fillStyle = '#B7979C';
-  context.fillRect(0, 10, 10, 10);
   context.fillRect(width, height - 10, 10, 10);
 }
 
@@ -529,8 +528,6 @@ class DFSWeighted {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
     context.clearRect(10, 10, canvas.width, canvas.height);
-    // context.fillStyle='orange';
-    // context.fillRect(10, 0, 20, 20);
   }
 
   animate (startNode) {

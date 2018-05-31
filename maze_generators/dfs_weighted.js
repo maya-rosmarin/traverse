@@ -14,8 +14,6 @@ export default class DFSWeighted {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
     context.clearRect(10, 10, canvas.width, canvas.height);
-    // context.fillStyle='orange';
-    // context.fillRect(10, 0, 20, 20);
   }
 
   animate (startNode) {
