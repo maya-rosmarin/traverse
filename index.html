@@ -45,9 +45,11 @@
     </div>
     <div class="exp-and-maze">
       <div class="explanation-block">
-        <p class="explanation"></p>
+        <p class="explanation">Kruskal's algorithm is substantially more complex than either BFS or DFS. In the maze to the right, each cell on the graph can be conceived of as its own disjoint set. In this version, the sets have been implemented as trees. Beyond just ensuring that every node on the graph has been visited, it is crucial that every node on the graph belongs to the same joined set, i.e. a tree with the same root node. </p>
+        <p class="explanation">To introduce some randomness to the maze, every wall - the joining element between two disparate sets - is shuffled.</p>
       </div>
       <canvas height=400 width=400 id="canvas-6"></canvas>
     </div>
+    <canvas height=400 width=400 id="canvas-7"></canvas>
   </body>
 </html>

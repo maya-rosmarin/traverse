@@ -1,5 +1,6 @@
 import * as manhattan from 'manhattan';
 import { createGridArray, createGridGraphic } from './create_grid';
+import * as DFSUtil from './dfs_util';
 
 export default class DFS {
   constructor (width, height, canvasId) {
@@ -42,28 +43,15 @@ export default class DFS {
       }, 20);
   }
 
-  connector (startNode, node) {
-    let connector;
-      if (startNode[0] == node[0] && startNode[1] == node[1] + 2) {
-        connector = [node[0], node[1] + 1];
-      } else if (startNode[0] == node[0] && startNode[1] == node[1] - 2) {
-        connector = [node[0], node[1] - 1];
-      } else if (startNode[0] == node[0] + 2 && startNode[1] == node[1]) {
-        connector = [node[0] + 1, node[1]];
-      } else if (startNode[0] == node[0] - 2 && startNode[1] == node[1]) {
-        connector = [node[0] - 1, node[1]];
-      }
-    return connector;
-  }
-
   generatePaths (startNode) {
+    debugger
     startNode[2] = true;
     this.stack.push(startNode);
     let last = startNode;
-    while (this.unvisited().length) {
+    while (DFSUtil.unvisited(this.grid).length) {
       let step = this.nextStep(last);
       if (!step) {
-        last = this.backtrack(-1);
+        last = DFSUtil.backtrack(-1, this.stack, this.nextStep)
       } else {
         step[2] = true;
         this.stack.push(step);
@@ -74,41 +62,12 @@ export default class DFS {
   }
 
   nextStep (startNode) {
-    let neighbors = this.neighbors(startNode).filter(neighbor => !this.isVisited(neighbor));
+    let neighbors = DFSUtil.neighbors(startNode, this.grid).filter(neighbor => !DFSUtil.isVisited(neighbor));
     if (neighbors == null || neighbors.length == 0) {
       return null;
     }
     let randomIndex = Math.floor(Math.random() * neighbors.length);
     return neighbors[randomIndex];
-  }
-
-  unvisited () {
-    return this.grid.filter(cell => !this.isVisited(cell))
-  }
-
-  isVisited (node) {
-    return node[2] === true
-  }
-
-  backtrack (n) {
-    let current = this.stack.slice(n)[0];
-    if (this.nextStep(current)) {
-      this.stack.push(current)
-      return current;
-    } else {
-      n--;
-      return this.backtrack(n);
-    }
-  }
-
-  neighbors (startNode) {
-    let nodes = [];
-    this.grid.forEach((node) => {
-      if ((startNode[0] == node[0] && startNode[1] == node[1] + 2) || (startNode[0] == node[0] && startNode[1] == node[1] - 2) || (startNode[0] == node[0] + 2 && startNode[1] == node[1]) || (startNode[0] == node[0] - 2 && startNode[1] == node[1])) {
-        nodes.push(node);
-      }
-    })
-    return nodes;
   }
 
 }
