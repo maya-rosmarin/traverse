@@ -34,6 +34,7 @@ export default class Prims () {
     if (yCoord > 0 && this.findCellByLocation(yCoord - 2, xCoord)) {
       neighbors.push(this.findCellByLocation(xCoord, yCoord - 2))
     }
+    if (yCoord + 1 < this.)
   }
 
   findCellByLocation (xCoord, yCoord) {

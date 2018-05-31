@@ -84,3 +84,26 @@ body {
   border: 1px solid #B7979C;
   margin-left: 50px;
 }
+
+#dfs-weighted {
+  font-family: 'Source Serif Pro', serif;
+  margin-left: 190px;
+}
+
+.dfs-weighted {
+  font-family: 'Source Serif Pro', sans-serif;
+  background-color: #B7979C;
+  border-radius: 5px;
+  color: white;
+  font-size: 16px;
+
+}
+
+.dfs-weighted:focus {
+  outline: 0;
+}
+
+#dfs_weighted:hover {
+  cursor: pointer;
+
+}

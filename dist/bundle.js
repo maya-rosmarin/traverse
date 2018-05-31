@@ -96,9 +96,17 @@ __webpack_require__.r(__webpack_exports__);
 document.addEventListener('DOMContentLoaded', () => {
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_4__["createGridStatic"])();
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_4__["init"])();
-  let weighted = document.getElementById('canvas-4');
-  weighted.addEventListener("click", () => {
-    new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
+  let weighted = document.getElementById('dfs-weighted-run');
+  let dfsWeighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
+  weighted.addEventListener("click", (event) => {
+    event.preventDefault();
+    dfsWeighted.animate([-2, 0]);
+  });
+  let weightedReset = document.getElementById('dfs-weighted-reset');
+  weighted.addEventListener("click", (event) => {
+    event.preventDefault();
+    // let resetDfsWeighted = new DFSWeighted(40, 40);
+    dfsWeighted.clearCanvas();
   });
   let dfsCanvas = document.getElementById('canvas-1');
   dfsCanvas.addEventListener("click", () => {
@@ -424,7 +432,6 @@ __webpack_require__.r(__webpack_exports__);
   }
 
   const generatePaths = (startNode) => {
-    debugger
     startNode[2] = true;
     undefined.stack.push(startNode);
     let last = startNode;
@@ -497,12 +504,18 @@ class DFSWeighted {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height);
     Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*10, height*10);
     this.stack = []
-    this.animate([-2, 0]);
+  }
+
+  clearCanvas () {
     debugger
+    let canvas = document.getElementById('canvas-4');
+    let context = canvas.getContext('2d');
+    context.clearRect(10, 10, canvas.width, canvas.height);
+    // context.fillStyle='orange';
+    // context.fillRect(10, 0, 20, 20);
   }
 
   animate (startNode) {
-    debugger
     let canvas = document.getElementById("canvas-4");
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);

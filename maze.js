@@ -8,9 +8,17 @@ import BFS from './maze_solvers/bfs';
 document.addEventListener('DOMContentLoaded', () => {
   createGridStatic();
   init();
-  let weighted = document.getElementById('canvas-4');
-  weighted.addEventListener("click", () => {
-    new DFSWeighted(40, 40);
+  let weighted = document.getElementById('dfs-weighted-run');
+  let dfsWeighted = new DFSWeighted(40, 40);
+  weighted.addEventListener("click", (event) => {
+    event.preventDefault();
+    dfsWeighted.animate([-2, 0]);
+  });
+  let weightedReset = document.getElementById('dfs-weighted-reset');
+  weighted.addEventListener("click", (event) => {
+    event.preventDefault();
+    // let resetDfsWeighted = new DFSWeighted(40, 40);
+    dfsWeighted.clearCanvas();
   });
   let dfsCanvas = document.getElementById('canvas-1');
   dfsCanvas.addEventListener("click", () => {

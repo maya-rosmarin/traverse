@@ -16,7 +16,6 @@ import { createGridArray, createGridGraphic } from './create_grid';
   }
 
   export const generatePaths = (startNode) => {
-    debugger
     startNode[2] = true;
     this.stack.push(startNode);
     let last = startNode;

@@ -7,12 +7,18 @@ export default class DFSWeighted {
     this.grid = createGridArray(width, height);
     createGridGraphic(width*10, height*10);
     this.stack = []
-    this.animate([-2, 0]);
+  }
+
+  clearCanvas () {
     debugger
+    let canvas = document.getElementById('canvas-4');
+    let context = canvas.getContext('2d');
+    context.clearRect(10, 10, canvas.width, canvas.height);
+    // context.fillStyle='orange';
+    // context.fillRect(10, 0, 20, 20);
   }
 
   animate (startNode) {
-    debugger
     let canvas = document.getElementById("canvas-4");
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);
