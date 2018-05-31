@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_4__["createGridStatic"])();
   Object(_maze_generators_create_grid__WEBPACK_IMPORTED_MODULE_4__["init"])();
   let weighted = document.getElementById('dfs-weighted-run');
-  let dfsWeighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
+  let dfsWeighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40, 'canvas-4');
   weighted.addEventListener("click", (event) => {
     event.preventDefault();
     dfsWeighted.animate([-2, 0]);
@@ -105,24 +105,36 @@ document.addEventListener('DOMContentLoaded', () => {
   let weightedReset = document.getElementById('dfs-weighted-reset');
   weighted.addEventListener("click", (event) => {
     event.preventDefault();
-    // let resetDfsWeighted = new DFSWeighted(40, 40);
     dfsWeighted.clearCanvas();
   });
-  let dfsCanvas = document.getElementById('canvas-1');
-  dfsCanvas.addEventListener("click", () => {
-    let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
+  let dfsCanvas = document.getElementById('dfs-random-run');
+  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
+  dfsCanvas.addEventListener("click", (event) => {
+    event.preventDefault();
     dfs.animate([0,0]);
   });
-  let bfsCanvas = document.getElementById('canvas-5');
+  let dfsReset = document.getElementById('dfs-random-reset');
+  dfsReset.addEventListener("click", (event) => {
+    event.preventDefault();
+    dfs.clearCanvas();
+  })
+  let bfsCanvas = document.getElementById('bfs-solver-run');
   bfsCanvas.addEventListener("click", () => {
     let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_5__["default"]([0, 0], [38, 38]);
     bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white'))
   });
-  // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
-  // }
-  let kruskal = document.getElementById('canvas-6');
+  let bfsReset = document.getElementById('bfs-solver-reset');
+  bfsReset.addEventListener("click", () => {
+    bfs.clearCanvas();
+  })
+  let kruskal = document.getElementById('kruskal-run');
+  let kruskalCanvas = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_3__["default"](40, 40);
   kruskal.addEventListener("click", () => {
-    let kruskal = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_3__["default"](40, 40);
+    kruskalCanvas.animate();
+  });
+  let kruskalReset = document.getElementById('kruskal-reset');
+  kruskalReset.addEventListener("click", () => {
+    kruskalCanvas.clearCanvas();
   });
 
   // let dfsutil = new DFSUtil(5, 5, 'canvas-7');
@@ -315,6 +327,12 @@ class DFS {
     this.stack = []
   }
 
+  clearCanvas () {
+    let canvas = document.getElementById(this.canvasId);
+    let context = canvas.getContext('2d');
+    context.clearRect(10, 10, canvas.width, canvas.height);
+  }
+
   animate (startNode, callback, fillColor) {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
@@ -500,15 +518,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class DFSWeighted {
-  constructor (width, height) {
+  constructor (width, height, canvasId) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height);
     Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*10, height*10);
+    this.canvasId = canvasId;
     this.stack = []
   }
 
   clearCanvas () {
-    debugger
-    let canvas = document.getElementById('canvas-4');
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
     context.clearRect(10, 10, canvas.width, canvas.height);
     // context.fillStyle='orange';
@@ -516,7 +534,7 @@ class DFSWeighted {
   }
 
   animate (startNode) {
-    let canvas = document.getElementById("canvas-4");
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);
     let connector;
@@ -593,7 +611,12 @@ class Kruskal {
     this.edges = this.shuffle(this.createEdges(width, height));
     this.fill = [];
     this.connectNodes()
-    this.animate();
+  }
+
+  clearCanvas () {
+    let canvas = document.getElementById('canvas-6');
+    let context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   animate (callback) {
@@ -730,7 +753,12 @@ class BFS {
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
     this.dfs.animate([0,0], () => this.animate(this.exploreNodes(), '#cbb3b7'))
-    // this.dfs.animate([0,0]).then(() => this.animate(this.exploreNodes(), 'pink'));
+  }
+
+  clearCanvas () {
+    let canvas = document.getElementById('canvas-5');
+    let context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   animate (path, fillColor) {

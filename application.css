@@ -96,7 +96,6 @@ body {
   border-radius: 5px;
   color: white;
   font-size: 16px;
-
 }
 
 .dfs-weighted:focus {
@@ -105,5 +104,14 @@ body {
 
 #dfs_weighted:hover {
   cursor: pointer;
+}
 
+#dfs-random {
+  margin-left: 1130px;
+  margin-top: 50px;
+}
+
+#kruskal {
+  margin-left: 1130px;
+  margin-top: 50px;
 }

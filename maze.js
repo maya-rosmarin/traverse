@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   createGridStatic();
   init();
   let weighted = document.getElementById('dfs-weighted-run');
-  let dfsWeighted = new DFSWeighted(40, 40);
+  let dfsWeighted = new DFSWeighted(40, 40, 'canvas-4');
   weighted.addEventListener("click", (event) => {
     event.preventDefault();
     dfsWeighted.animate([-2, 0]);
@@ -17,24 +17,36 @@ document.addEventListener('DOMContentLoaded', () => {
   let weightedReset = document.getElementById('dfs-weighted-reset');
   weighted.addEventListener("click", (event) => {
     event.preventDefault();
-    // let resetDfsWeighted = new DFSWeighted(40, 40);
     dfsWeighted.clearCanvas();
   });
-  let dfsCanvas = document.getElementById('canvas-1');
-  dfsCanvas.addEventListener("click", () => {
-    let dfs = new DFS(40, 40, 'canvas-1');
+  let dfsCanvas = document.getElementById('dfs-random-run');
+  let dfs = new DFS(40, 40, 'canvas-1');
+  dfsCanvas.addEventListener("click", (event) => {
+    event.preventDefault();
     dfs.animate([0,0]);
   });
-  let bfsCanvas = document.getElementById('canvas-5');
+  let dfsReset = document.getElementById('dfs-random-reset');
+  dfsReset.addEventListener("click", (event) => {
+    event.preventDefault();
+    dfs.clearCanvas();
+  })
+  let bfsCanvas = document.getElementById('bfs-solver-run');
   bfsCanvas.addEventListener("click", () => {
     let bfs = new BFS([0, 0], [38, 38]);
     bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white'))
   });
-  // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
-  // }
-  let kruskal = document.getElementById('canvas-6');
+  let bfsReset = document.getElementById('bfs-solver-reset');
+  bfsReset.addEventListener("click", () => {
+    bfs.clearCanvas();
+  })
+  let kruskal = document.getElementById('kruskal-run');
+  let kruskalCanvas = new Kruskal(40, 40);
   kruskal.addEventListener("click", () => {
-    let kruskal = new Kruskal(40, 40);
+    kruskalCanvas.animate();
+  });
+  let kruskalReset = document.getElementById('kruskal-reset');
+  kruskalReset.addEventListener("click", () => {
+    kruskalCanvas.clearCanvas();
   });
 
   // let dfsutil = new DFSUtil(5, 5, 'canvas-7');

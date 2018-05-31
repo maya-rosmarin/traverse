@@ -3,15 +3,15 @@ import { createGridArray, createGridGraphic } from './create_grid';
 import * as DFSUtil from './dfs_util';
 
 export default class DFSWeighted {
-  constructor (width, height) {
+  constructor (width, height, canvasId) {
     this.grid = createGridArray(width, height);
     createGridGraphic(width*10, height*10);
+    this.canvasId = canvasId;
     this.stack = []
   }
 
   clearCanvas () {
-    debugger
-    let canvas = document.getElementById('canvas-4');
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
     context.clearRect(10, 10, canvas.width, canvas.height);
     // context.fillStyle='orange';
@@ -19,7 +19,7 @@ export default class DFSWeighted {
   }
 
   animate (startNode) {
-    let canvas = document.getElementById("canvas-4");
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
     let path = this.generatePaths(startNode);
     let connector;

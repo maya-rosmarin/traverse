@@ -12,6 +12,12 @@ export default class DFS {
     this.stack = []
   }
 
+  clearCanvas () {
+    let canvas = document.getElementById(this.canvasId);
+    let context = canvas.getContext('2d');
+    context.clearRect(10, 10, canvas.width, canvas.height);
+  }
+
   animate (startNode, callback, fillColor) {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");

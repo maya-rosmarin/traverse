@@ -8,7 +8,12 @@ export default class BFS {
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
     this.dfs.animate([0,0], () => this.animate(this.exploreNodes(), '#cbb3b7'))
-    // this.dfs.animate([0,0]).then(() => this.animate(this.exploreNodes(), 'pink'));
+  }
+
+  clearCanvas () {
+    let canvas = document.getElementById('canvas-5');
+    let context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   animate (path, fillColor) {
