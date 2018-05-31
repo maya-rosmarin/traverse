@@ -31,8 +31,8 @@ export default class DFSWeighted {
         if (i >= path.length) {
           clearInterval(interval);
         }
-      }, 30);
-      context.fillStyle='pink';
+      }, 20);
+      context.fillStyle='#B7979C';
       context.fillRect(0, 10, 10, 10);
   }
 

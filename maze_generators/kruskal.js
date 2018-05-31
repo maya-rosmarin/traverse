@@ -1,7 +1,4 @@
-import * as manhattan from 'manhattan';
-import * as DisjointSet from 'ml-disjoint-set';
 import { createGridArray, createWallsArray } from './create_grid';
-import DFS from './dfs';
 
 export default class Kruskal {
   constructor (width, height) {

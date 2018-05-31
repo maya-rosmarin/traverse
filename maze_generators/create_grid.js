@@ -53,7 +53,7 @@ export const createGridStatic = (width, height) => {
     context.strokeStyle = 'black';
     context.stroke();
   }
-  context.fillStyle = '#996D73';
+  context.fillStyle = '#A67D7D';
   for (let k = 0; k < 450; k += 100) {
     context.fillRect(k, 0, 50, 2000)
     context.fillRect(0, k, 2000, 50)

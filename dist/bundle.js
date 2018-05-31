@@ -196,7 +196,7 @@ const createGridStatic = (width, height) => {
     context.strokeStyle = 'black';
     context.stroke();
   }
-  context.fillStyle = '#996D73';
+  context.fillStyle = '#A67D7D';
   for (let k = 0; k < 450; k += 100) {
     context.fillRect(k, 0, 50, 2000)
     context.fillRect(0, k, 2000, 50)
@@ -521,8 +521,8 @@ class DFSWeighted {
         if (i >= path.length) {
           clearInterval(interval);
         }
-      }, 30);
-      context.fillStyle='pink';
+      }, 20);
+      context.fillStyle='#B7979C';
       context.fillRect(0, 10, 10, 10);
   }
 
@@ -570,20 +570,12 @@ class DFSWeighted {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Kruskal; });
-/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! manhattan */ "./node_modules/manhattan/index.js");
-/* harmony import */ var manhattan__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(manhattan__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var ml_disjoint_set__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ml-disjoint-set */ "./node_modules/ml-disjoint-set/src/DisjointSet.js");
-/* harmony import */ var ml_disjoint_set__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(ml_disjoint_set__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
-/* harmony import */ var _dfs__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./dfs */ "./maze_generators/dfs.js");
-
-
-
+/* harmony import */ var _create_grid__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./create_grid */ "./maze_generators/create_grid.js");
 
 
 class Kruskal {
   constructor (width, height) {
-    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_2__["createGridArray"])(width, height);
+    this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_0__["createGridArray"])(width, height);
     this.sets = this.createSets(width, height);
     this.edges = this.shuffle(this.createEdges(width, height));
     this.fill = [];
@@ -724,7 +716,7 @@ class BFS {
     this.dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-5');
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
-    this.dfs.animate([0,0], () => this.animate(this.exploreNodes(), 'pink'))
+    this.dfs.animate([0,0], () => this.animate(this.exploreNodes(), '#cbb3b7'))
     // this.dfs.animate([0,0]).then(() => this.animate(this.exploreNodes(), 'pink'));
   }
 
@@ -844,99 +836,6 @@ module.exports = function distance(a, b) {
     distance += Math.abs((b[i] || 0) - (a[i] || 0))
   }
   return distance
-}
-
-
-/***/ }),
-
-/***/ "./node_modules/ml-disjoint-set/src/DisjointSet.js":
-/*!*********************************************************!*\
-  !*** ./node_modules/ml-disjoint-set/src/DisjointSet.js ***!
-  \*********************************************************/
-/*! no static exports found */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-/**
- * @class DisjointSet
- */
-class DisjointSet {
-    constructor() {
-        this.nodes = new Map();
-    }
-
-    /**
-     * Adds an element as a new set
-     * @param {*} value
-     * @return {DisjointSetNode} Object holding the element
-     */
-    add(value) {
-        var node = this.nodes.get(value);
-        if (!node) {
-            node = new DisjointSetNode(value);
-            this.nodes.set(value, node);
-        }
-        return node;
-    }
-
-    /**
-     * Merges the sets that contain x and y
-     * @param {DisjointSetNode} x
-     * @param {DisjointSetNode} y
-     */
-    union(x, y) {
-        const rootX = this.find(x);
-        const rootY = this.find(y);
-        if (rootX === rootY) {
-            return;
-        }
-        if (rootX.rank < rootY.rank) {
-            rootX.parent = rootY;
-        } else if (rootX.rank > rootY.rank) {
-            rootY.parent = rootX;
-        } else {
-            rootY.parent = rootX;
-            rootX.rank++;
-        }
-    }
-
-    /**
-     * Finds and returns the root node of the set that contains node
-     * @param {DisjointSetNode} node
-     * @return {DisjointSetNode}
-     */
-    find(node) {
-        var rootX = node;
-        while (rootX.parent !== null) {
-            rootX = rootX.parent;
-        }
-        var toUpdateX = node;
-        while (toUpdateX.parent !== null) {
-            var toUpdateParent = toUpdateX;
-            toUpdateX = toUpdateX.parent;
-            toUpdateParent.parent = rootX;
-        }
-        return rootX;
-    }
-
-    /**
-     * Returns true if x and y belong to the same set
-     * @param {DisjointSetNode} x
-     * @param {DisjointSetNode} y
-     */
-    connected(x, y) {
-        return this.find(x) === this.find(y);
-    }
-}
-
-module.exports = DisjointSet;
-
-function DisjointSetNode(value) {
-    this.value = value;
-    this.parent = null;
-    this.rank = 0;
 }
 
 
