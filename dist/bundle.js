@@ -100,11 +100,12 @@ document.addEventListener('DOMContentLoaded', () => {
   weighted.addEventListener("click", () => {
     new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40);
   });
-  let dfsCanvas = document.getElementById('canvas-1');
-  dfsCanvas.addEventListener("click", () => {
-    let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
+  // let dfsCanvas = document.getElementById('canvas-1');
+  // dfsCanvas.addEventListener("click", () => {
+    let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](5, 5, 'canvas-1');
+    dfs.generatePaths([0,0, true]);
     dfs.animate([0,0]);
-  });
+  // });
   let bfsCanvas = document.getElementById('canvas-5');
   bfsCanvas.addEventListener("click", () => {
     let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_5__["default"]([0, 0], [38, 38]);
@@ -305,12 +306,15 @@ class DFS {
     this.width = width;
     this.height = height;
     this.stack = []
+    debugger
   }
 
   animate (startNode, callback, fillColor) {
+    debugger
       let canvas = document.getElementById(this.canvasId);
       let context = canvas.getContext("2d");
       let path = this.generatePaths(startNode);
+      debugger
       let connector;
       context.fillStyle='white'
       let i = 0;
@@ -318,7 +322,7 @@ class DFS {
         if (i === 0) {
           connector = null;
         } else {
-          connector = this.connector(path[i-1], path[i])
+          connector = _dfs_util__WEBPACK_IMPORTED_MODULE_2__["connector"](path[i-1], path[i])
         }
         if (connector) {
           context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
@@ -339,21 +343,27 @@ class DFS {
   }
 
   generatePaths (startNode) {
-    debugger
     startNode[2] = true;
     this.stack.push(startNode);
     let last = startNode;
-    while (_dfs_util__WEBPACK_IMPORTED_MODULE_2__["unvisited"](this.grid).length) {
+    while (this.unvisited().length) {
+      debugger
+      console.log(this.unvisited())
       let step = this.nextStep(last);
       if (!step) {
-        last = _dfs_util__WEBPACK_IMPORTED_MODULE_2__["backtrack"](-1, this.stack, this.nextStep)
+        last = _dfs_util__WEBPACK_IMPORTED_MODULE_2__["backtrack"](-1, this.stack, () => this.nextStep)
       } else {
         step[2] = true;
         this.stack.push(step);
         last = this.stack.slice(-1)[0];
       }
     }
+    debugger
     return this.stack;
+  }
+
+  unvisited () {
+    return this.grid.filter(cell => cell[2] === false)
   }
 
   nextStep (startNode) {
@@ -437,9 +447,9 @@ __webpack_require__.r(__webpack_exports__);
     return node[2] === true
   }
 
-  const backtrack = (n, stack, nextStep) => {
+  const backtrack = (n, stack, callback) => {
     let current = stack.slice(n)[0];
-    if (nextStep(current)) {
+    if (callback(current)) {
       stack.push(current)
       return current;
     } else {

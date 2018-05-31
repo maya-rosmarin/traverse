@@ -41,9 +41,9 @@ import { createGridArray, createGridGraphic } from './create_grid';
     return node[2] === true
   }
 
-  export const backtrack = (n, stack, nextStep) => {
+  export const backtrack = (n, stack, callback) => {
     let current = stack.slice(n)[0];
-    if (nextStep(current)) {
+    if (callback(current)) {
       stack.push(current)
       return current;
     } else {
