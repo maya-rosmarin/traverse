@@ -6,6 +6,20 @@ export default class Prims () {
     this.width = width;
     this.height = height;
     this.frontier = [];
+    this.fill = [];
+  }
+
+  connectCells () {
+    let shuffled = this.randomElement(this.grid);
+    this.mark(shuffled[0], shuffled[1]);
+    while (this.frontier.length > 0) {
+      let x = this.randomElement(this.frontier)[0];
+      let y = this.randomElement(this.frontier)[1];
+      delete this.findFrontierByLocation(x, y);
+      let neighbors = this.neighbors(x, y);
+      let nx = this.randomElement(neighbors)[0];
+      let ny = this.randomElement(neighbors)[1];
+    }
   }
 
   mark (xCoord, yCoord) {
@@ -26,19 +40,38 @@ export default class Prims () {
   neighbors (xCoord, yCoord) {
     let neighbors = [];
     if (xCoord > 0 && this.findCellByLocation(yCoord, xCoord - 2)) {
-      neighbors.push(this.findCellByLocation(xCoord - 2, yCoord))
+      neighbors.push(this.findCellByLocation(xCoord - 2, yCoord));
     }
-    if (xCoord + 2 < this.height && this.findCellByLocation(yCoord, xCoord + 2)) {
-      neighbors.push(this.findCellByLocation(xCoord + 2, yCoord))
+    if (xCoord + 2 < this.width && this.findCellByLocation(yCoord, xCoord + 2)) {
+      neighbors.push(this.findCellByLocation(xCoord + 2, yCoord));
     }
     if (yCoord > 0 && this.findCellByLocation(yCoord - 2, xCoord)) {
-      neighbors.push(this.findCellByLocation(xCoord, yCoord - 2))
+      neighbors.push(this.findCellByLocation(xCoord, yCoord - 2));
     }
-    if (yCoord + 1 < this.)
+    if (yCoord + 2 < this.height && this.findCellByLocation(yCoord + 2, xCoord)) {
+      neighbors.push(this.findCellByLocation(xCoord, yCoord + 2));
+    }
   }
 
   findCellByLocation (xCoord, yCoord) {
     return this.grid.find(cell => cell[0] === xCoord && cell[1] === yCoord);
+  }
+
+  findFrontierByLocation (xCoord, yCoord) {
+    return this.frontier.find(cell => cell[0] === xCoord && cell[1] === yCoord);
+  }
+
+  shuffle (array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+  }
+
+  randomElement (array) {
+    let randomIndex = Math.floor(Math.random() * neighbors.length);
+    return array[randomIndex];
   }
 
   animate () {
