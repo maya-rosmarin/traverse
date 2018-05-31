@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let bfsCanvas = document.getElementById('canvas-5');
   bfsCanvas.addEventListener("click", () => {
     let bfs = new BFS([0, 0], [38, 38]);
-    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'pink'))
+    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white'))
   });
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }

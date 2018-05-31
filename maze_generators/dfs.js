@@ -121,7 +121,7 @@ export default class DFS {
       let context = canvas.getContext("2d");
       let path = this.generatePaths(startNode);
       let connector;
-      context.fillStyle='white'
+      context.fillStyle='#B7979C'
       let i = 0;
       let interval = setInterval( () => {
         if (i === 0) {

@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let bfsCanvas = document.getElementById('canvas-5');
   bfsCanvas.addEventListener("click", () => {
     let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_5__["default"]([0, 0], [38, 38]);
-    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'pink'))
+    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white'))
   });
   // if (isScrolledIntoView(document.getElementById('canvas-1'))) {
   // }
@@ -171,7 +171,7 @@ const createGridGraphic = (width, height) => {
   let context = canvas.getContext("2d");
   context.fillStyle = 'black';
   context.fillRect(0, 0, width + 10, height + 10);
-  context.fillStyle = 'white';
+  context.fillStyle = '#B7979C';
   context.fillRect(0, 10, 10, 10);
   context.fillRect(width, height - 10, 10, 10);
 }
@@ -179,7 +179,7 @@ const createGridGraphic = (width, height) => {
 const createGridStatic = (width, height) => {
   let canvas = document.getElementById("canvas-2");
   let context = canvas.getContext("2d");
-  context.fillStyle = 'lightgray';
+  context.fillStyle = '#d6c4c7';
   context.fillRect(0, 0, 500, 500);
   let bw = 500;
   let bh = 500;
@@ -196,12 +196,12 @@ const createGridStatic = (width, height) => {
     context.strokeStyle = 'black';
     context.stroke();
   }
-  context.fillStyle = 'gray';
+  context.fillStyle = '#996D73';
   for (let k = 0; k < 450; k += 100) {
     context.fillRect(k, 0, 50, 2000)
     context.fillRect(0, k, 2000, 50)
   }
-  context.fillStyle = 'lightgray';
+  context.fillStyle = '#d6c4c7';
   let l = 100;
   let m = 50;
   let interval = setInterval(() => {
@@ -240,9 +240,9 @@ function updateCanvas () {
     for(let x=0; x<widthCount;x++){
       for(let y=0; y<heightCount;y++){
         if (x % 2 === 0 || y % 2 === 0) {
-          context.fillStyle = 'gray';
+          context.fillStyle = '#996D73';
         } else {
-          context.fillStyle = 'lightgray'
+          context.fillStyle = '#d6c4c7'
         }
         context.beginPath();
         context.arc(rad+gaps*x,rad+ gaps*y, rad, 0, Math.PI*2, true );
@@ -264,7 +264,7 @@ function updateCanvas () {
         }
         x2++;
       }, 100)
-      context.fillStyle = 'lightgray';
+      context.fillStyle = '#d6c4c7';
     }
 }
 
@@ -415,7 +415,7 @@ class DFS {
       let context = canvas.getContext("2d");
       let path = this.generatePaths(startNode);
       let connector;
-      context.fillStyle='white'
+      context.fillStyle='#B7979C'
       let i = 0;
       let interval = setInterval( () => {
         if (i === 0) {
