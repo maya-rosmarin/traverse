@@ -31,7 +31,7 @@ export default class BFS {
         context.fillStyle=fillColor;
         context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
         i++;
-        document.getElementById("solved").innerHTML = 'In progress...'
+        document.getElementById("solved").innerHTML = 'Solving...'
 
       if (i >= path.length) {
         document.getElementById("solved").innerHTML = 'Solved!'
