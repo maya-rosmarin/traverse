@@ -1,7 +1,6 @@
 import { createGridArray, createGridGraphic } from './create_grid';
 
   export const connector = (startNode, node) => {
-    debugger
     let connector;
       if (startNode[0] == node[0] && startNode[1] == node[1] + 2) {
         connector = [node[0], node[1] + 1];
@@ -52,7 +51,6 @@ import { createGridArray, createGridGraphic } from './create_grid';
   }
 
   export const neighbors = (startNode, grid) => {
-    debugger
     let nodes = [];
     grid.forEach((node) => {
       if ((startNode[0] == node[0] && startNode[1] == node[1] + 2) || (startNode[0] == node[0] && startNode[1] == node[1] - 2) || (startNode[0] == node[0] + 2 && startNode[1] == node[1]) || (startNode[0] == node[0] - 2 && startNode[1] == node[1])) {

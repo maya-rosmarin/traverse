@@ -38,7 +38,6 @@ export default class Kruskal {
     let dX = {'e': 0, 'w': 0, 'n': -2, 's': 2};
     let oppositeDirections = {'e': 'w', 'w': 'e', 'n': 's', 's': 'n'};
     while (this.edges.length > 0) {
-      debugger
       let x = this.edges[0][0];
       let y = this.edges[0][1];
       let direction = this.edges[0][2];

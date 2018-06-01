@@ -2,6 +2,7 @@ import DFS from './maze_generators/dfs';
 import DFSWeighted from './maze_generators/dfs_weighted';
 import DFSUtil from './maze_generators/dfs_util';
 import Kruskal from './maze_generators/kruskal';
+import Prims from './maze_generators/prims';
 import { createGridArray, createGridGraphic, createGridStatic, init, isScrolledIntoView } from './maze_generators/create_grid';
 import BFS from './maze_solvers/bfs';
 
@@ -48,7 +49,9 @@ document.addEventListener('DOMContentLoaded', () => {
   kruskalReset.addEventListener("click", () => {
     kruskalCanvas.clearCanvas();
   });
-
+  let prims = new Prims(40, 40);
+  prims.connectCells();
+  prims.animate();
   // let dfsutil = new DFSUtil(5, 5, 'canvas-7');
   // dfsutil.generatePaths([0,0]);
 });
