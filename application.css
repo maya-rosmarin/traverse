@@ -132,3 +132,23 @@ body {
   flex-direction: column;
   align-items: center;
 }
+
+.contact {
+  size: 5px;
+  color: #B7979C;
+  height: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  margin-right: 20px;
+}
+
+#github {
+}

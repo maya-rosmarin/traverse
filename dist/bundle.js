@@ -890,6 +890,34 @@ class Prims {
     return path;
   }
 
+//   animatePath () {
+//     let path = [this.fill[0]];
+//     for (let i = 1; i < this.fill.length; i++) {
+//       let last = path[path.length - 1];
+//         if (!this.isNeighbor(this.fill[i], last)) {
+//           let connector = this.connectRandomNeighbor(this.fill[i], path);
+//               // path.push(this.wall(connector, this.fill[i]));
+//               // path.push(this.fill[i]);
+//               let neighbors = this.neighbors(this.fill[i][0], this.fill[i][1]);
+//               for (let j = 0; j < neighbors.length; j++) {
+//                 let connectors = [];
+//                 if (this.arrayIncludes(path, neighbors[j])) {
+//                   path.push(this.wall(neighbors[j], this.fill[i]));
+//                   path.push(this.fill[i]);
+//                   break;
+//                 }
+//               }
+//             } else {
+//                   let last = path[path.length - 1];
+//                   if (this.isNeighbor(this.fill[i], last)) {
+//                     path.push(this.wall(this.fill[i], last));
+//                     path.push(this.fill[i]);
+//             }
+//     }
+//   }
+//   return path;
+// }
+
   connectRandomNeighbor (node, path) {
     let neighbors = this.neighbors(node[0], node[1]);
     let connectors = [];
