@@ -139,6 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
     kruskalCanvas.clearCanvas();
   });
   let prims = new _maze_generators_prims__WEBPACK_IMPORTED_MODULE_4__["default"](40, 40);
+  prims.isNeighbor([2,2], [0,0])
   prims.connectCells();
   prims.animate();
   // let dfsutil = new DFSUtil(5, 5, 'canvas-7');
@@ -754,38 +755,6 @@ class Prims {
     this.fill = [];
   }
 
-  // connectCells () {
-  //   debugger
-  //   let shuffled = this.randomElement(this.grid);
-  //   this.fill.push(shuffled);
-  //   this.mark(shuffled[0], shuffled[1]);
-  //   while (this.frontier.length > 0) {
-  //     console.log(this.frontier);
-  //     let randomElement = this.randomElement(this.frontier);
-  //     if (!randomElement) {
-  //       randomElement = this.randomElement(this.frontier);
-  //     }
-  //     this.fill.push(randomElement);
-  //     let x = randomElement[0];
-  //     let y = randomElement[1];
-  //     delete this.frontier[this.frontier.indexOf(this.findFrontierByLocation(x, y))];
-  //     let neighbors = this.neighbors(this.findCellByLocation(x, y)[0], this.findCellByLocation(x, y)[1]);
-  //     let randomNeighbor = this.randomElement(neighbors);
-  //     if (!randomNeighbor) {
-  //       randomNeighbor = this.randomElement(neighbors);
-  //     }
-  //     this.fill.push(randomNeighbor);
-  //     let nx = randomNeighbor[0];
-  //     let ny = randomNeighbor[1];
-  //     let direction = this.direction(x, y, nx, ny);
-  //     let oppositeDirection = this.oppositeDirection(x, y, nx, ny);
-  //     this.findCellByLocation(y, x)[2] = direction;
-  //     this.findCellByLocation(ny, nx)[2] = oppositeDirection;
-  //     this.mark(x, y);
-  //   }
-  //   return this.fill;
-  // }
-
   connectCells () {
       let startNode = this.randomElement(this.grid);
       this.fill.push(startNode);
@@ -805,11 +774,14 @@ class Prims {
         }
       }
       debugger
+      console.log(this.fill);
+      let path = this.animatePath();
+      console.log(path)
       return this.fill;
   }
 
   mark (xCoord, yCoord) {
-    this.findCellByLocation(xCoord, yCoord)[2] = IN
+    // this.findCellByLocation(xCoord, yCoord)[2] = IN
     this.addFrontier(xCoord-2, yCoord)
     this.addFrontier(xCoord+2, yCoord)
     this.addFrontier(xCoord, yCoord-2)
@@ -839,6 +811,7 @@ class Prims {
     }
     return neighbors;
   }
+
 
   findCellByLocation (xCoord, yCoord) {
     return this.grid.find(cell => cell[0] === xCoord && cell[1] === yCoord);
@@ -879,30 +852,6 @@ class Prims {
     return filtered;
   }
 
-  // direction (fx, fy, tx, ty) {
-  //   if (fx < tx) {
-  //     return 4;
-  //   } else if (fx > tx) {
-  //     return 8;
-  //   } else if (fy < ty) {
-  //     return 2;
-  //   } else if (fy > ty) {
-  //     return 1;
-  //   }
-  // }
-  //
-  // oppositeDirection (fx, fy, tx, ty) {
-  //   if (fx < tx) {
-  //     return 8;
-  //   } else if (fx > tx) {
-  //     return 4;
-  //   } else if (fy < ty) {
-  //     return 1;
-  //   } else if (fy > ty) {
-  //     return 2;
-  //   }
-  // }
-
   arrayIncludes (array, node) {
     for (let i = 0; i < array.length; i++) {
       if (array[i][0] == node[0] && array[i][1] == node[1]) {
@@ -918,23 +867,83 @@ class Prims {
     return [xCoord, yCoord];
   }
 
+  // animatePath () {
+  //   debugger
+  //   let path = [];
+  //   let connectors = [];
+  //   for (let i = 0; i < this.fill.length; i++) {
+  //     debugger
+  //     let node = this.fill[i];
+  //     if (this.isNeighbor(node, this.fill[i+1])) {
+  //       path.push(node);
+  //       path.push(this.wall(node, this.fill[i+1]));
+  //     } else {
+  //       let neighbors = this.neighbors(this.fill[i][0], this.fill[i][1]);
+  //       for (let j = 0; j < neighbors.length; j++) {
+  //         if (this.arrayIncludes(path, neighbors[j])) {
+  //           connectors.push(neighbors[j])
+  //         };
+  //       }
+  //       path.push(this.wall(this.fill[i], this.randomElement(connectors)));
+  //       path.push(this.fill[i])
+  //     }
+  //   }
+  //   debugger
+  //   return path;
+  // }
+
+  animatePath () {
+    debugger
+    let path = [this.fill[0]];
+    for (let i = 1; i < this.fill.length; i++) {
+      let last = path[path.length - 1];
+      if (this.isNeighbor(this.fill[i], last)) {
+        path.push(this.wall(this.fill[i], last));
+        path.push(this.fill[i]);
+      } else {
+        let neighbors = this.neighbors(this.fill[i][0], this.fill[i][1]);
+        for (let j = 0; j < neighbors.length; j++) {
+          if (this.arrayIncludes(path, neighbors[j])) {
+            path.push(this.wall(neighbors[j], this.fill[i]));
+            path.push(this.fill[i]);
+            break;
+          }
+        }
+      }
+    }
+    return path;
+  }
+
+  isNeighbor (node1, node2) {
+    let neighbors = this.neighbors(node1[0], node1[1]);
+    if (this.arrayIncludes(neighbors, node2)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   animate () {
     let canvas = document.getElementById('canvas-7');
     let context = canvas.getContext("2d");
     context.fillStyle='#B7979C';
     // context.fillRect(0, 0, 10, 10);
-    let fill = this.fill;
+    // let fill = this.filter(this.fill);
+    let fill = this.filter(this.animatePath())
     let i = 0;
     let interval = setInterval( () => {
+      if (!fill[i]) {
+        debugger
+      }
       context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
       i++;
       if (i >= fill.length) {
-        if (callback) {
-          return callback();
-        }
+        // if (callback) {
+        //   return callback();
+        // }
         clearInterval(interval);
       }
-    }, 2);
+    }, 5);
   }
 }
 

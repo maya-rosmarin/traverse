@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
     kruskalCanvas.clearCanvas();
   });
   let prims = new Prims(40, 40);
+  prims.isNeighbor([2,2], [0,0])
   prims.connectCells();
   prims.animate();
   // let dfsutil = new DFSUtil(5, 5, 'canvas-7');
