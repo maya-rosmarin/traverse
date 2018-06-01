@@ -138,12 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
   kruskalReset.addEventListener("click", () => {
     kruskalCanvas.clearCanvas();
   });
-  let prims = new _maze_generators_prims__WEBPACK_IMPORTED_MODULE_4__["default"](40, 40);
-  prims.isNeighbor([2,2], [0,0])
-  prims.connectCells();
-  prims.animate();
-  // let dfsutil = new DFSUtil(5, 5, 'canvas-7');
-  // dfsutil.generatePaths([0,0]);
+  let prims = document.getElementById('prims-run');
+  let primsCanvas = new _maze_generators_prims__WEBPACK_IMPORTED_MODULE_4__["default"](40, 40);
+  prims.addEventListener("click", () => {
+    primsCanvas.animatePath()
+    primsCanvas.connectCells();
+    primsCanvas.animate();
+  })
 });
 
 
@@ -768,20 +769,16 @@ class Prims {
           this.mark(nextNode[0], nextNode[1]);
           let last = this.fill[this.fill.length - 1];
           this.fill.push(nextNode);
-          // this.fill.push(this.wall(last, nextNode));
           delete this.frontier[this.frontier.indexOf(nextNode)];
           this.frontier = this.filter(this.frontier);
         }
       }
       debugger
-      console.log(this.fill);
       let path = this.animatePath();
-      console.log(path)
       return this.fill;
   }
 
   mark (xCoord, yCoord) {
-    // this.findCellByLocation(xCoord, yCoord)[2] = IN
     this.addFrontier(xCoord-2, yCoord)
     this.addFrontier(xCoord+2, yCoord)
     this.addFrontier(xCoord, yCoord-2)
@@ -867,31 +864,6 @@ class Prims {
     return [xCoord, yCoord];
   }
 
-  // animatePath () {
-  //   debugger
-  //   let path = [];
-  //   let connectors = [];
-  //   for (let i = 0; i < this.fill.length; i++) {
-  //     debugger
-  //     let node = this.fill[i];
-  //     if (this.isNeighbor(node, this.fill[i+1])) {
-  //       path.push(node);
-  //       path.push(this.wall(node, this.fill[i+1]));
-  //     } else {
-  //       let neighbors = this.neighbors(this.fill[i][0], this.fill[i][1]);
-  //       for (let j = 0; j < neighbors.length; j++) {
-  //         if (this.arrayIncludes(path, neighbors[j])) {
-  //           connectors.push(neighbors[j])
-  //         };
-  //       }
-  //       path.push(this.wall(this.fill[i], this.randomElement(connectors)));
-  //       path.push(this.fill[i])
-  //     }
-  //   }
-  //   debugger
-  //   return path;
-  // }
-
   animatePath () {
     debugger
     let path = [this.fill[0]];
@@ -901,8 +873,12 @@ class Prims {
         path.push(this.wall(this.fill[i], last));
         path.push(this.fill[i]);
       } else {
+        // let connector = this.connectRandomNeighbor(this.fill[i], path);
+        // path.push(this.wall(connector, this.fill[i]));
+        // path.push(this.fill[i]);
         let neighbors = this.neighbors(this.fill[i][0], this.fill[i][1]);
         for (let j = 0; j < neighbors.length; j++) {
+          let connectors = [];
           if (this.arrayIncludes(path, neighbors[j])) {
             path.push(this.wall(neighbors[j], this.fill[i]));
             path.push(this.fill[i]);
@@ -912,6 +888,17 @@ class Prims {
       }
     }
     return path;
+  }
+
+  connectRandomNeighbor (node, path) {
+    let neighbors = this.neighbors(node[0], node[1]);
+    let connectors = [];
+    for (let j = 0; j < neighbors.length; j++) {
+      if (this.arrayIncludes(path, neighbors[j])) {
+        connectors.push(neighbors[j])
+      }
+    }
+    return this.randomElement(connectors)
   }
 
   isNeighbor (node1, node2) {
@@ -932,9 +919,6 @@ class Prims {
     let fill = this.filter(this.animatePath())
     let i = 0;
     let interval = setInterval( () => {
-      if (!fill[i]) {
-        debugger
-      }
       context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
       i++;
       if (i >= fill.length) {
@@ -943,7 +927,7 @@ class Prims {
         // }
         clearInterval(interval);
       }
-    }, 5);
+    }, 1);
   }
 }
 

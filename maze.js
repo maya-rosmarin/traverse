@@ -49,10 +49,11 @@ document.addEventListener('DOMContentLoaded', () => {
   kruskalReset.addEventListener("click", () => {
     kruskalCanvas.clearCanvas();
   });
-  let prims = new Prims(40, 40);
-  prims.isNeighbor([2,2], [0,0])
-  prims.connectCells();
-  prims.animate();
-  // let dfsutil = new DFSUtil(5, 5, 'canvas-7');
-  // dfsutil.generatePaths([0,0]);
+  let prims = document.getElementById('prims-run');
+  let primsCanvas = new Prims(40, 40);
+  prims.addEventListener("click", () => {
+    primsCanvas.animatePath()
+    primsCanvas.connectCells();
+    primsCanvas.animate();
+  })
 });
