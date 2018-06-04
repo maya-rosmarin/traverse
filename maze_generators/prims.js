@@ -12,6 +12,12 @@ export default class Prims {
     this.fill = [];
   }
 
+  clearCanvas () {
+    let canvas = document.getElementById('canvas-7');
+    let context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
   connectCells () {
       let startNode = this.randomElement(this.grid);
       this.fill.push(startNode);

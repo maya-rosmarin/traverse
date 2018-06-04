@@ -7,7 +7,6 @@ export default class BFS {
     this.dfs = new DFS(40, 40, 'canvas-5');
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
-    this.dfs.animate([0,0], () => this.animate(this.exploreNodes(), '#cbb3b7'))
   }
 
   clearCanvas () {

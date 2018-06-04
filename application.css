@@ -147,11 +147,8 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 10px;
-  margin-right: 20px;
-}
-
-#github {
-  /* margin-bottom: 5px; */
+  color: #B7979C;
+  font-size: 20px;
 }
 
 input[type="button"] {

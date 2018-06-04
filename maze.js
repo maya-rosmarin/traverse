@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dfsWeighted.animate([-2, 0]);
   });
   let weightedReset = document.getElementById('dfs-weighted-reset');
-  weighted.addEventListener("click", (event) => {
+  weightedReset.addEventListener("click", (event) => {
     event.preventDefault();
     dfsWeighted.clearCanvas();
   });
@@ -32,8 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dfs.clearCanvas();
   })
   let bfsCanvas = document.getElementById('bfs-solver-run');
+  let bfs = new BFS([0, 0], [38, 38]);
   bfsCanvas.addEventListener("click", () => {
-    let bfs = new BFS([0, 0], [38, 38]);
     bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white'))
   });
   let bfsReset = document.getElementById('bfs-solver-reset');
@@ -56,4 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     primsCanvas.connectCells();
     primsCanvas.animate();
   })
+  let primsReset = document.getElementById('prims-reset');
+  primsReset.addEventListener("click", primsCanvas.clearCanvas);
 });

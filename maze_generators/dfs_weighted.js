@@ -13,7 +13,7 @@ export default class DFSWeighted {
   clearCanvas () {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
-    context.clearRect(10, 10, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   animate (startNode) {

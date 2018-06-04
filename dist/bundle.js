@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', () => {
     dfsWeighted.animate([-2, 0]);
   });
   let weightedReset = document.getElementById('dfs-weighted-reset');
-  weighted.addEventListener("click", (event) => {
+  weightedReset.addEventListener("click", (event) => {
     event.preventDefault();
     dfsWeighted.clearCanvas();
   });
@@ -121,8 +121,8 @@ document.addEventListener('DOMContentLoaded', () => {
     dfs.clearCanvas();
   })
   let bfsCanvas = document.getElementById('bfs-solver-run');
+  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_6__["default"]([0, 0], [38, 38]);
   bfsCanvas.addEventListener("click", () => {
-    let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_6__["default"]([0, 0], [38, 38]);
     bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white'))
   });
   let bfsReset = document.getElementById('bfs-solver-reset');
@@ -145,6 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
     primsCanvas.connectCells();
     primsCanvas.animate();
   })
+  let primsReset = document.getElementById('prims-reset');
+  primsReset.addEventListener("click", primsCanvas.clearCanvas);
 });
 
 
@@ -531,7 +533,7 @@ class DFSWeighted {
   clearCanvas () {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
-    context.clearRect(10, 10, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   animate (startNode) {
@@ -754,6 +756,12 @@ class Prims {
     this.height = height;
     this.frontier = [];
     this.fill = [];
+  }
+
+  clearCanvas () {
+    let canvas = document.getElementById('canvas-7');
+    let context = canvas.getContext('2d');
+    context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   connectCells () {
@@ -982,7 +990,6 @@ class BFS {
     this.dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-5');
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
-    this.dfs.animate([0,0], () => this.animate(this.exploreNodes(), '#cbb3b7'))
   }
 
   clearCanvas () {
