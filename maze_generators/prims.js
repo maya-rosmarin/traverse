@@ -10,6 +10,7 @@ export default class Prims {
     this.height = height;
     this.frontier = [];
     this.fill = [];
+    this.interval = null;
     this.connectCells();
     this.animatePath();
   }
@@ -21,9 +22,9 @@ export default class Prims {
   }
 
   connectCells () {
-      let startNode = this.randomElement(this.grid);
-      this.fill.push(startNode);
-      this.mark(startNode[0], startNode[1]);
+      this.startNode = this.randomElement(this.grid);
+      this.fill.push(this.startNode);
+      this.mark(this.startNode[0], this.startNode[1]);
       while (this.frontier.length) {
         let nextNode = this.randomElement(this.frontier);
         if (!nextNode) {
@@ -182,20 +183,20 @@ export default class Prims {
     }
   }
 
-  animate () {
+  animate (callback) {
     let canvas = document.getElementById('canvas-7');
     let context = canvas.getContext("2d");
     context.fillStyle='#B7979C';
     let fill = this.filter(this.animatePath())
     let i = 0;
-    let interval = setInterval( () => {
+    this.interval = setInterval( () => {
       context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
       i++;
       if (i >= fill.length) {
-        // if (callback) {
-        //   return callback();
-        // }
-        clearInterval(interval);
+        clearInterval(this.interval);
+        if (callback) {
+          return callback();
+        }
       }
     }, 1);
   }

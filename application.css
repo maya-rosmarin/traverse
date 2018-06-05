@@ -20,8 +20,6 @@ body {
 }
 
 #canvas-2 {
-  border-right: 1px solid black;
-  border-bottom: 1px solid black;
   margin-right: 50px;
 }
 
@@ -49,10 +47,10 @@ body {
 }
 
 #canvas-1 {
-  background-color: black;
+  background-color: gray;
   margin-left: 50px;
   margin-right: 50px;
-  border: 1px solid black;
+  border: 1px solid gray;
   padding-right: 10px;
   padding-bottom: 10px;
 }

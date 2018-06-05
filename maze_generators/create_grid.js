@@ -26,7 +26,7 @@ export const createWallsArray = (height, width) => {
 export const createGridGraphic = (width, height) => {
   let canvas = document.getElementById("canvas-1");
   let context = canvas.getContext("2d");
-  context.fillStyle = 'black';
+  context.fillStyle = 'gray';
   context.fillRect(0, 0, width + 10, height + 10);
   context.fillStyle = '#B7979C';
   context.fillRect(width, height - 10, 10, 10);

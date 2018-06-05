@@ -1,39 +1,42 @@
 import DFS from '../maze_generators/dfs';
 
 export default class BFS {
-  constructor (startNode, targetNode) {
+  constructor (startNode, targetNode, canvasId) {
     this.startNode = startNode;
     this.targetNode = targetNode;
-    this.dfs = new DFS(40, 40, 'canvas-5');
+    this.canvasId = canvasId;
+    this.dfs = new DFS(40, 40, this.canvasId);
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
+    this.interval = null;
   }
 
   clearCanvas () {
-    let canvas = document.getElementById('canvas-5');
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  animate (path, fillColor) {
-    let canvas = document.getElementById("canvas-5");
+  animate (path, fillColor, offset, animateInterval = 30) {
+    debugger
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
     context.fillRect(0, 10, 10, 10);
     context.fillRect(400, 390, 10, 10);
     context.fillStyle=fillColor;
     let connector;
     let i = 0;
-    let interval = setInterval(() => {
+    this.interval = setInterval(() => {
         context.fillStyle=fillColor;
-        context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+        context.fillRect(10*path[i][0] + offset, 10*path[i][1] + offset, 10, 10);
         i++;
         document.getElementById("solved").innerHTML = 'Solving...'
 
       if (i >= path.length) {
         document.getElementById("solved").innerHTML = 'Solved!'
-        clearInterval(interval);
+        clearInterval(this.interval);
       }
-    }, 30)
+    }, animateInterval)
   }
 
   exploreNodes () {

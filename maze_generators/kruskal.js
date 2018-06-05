@@ -6,7 +6,8 @@ export default class Kruskal {
     this.sets = this.createSets(width, height);
     this.edges = this.shuffle(this.createEdges(width, height));
     this.fill = [];
-    this.connectNodes()
+    this.interval = null;
+    this.connectNodes();
   }
 
   clearCanvas () {
@@ -21,14 +22,14 @@ export default class Kruskal {
     let fill = this.fill;
     context.fillStyle='white';
     let i = 0;
-    let interval = setInterval( () => {
+    this.interval = setInterval( () => {
       context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
       i++;
       if (i >= fill.length) {
         if (callback) {
           return callback();
         }
-        clearInterval(interval);
+        clearInterval(this.interval);
       }
     }, 2);
   }

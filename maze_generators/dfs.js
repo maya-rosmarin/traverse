@@ -9,7 +9,8 @@ export default class DFS {
     this.canvasId = canvasId;
     this.width = width;
     this.height = height;
-    this.stack = []
+    this.stack = [];
+    this.interval = null;
   }
 
   clearCanvas () {
@@ -25,7 +26,7 @@ export default class DFS {
     let connector;
     context.fillStyle='#B7979C'
     let i = 0;
-    let interval = setInterval( () => {
+    this.interval = setInterval( () => {
       if (i === 0) {
         connector = null;
       } else {
@@ -37,7 +38,7 @@ export default class DFS {
       context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
       i++;
       if (i >= path.length) {
-        clearInterval(interval);
+        clearInterval(this.interval);
         context.fillRect(410, 400, 10, 10)
         document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
         if (callback) {

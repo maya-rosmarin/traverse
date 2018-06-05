@@ -8,6 +8,7 @@ export default class DFSWeighted {
     createGridGraphic(width*10, height*10);
     this.canvasId = canvasId;
     this.stack = []
+    this.interval = null;
   }
 
   clearCanvas () {
@@ -22,7 +23,7 @@ export default class DFSWeighted {
     let path = this.generatePaths(startNode);
     let connector;
     let i = 0;
-    let interval = setInterval( () => {
+    this.interval = setInterval( () => {
       if (i === 0) {
         connector = null;
       } else {
@@ -33,7 +34,7 @@ export default class DFSWeighted {
         context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
         i++;
         if (i >= path.length) {
-          clearInterval(interval);
+          clearInterval(this.interval);
         }
       }, 20);
       context.fillStyle='#B7979C';

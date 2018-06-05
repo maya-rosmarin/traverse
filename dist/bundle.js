@@ -101,50 +101,76 @@ document.addEventListener('DOMContentLoaded', () => {
   let weighted = document.getElementById('dfs-weighted-run');
   let dfsWeighted = new _maze_generators_dfs_weighted__WEBPACK_IMPORTED_MODULE_1__["default"](40, 40, 'canvas-4');
   weighted.addEventListener("click", (event) => {
-    event.preventDefault();
+    clearInterval(dfsWeighted.interval)
+    dfsWeighted.clearCanvas();
     dfsWeighted.animate([-2, 0]);
   });
   let weightedReset = document.getElementById('dfs-weighted-reset');
   weightedReset.addEventListener("click", (event) => {
-    event.preventDefault();
+    clearInterval(dfsWeighted.interval);
     dfsWeighted.clearCanvas();
   });
   let dfsCanvas = document.getElementById('dfs-random-run');
   let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
   dfsCanvas.addEventListener("click", (event) => {
     event.preventDefault();
+    clearInterval(dfs.interval);
+    dfs.clearCanvas();
     dfs.animate([0,0]);
   });
   let dfsReset = document.getElementById('dfs-random-reset');
   dfsReset.addEventListener("click", (event) => {
     event.preventDefault();
+    clearInterval(dfs.interval);
     dfs.clearCanvas();
   })
   let bfsCanvas = document.getElementById('bfs-solver-run');
-  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_6__["default"]([0, 0], [38, 38]);
+  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_6__["default"]([0, 0], [38, 38], 'canvas-5');
   bfsCanvas.addEventListener("click", () => {
-    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white'))
+    clearInterval(bfs.dfs.interval);
+    clearInterval(bfs.interval)
+    bfs.dfs.clearCanvas();
+    bfs.clearCanvas();
+    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white', 10))
   });
   let bfsReset = document.getElementById('bfs-solver-reset');
   bfsReset.addEventListener("click", () => {
+    clearInterval(bfs.dfs.interval);
+    clearInterval(bfs.interval)
+    bfs.dfs.clearCanvas();
+    bfs.clearCanvas();
     bfs.clearCanvas();
   })
   let kruskal = document.getElementById('kruskal-run');
   let kruskalCanvas = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_3__["default"](40, 40);
   kruskal.addEventListener("click", () => {
+    kruskalCanvas.clearCanvas();
+    clearInterval(kruskalCanvas.interval);
     kruskalCanvas.animate();
   });
   let kruskalReset = document.getElementById('kruskal-reset');
   kruskalReset.addEventListener("click", () => {
+    clearInterval(kruskalCanvas.interval);
     kruskalCanvas.clearCanvas();
   });
   let prims = document.getElementById('prims-run');
   let primsCanvas = new _maze_generators_prims__WEBPACK_IMPORTED_MODULE_4__["default"](40, 40);
+  let primsBFS = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_6__["default"](primsCanvas.startNode, [40, 40], 'canvas-7');
   prims.addEventListener("click", () => {
-    primsCanvas.animate();
+    primsCanvas.clearCanvas();
+    primsBFS.clearCanvas();
+    clearInterval(primsCanvas.interval);
+    clearInterval(primsBFS.interval);
+    primsCanvas.animate(() => primsBFS.animate(primsCanvas.fill, 'lightgray', 0, 10));
   })
   let primsReset = document.getElementById('prims-reset');
-  primsReset.addEventListener("click", primsCanvas.clearCanvas);
+  primsReset.addEventListener("click", () => {
+    primsBFS.clearCanvas();
+    clearInterval(primsCanvas.interval);
+    clearInterval(primsBFS.interval);
+    primsCanvas.clearCanvas();
+    }
+  )
 });
 
 
@@ -195,7 +221,7 @@ const createWallsArray = (height, width) => {
 const createGridGraphic = (width, height) => {
   let canvas = document.getElementById("canvas-1");
   let context = canvas.getContext("2d");
-  context.fillStyle = 'black';
+  context.fillStyle = 'gray';
   context.fillRect(0, 0, width + 10, height + 10);
   context.fillStyle = '#B7979C';
   context.fillRect(width, height - 10, 10, 10);
@@ -329,7 +355,8 @@ class DFS {
     this.canvasId = canvasId;
     this.width = width;
     this.height = height;
-    this.stack = []
+    this.stack = [];
+    this.interval = null;
   }
 
   clearCanvas () {
@@ -345,7 +372,7 @@ class DFS {
     let connector;
     context.fillStyle='#B7979C'
     let i = 0;
-    let interval = setInterval( () => {
+    this.interval = setInterval( () => {
       if (i === 0) {
         connector = null;
       } else {
@@ -357,7 +384,7 @@ class DFS {
       context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
       i++;
       if (i >= path.length) {
-        clearInterval(interval);
+        clearInterval(this.interval);
         context.fillRect(410, 400, 10, 10)
         document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
         if (callback) {
@@ -535,6 +562,7 @@ class DFSWeighted {
     Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*10, height*10);
     this.canvasId = canvasId;
     this.stack = []
+    this.interval = null;
   }
 
   clearCanvas () {
@@ -549,7 +577,7 @@ class DFSWeighted {
     let path = this.generatePaths(startNode);
     let connector;
     let i = 0;
-    let interval = setInterval( () => {
+    this.interval = setInterval( () => {
       if (i === 0) {
         connector = null;
       } else {
@@ -560,7 +588,7 @@ class DFSWeighted {
         context.fillRect(10*path[i][0], 10*path[i][1], 10, 10);
         i++;
         if (i >= path.length) {
-          clearInterval(interval);
+          clearInterval(this.interval);
         }
       }, 20);
       context.fillStyle='#B7979C';
@@ -619,7 +647,8 @@ class Kruskal {
     this.sets = this.createSets(width, height);
     this.edges = this.shuffle(this.createEdges(width, height));
     this.fill = [];
-    this.connectNodes()
+    this.interval = null;
+    this.connectNodes();
   }
 
   clearCanvas () {
@@ -634,14 +663,14 @@ class Kruskal {
     let fill = this.fill;
     context.fillStyle='white';
     let i = 0;
-    let interval = setInterval( () => {
+    this.interval = setInterval( () => {
       context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
       i++;
       if (i >= fill.length) {
         if (callback) {
           return callback();
         }
-        clearInterval(interval);
+        clearInterval(this.interval);
       }
     }, 2);
   }
@@ -763,6 +792,7 @@ class Prims {
     this.height = height;
     this.frontier = [];
     this.fill = [];
+    this.interval = null;
     this.connectCells();
     this.animatePath();
   }
@@ -774,9 +804,9 @@ class Prims {
   }
 
   connectCells () {
-      let startNode = this.randomElement(this.grid);
-      this.fill.push(startNode);
-      this.mark(startNode[0], startNode[1]);
+      this.startNode = this.randomElement(this.grid);
+      this.fill.push(this.startNode);
+      this.mark(this.startNode[0], this.startNode[1]);
       while (this.frontier.length) {
         let nextNode = this.randomElement(this.frontier);
         if (!nextNode) {
@@ -935,20 +965,20 @@ class Prims {
     }
   }
 
-  animate () {
+  animate (callback) {
     let canvas = document.getElementById('canvas-7');
     let context = canvas.getContext("2d");
     context.fillStyle='#B7979C';
     let fill = this.filter(this.animatePath())
     let i = 0;
-    let interval = setInterval( () => {
+    this.interval = setInterval( () => {
       context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
       i++;
       if (i >= fill.length) {
-        // if (callback) {
-        //   return callback();
-        // }
-        clearInterval(interval);
+        clearInterval(this.interval);
+        if (callback) {
+          return callback();
+        }
       }
     }, 1);
   }
@@ -971,39 +1001,42 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class BFS {
-  constructor (startNode, targetNode) {
+  constructor (startNode, targetNode, canvasId) {
     this.startNode = startNode;
     this.targetNode = targetNode;
-    this.dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-5');
+    this.canvasId = canvasId;
+    this.dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, this.canvasId);
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
+    this.interval = null;
   }
 
   clearCanvas () {
-    let canvas = document.getElementById('canvas-5');
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  animate (path, fillColor) {
-    let canvas = document.getElementById("canvas-5");
+  animate (path, fillColor, offset, animateInterval = 30) {
+    debugger
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
     context.fillRect(0, 10, 10, 10);
     context.fillRect(400, 390, 10, 10);
     context.fillStyle=fillColor;
     let connector;
     let i = 0;
-    let interval = setInterval(() => {
+    this.interval = setInterval(() => {
         context.fillStyle=fillColor;
-        context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+        context.fillRect(10*path[i][0] + offset, 10*path[i][1] + offset, 10, 10);
         i++;
         document.getElementById("solved").innerHTML = 'Solving...'
 
       if (i >= path.length) {
         document.getElementById("solved").innerHTML = 'Solved!'
-        clearInterval(interval);
+        clearInterval(this.interval);
       }
-    }, 30)
+    }, animateInterval)
   }
 
   exploreNodes () {
