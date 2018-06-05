@@ -24,14 +24,6 @@ export default class BFS {
     let connector;
     let i = 0;
     let interval = setInterval(() => {
-        // if (i === 0) {
-        //   connector = null;
-        // } else {
-        //   connector = this.dfs.connector(path[i-1], path[i])
-        // }
-        // if (connector) {
-        //   context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
-        // }
         context.fillStyle=fillColor;
         context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
         i++;

@@ -31,7 +31,7 @@ export default class DFS {
       } else {
         connector = DFSUtil.connector(path[i-1], path[i])
       }
-      if (connector) {
+      if (connector && !this.arrayIncludes(path, connector)) {
         context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
       }
       context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
@@ -94,6 +94,15 @@ export default class DFS {
       }
     })
     return nodes;
+  }
+
+  arrayIncludes (array, node) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][0] == node[0] && array[i][1] == node[1]) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

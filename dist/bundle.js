@@ -141,8 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let prims = document.getElementById('prims-run');
   let primsCanvas = new _maze_generators_prims__WEBPACK_IMPORTED_MODULE_4__["default"](40, 40);
   prims.addEventListener("click", () => {
-    primsCanvas.animatePath()
-    // primsCanvas.connectCells();
     primsCanvas.animate();
   })
   let primsReset = document.getElementById('prims-reset');
@@ -353,7 +351,7 @@ class DFS {
       } else {
         connector = _dfs_util__WEBPACK_IMPORTED_MODULE_2__["connector"](path[i-1], path[i])
       }
-      if (connector) {
+      if (connector && !this.arrayIncludes(path, connector)) {
         context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
       }
       context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
@@ -416,6 +414,15 @@ class DFS {
       }
     })
     return nodes;
+  }
+
+  arrayIncludes (array, node) {
+    for (let i = 0; i < array.length; i++) {
+      if (array[i][0] == node[0] && array[i][1] == node[1]) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }
@@ -757,6 +764,7 @@ class Prims {
     this.frontier = [];
     this.fill = [];
     this.connectCells();
+    this.animatePath();
   }
 
   clearCanvas () {
@@ -872,33 +880,23 @@ class Prims {
   }
 
   animatePath () {
-    debugger
     let path = [this.fill[0]];
     for (let i = 1; i < this.fill.length; i++) {
-      debugger
       let last = path[path.length - 1];
       if (this.isNeighbor(this.fill[i], last) && !this.arrayIncludes(path, this.fill[i])) {
         path.push(this.wall(this.fill[i], last));
         path.push(this.fill[i]);
       } else if (!this.arrayIncludes(path, this.fill[i])) {
-        debugger
-        // let connector = this.connectRandomNeighbor(this.fill[i], path);
-        // path.push(this.wall(connector, this.fill[i]));
-        // path.push(this.fill[i]);
         let neighbors = this.neighbors(this.fill[i][0], this.fill[i][1]);
         let connectors = [];
         for (let j = 0; j < neighbors.length; j++) {
-          debugger
           if (this.arrayIncludes(path, neighbors[j])
-          // && this.unvisitedNeighbors(neighbors[j], path).length >= 1
         ) {
             connectors.push(neighbors[j]);
           }
         }
-        debugger
         let randomIndex = Math.floor(Math.random() * connectors.length);
         let randomElement = connectors[randomIndex]
-        debugger
         path.push(this.wall(randomElement, this.fill[i]));
         path.push(this.fill[i]);
       }
@@ -907,7 +905,6 @@ class Prims {
   }
 
   unvisitedNeighbors (node, path) {
-    debugger
     let neighbors = this.neighbors(node[0], node[1]);
     let unvisited = [];
     for (let i = 0; i < neighbors.length; i++) {
@@ -917,34 +914,6 @@ class Prims {
     }
     return unvisited;
   }
-
-//   animatePath () {
-//     let path = [this.fill[0]];
-//     for (let i = 1; i < this.fill.length; i++) {
-//       let last = path[path.length - 1];
-//         if (!this.isNeighbor(this.fill[i], last)) {
-//           let connector = this.connectRandomNeighbor(this.fill[i], path);
-//               // path.push(this.wall(connector, this.fill[i]));
-//               // path.push(this.fill[i]);
-//               let neighbors = this.neighbors(this.fill[i][0], this.fill[i][1]);
-//               for (let j = 0; j < neighbors.length; j++) {
-//                 let connectors = [];
-//                 if (this.arrayIncludes(path, neighbors[j])) {
-//                   path.push(this.wall(neighbors[j], this.fill[i]));
-//                   path.push(this.fill[i]);
-//                   break;
-//                 }
-//               }
-//             } else {
-//                   let last = path[path.length - 1];
-//                   if (this.isNeighbor(this.fill[i], last)) {
-//                     path.push(this.wall(this.fill[i], last));
-//                     path.push(this.fill[i]);
-//             }
-//     }
-//   }
-//   return path;
-// }
 
   connectRandomNeighbor (node, path) {
     let neighbors = this.neighbors(node[0], node[1]);
@@ -970,13 +939,10 @@ class Prims {
     let canvas = document.getElementById('canvas-7');
     let context = canvas.getContext("2d");
     context.fillStyle='#B7979C';
-    // context.fillRect(0, 0, 10, 10);
     let fill = this.filter(this.animatePath())
-    // let fill = this.fill;
     let i = 0;
     let interval = setInterval( () => {
       context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
-      debugger
       i++;
       if (i >= fill.length) {
         // if (callback) {
@@ -1028,14 +994,6 @@ class BFS {
     let connector;
     let i = 0;
     let interval = setInterval(() => {
-        // if (i === 0) {
-        //   connector = null;
-        // } else {
-        //   connector = this.dfs.connector(path[i-1], path[i])
-        // }
-        // if (connector) {
-        //   context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
-        // }
         context.fillStyle=fillColor;
         context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
         i++;

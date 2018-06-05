@@ -52,8 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let prims = document.getElementById('prims-run');
   let primsCanvas = new Prims(40, 40);
   prims.addEventListener("click", () => {
-    primsCanvas.animatePath()
-    // primsCanvas.connectCells();
     primsCanvas.animate();
   })
   let primsReset = document.getElementById('prims-reset');
