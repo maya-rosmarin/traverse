@@ -111,12 +111,12 @@ body {
 }
 
 #dfs-random {
-  margin-left: 1130px;
+  /* margin-left: 1130px; */
   margin-top: 50px;
 }
 
 #kruskal {
-  margin-left: 1130px;
+  /* margin-left: 1130px; */
   margin-top: 50px;
 }
 
@@ -126,6 +126,12 @@ body {
 }
 
 .maze-and-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.maze-and-buttons-right {
   display: flex;
   flex-direction: column;
   align-items: center;
