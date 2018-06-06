@@ -111,12 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
     dfsWeighted.clearCanvas();
   });
   let dfsCanvas = document.getElementById('dfs-random-run');
-  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, 'canvas-1');
+  let dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](100, 100, 'canvas-1');
+  let path = dfs.generatePaths([0,0]);
   dfsCanvas.addEventListener("click", (event) => {
     event.preventDefault();
     clearInterval(dfs.interval);
     dfs.clearCanvas();
-    dfs.animate([0,0]);
+    dfs.animate([0,0], () => {}, '#B7979C', path);
   });
   let dfsReset = document.getElementById('dfs-random-reset');
   dfsReset.addEventListener("click", (event) => {
@@ -125,13 +126,13 @@ document.addEventListener('DOMContentLoaded', () => {
     dfs.clearCanvas();
   })
   let bfsCanvas = document.getElementById('bfs-solver-run');
-  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_6__["default"]([0, 0], [38, 38], 'canvas-5');
+  let bfs = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_6__["default"]([0, 0], [98, 98], 'canvas-5');
   bfsCanvas.addEventListener("click", () => {
     clearInterval(bfs.dfs.interval);
     clearInterval(bfs.interval)
     bfs.dfs.clearCanvas();
     bfs.clearCanvas();
-    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white', 10))
+    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white', 5, 10), 'white', bfs.maze)
   });
   let bfsReset = document.getElementById('bfs-solver-reset');
   bfsReset.addEventListener("click", () => {
@@ -142,9 +143,14 @@ document.addEventListener('DOMContentLoaded', () => {
     bfs.clearCanvas();
   })
   let kruskal = document.getElementById('kruskal-run');
-  let kruskalCanvas = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_3__["default"](40, 40);
+  let kruskalCanvas = new _maze_generators_kruskal__WEBPACK_IMPORTED_MODULE_3__["default"](100, 100, 'canvas-6', 5)
   kruskal.addEventListener("click", () => {
     kruskalCanvas.clearCanvas();
+    let canvas = document.getElementById('canvas-6');
+    let context = canvas.getContext("2d");
+    context.fillStyle = 'white';
+    context.fillRect(0, 5, 5, 5)
+    context.fillRect(500, 495, 5, 5)
     clearInterval(kruskalCanvas.interval);
     kruskalCanvas.animate();
   });
@@ -154,14 +160,14 @@ document.addEventListener('DOMContentLoaded', () => {
     kruskalCanvas.clearCanvas();
   });
   let prims = document.getElementById('prims-run');
-  let primsCanvas = new _maze_generators_prims__WEBPACK_IMPORTED_MODULE_4__["default"](40, 40);
-  let primsBFS = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_6__["default"](primsCanvas.startNode, [40, 40], 'canvas-7');
+  let primsCanvas = new _maze_generators_prims__WEBPACK_IMPORTED_MODULE_4__["default"](100, 100);
+  let primsBFS = new _maze_solvers_bfs__WEBPACK_IMPORTED_MODULE_6__["default"]([0,0], [98, 98], 'canvas-7');
   prims.addEventListener("click", () => {
     primsCanvas.clearCanvas();
     primsBFS.clearCanvas();
     clearInterval(primsCanvas.interval);
     clearInterval(primsBFS.interval);
-    primsCanvas.animate(() => primsBFS.animate(primsCanvas.fill, 'lightgray', 0, 10));
+    primsCanvas.animate(() => primsBFS.animate(primsCanvas.fill, 'lightgray', 0, 5));
   })
   let primsReset = document.getElementById('prims-reset');
   primsReset.addEventListener("click", () => {
@@ -221,10 +227,11 @@ const createWallsArray = (height, width) => {
 const createGridGraphic = (width, height) => {
   let canvas = document.getElementById("canvas-1");
   let context = canvas.getContext("2d");
-  context.fillStyle = 'gray';
+  context.fillStyle = 'white';
   context.fillRect(0, 0, width + 10, height + 10);
-  context.fillStyle = '#B7979C';
-  context.fillRect(width, height - 10, 10, 10);
+  // context.fillStyle = '#B7979C';
+  // context.fillRect(width + 290, height + 290, 5, 5);
+  // context.fillRect(0, 5, 5, 5);
 }
 
 const createGridStatic = (width, height) => {
@@ -351,7 +358,7 @@ __webpack_require__.r(__webpack_exports__);
 class DFS {
   constructor (width, height, canvasId) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridArray"])(width, height);
-    Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*10, height*10);
+    Object(_create_grid__WEBPACK_IMPORTED_MODULE_1__["createGridGraphic"])(width*5, height*5);
     this.canvasId = canvasId;
     this.width = width;
     this.height = height;
@@ -362,13 +369,13 @@ class DFS {
   clearCanvas () {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
-    context.clearRect(10, 10, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  animate (startNode, callback, fillColor) {
+  animate (startNode, callback, fillColor, path) {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
-    let path = this.generatePaths(startNode);
+    // let path = this.generatePaths(startNode);
     let connector;
     context.fillStyle='#B7979C'
     let i = 0;
@@ -379,21 +386,24 @@ class DFS {
         connector = _dfs_util__WEBPACK_IMPORTED_MODULE_2__["connector"](path[i-1], path[i])
       }
       if (connector && !this.arrayIncludes(path, connector)) {
-        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
+        context.fillRect(5*connector[0] + 5, 5*connector[1] + 5, 5, 5)
       }
-      context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+      context.fillRect(5*path[i][0] + 5, 5*path[i][1] + 5, 5, 5);
       i++;
       if (i >= path.length) {
         clearInterval(this.interval);
-        context.fillRect(410, 400, 10, 10)
+        context.fillRect(500, 500, 10, 10)
         document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
         if (callback) {
           document.getElementById("solved").innerHTML = 'Solving...'
           return callback();
         }
+        context.fillStyle = '#B7979C';
+        context.fillRect(width + 290, height + 290, 5, 5);
+        context.fillRect(0, 0, 5, 5);
         return 'finished';
       }
-    }, 20);
+    }, 10);
   }
 
   generatePaths (startNode) {
@@ -642,29 +652,31 @@ __webpack_require__.r(__webpack_exports__);
 
 
 class Kruskal {
-  constructor (width, height) {
+  constructor (width, height, canvasId, cellSize) {
     this.grid = Object(_create_grid__WEBPACK_IMPORTED_MODULE_0__["createGridArray"])(width, height);
     this.sets = this.createSets(width, height);
     this.edges = this.shuffle(this.createEdges(width, height));
     this.fill = [];
+    this.canvasId = canvasId;
+    this.cellSize = cellSize;
     this.interval = null;
     this.connectNodes();
   }
 
   clearCanvas () {
-    let canvas = document.getElementById('canvas-6');
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   animate (callback) {
-    let canvas = document.getElementById('canvas-6');
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
     let fill = this.fill;
     context.fillStyle='white';
     let i = 0;
     this.interval = setInterval( () => {
-      context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
+      context.fillRect(this.cellSize*fill[i][0] + this.cellSize, this.cellSize*fill[i][1] + this.cellSize, this.cellSize, this.cellSize);
       i++;
       if (i >= fill.length) {
         if (callback) {
@@ -672,7 +684,7 @@ class Kruskal {
         }
         clearInterval(this.interval);
       }
-    }, 2);
+    }, 0.1);
   }
 
   connectNodes () {
@@ -972,7 +984,7 @@ class Prims {
     let fill = this.filter(this.animatePath())
     let i = 0;
     this.interval = setInterval( () => {
-      context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
+      context.fillRect(5*fill[i][0], 5*fill[i][1], 5, 5);
       i++;
       if (i >= fill.length) {
         clearInterval(this.interval);
@@ -1005,10 +1017,11 @@ class BFS {
     this.startNode = startNode;
     this.targetNode = targetNode;
     this.canvasId = canvasId;
-    this.dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](40, 40, this.canvasId);
+    this.dfs = new _maze_generators_dfs__WEBPACK_IMPORTED_MODULE_0__["default"](100, 100, this.canvasId);
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
     this.interval = null;
+    debugger
   }
 
   clearCanvas () {
@@ -1021,14 +1034,12 @@ class BFS {
     debugger
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
-    context.fillRect(0, 10, 10, 10);
-    context.fillRect(400, 390, 10, 10);
     context.fillStyle=fillColor;
     let connector;
     let i = 0;
     this.interval = setInterval(() => {
         context.fillStyle=fillColor;
-        context.fillRect(10*path[i][0] + offset, 10*path[i][1] + offset, 10, 10);
+        context.fillRect(5*path[i][0] + offset, 5*path[i][1] + offset, 5, 5);
         i++;
         document.getElementById("solved").innerHTML = 'Solving...'
 

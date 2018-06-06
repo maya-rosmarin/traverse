@@ -5,7 +5,7 @@ import * as DFSUtil from './dfs_util';
 export default class DFS {
   constructor (width, height, canvasId) {
     this.grid = createGridArray(width, height);
-    createGridGraphic(width*10, height*10);
+    createGridGraphic(width*5, height*5);
     this.canvasId = canvasId;
     this.width = width;
     this.height = height;
@@ -16,13 +16,13 @@ export default class DFS {
   clearCanvas () {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
-    context.clearRect(10, 10, canvas.width, canvas.height);
+    context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  animate (startNode, callback, fillColor) {
+  animate (startNode, callback, fillColor, path) {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
-    let path = this.generatePaths(startNode);
+    // let path = this.generatePaths(startNode);
     let connector;
     context.fillStyle='#B7979C'
     let i = 0;
@@ -33,21 +33,24 @@ export default class DFS {
         connector = DFSUtil.connector(path[i-1], path[i])
       }
       if (connector && !this.arrayIncludes(path, connector)) {
-        context.fillRect(10*connector[0] + 10, 10*connector[1] + 10, 10, 10)
+        context.fillRect(5*connector[0] + 5, 5*connector[1] + 5, 5, 5)
       }
-      context.fillRect(10*path[i][0] + 10, 10*path[i][1] + 10, 10, 10);
+      context.fillRect(5*path[i][0] + 5, 5*path[i][1] + 5, 5, 5);
       i++;
       if (i >= path.length) {
         clearInterval(this.interval);
-        context.fillRect(410, 400, 10, 10)
+        context.fillRect(500, 500, 10, 10)
         document.getElementById("real-thing").innerHTML = 'Looks like the real thing!'
         if (callback) {
           document.getElementById("solved").innerHTML = 'Solving...'
           return callback();
         }
+        context.fillStyle = '#B7979C';
+        context.fillRect(width + 290, height + 290, 5, 5);
+        context.fillRect(0, 0, 5, 5);
         return 'finished';
       }
-    }, 20);
+    }, 10);
   }
 
   generatePaths (startNode) {

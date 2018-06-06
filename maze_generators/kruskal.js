@@ -1,29 +1,31 @@
 import { createGridArray, createWallsArray } from './create_grid';
 
 export default class Kruskal {
-  constructor (width, height) {
+  constructor (width, height, canvasId, cellSize) {
     this.grid = createGridArray(width, height);
     this.sets = this.createSets(width, height);
     this.edges = this.shuffle(this.createEdges(width, height));
     this.fill = [];
+    this.canvasId = canvasId;
+    this.cellSize = cellSize;
     this.interval = null;
     this.connectNodes();
   }
 
   clearCanvas () {
-    let canvas = document.getElementById('canvas-6');
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
   animate (callback) {
-    let canvas = document.getElementById('canvas-6');
+    let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
     let fill = this.fill;
     context.fillStyle='white';
     let i = 0;
     this.interval = setInterval( () => {
-      context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
+      context.fillRect(this.cellSize*fill[i][0] + this.cellSize, this.cellSize*fill[i][1] + this.cellSize, this.cellSize, this.cellSize);
       i++;
       if (i >= fill.length) {
         if (callback) {
@@ -31,7 +33,7 @@ export default class Kruskal {
         }
         clearInterval(this.interval);
       }
-    }, 2);
+    }, 0.1);
   }
 
   connectNodes () {

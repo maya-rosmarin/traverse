@@ -5,10 +5,11 @@ export default class BFS {
     this.startNode = startNode;
     this.targetNode = targetNode;
     this.canvasId = canvasId;
-    this.dfs = new DFS(40, 40, this.canvasId);
+    this.dfs = new DFS(100, 100, this.canvasId);
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
     this.interval = null;
+    debugger
   }
 
   clearCanvas () {
@@ -21,14 +22,12 @@ export default class BFS {
     debugger
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
-    context.fillRect(0, 10, 10, 10);
-    context.fillRect(400, 390, 10, 10);
     context.fillStyle=fillColor;
     let connector;
     let i = 0;
     this.interval = setInterval(() => {
         context.fillStyle=fillColor;
-        context.fillRect(10*path[i][0] + offset, 10*path[i][1] + offset, 10, 10);
+        context.fillRect(5*path[i][0] + offset, 5*path[i][1] + offset, 5, 5);
         i++;
         document.getElementById("solved").innerHTML = 'Solving...'
 

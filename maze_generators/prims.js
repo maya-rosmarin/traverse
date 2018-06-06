@@ -190,7 +190,7 @@ export default class Prims {
     let fill = this.filter(this.animatePath())
     let i = 0;
     this.interval = setInterval( () => {
-      context.fillRect(10*fill[i][0], 10*fill[i][1], 10, 10);
+      context.fillRect(5*fill[i][0], 5*fill[i][1], 5, 5);
       i++;
       if (i >= fill.length) {
         clearInterval(this.interval);
