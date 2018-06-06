@@ -28,9 +28,6 @@ export const createGridGraphic = (width, height) => {
   let context = canvas.getContext("2d");
   context.fillStyle = 'white';
   context.fillRect(0, 0, width + 10, height + 10);
-  // context.fillStyle = '#B7979C';
-  // context.fillRect(width + 290, height + 290, 5, 5);
-  // context.fillRect(0, 5, 5, 5);
 }
 
 export const createGridStatic = (width, height) => {

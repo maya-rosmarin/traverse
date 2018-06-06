@@ -22,13 +22,13 @@ document.addEventListener('DOMContentLoaded', () => {
     dfsWeighted.clearCanvas();
   });
   let dfsCanvas = document.getElementById('dfs-random-run');
-  let dfs = new DFS(100, 100, 'canvas-1');
-  let path = dfs.generatePaths([0,0]);
+  let dfs = new DFS(60, 60, 'canvas-1');
+  // let path = dfs.generatePaths([0,0]);
   dfsCanvas.addEventListener("click", (event) => {
     event.preventDefault();
     clearInterval(dfs.interval);
     dfs.clearCanvas();
-    dfs.animate([0,0], () => {}, '#B7979C', path);
+    dfs.animate([0,0], () => {}, '#B7979C');
   });
   let dfsReset = document.getElementById('dfs-random-reset');
   dfsReset.addEventListener("click", (event) => {
@@ -37,13 +37,13 @@ document.addEventListener('DOMContentLoaded', () => {
     dfs.clearCanvas();
   })
   let bfsCanvas = document.getElementById('bfs-solver-run');
-  let bfs = new BFS([0, 0], [98, 98], 'canvas-5');
+  let bfs = new BFS([0, 0], [58, 58], 'canvas-5');
   bfsCanvas.addEventListener("click", () => {
     clearInterval(bfs.dfs.interval);
     clearInterval(bfs.interval)
     bfs.dfs.clearCanvas();
     bfs.clearCanvas();
-    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white', 5, 10), 'white', bfs.maze)
+    bfs.dfs.animate([0,0], () => bfs.animate(bfs.exploreNodes(), 'white', 7, 30), 'white', bfs.maze)
   });
   let bfsReset = document.getElementById('bfs-solver-reset');
   bfsReset.addEventListener("click", () => {
@@ -54,14 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
     bfs.clearCanvas();
   })
   let kruskal = document.getElementById('kruskal-run');
-  let kruskalCanvas = new Kruskal(100, 100, 'canvas-6', 5)
+  let kruskalCanvas = new Kruskal(60, 60, 'canvas-6', 7)
   kruskal.addEventListener("click", () => {
     kruskalCanvas.clearCanvas();
     let canvas = document.getElementById('canvas-6');
     let context = canvas.getContext("2d");
-    context.fillStyle = 'white';
-    context.fillRect(0, 5, 5, 5)
-    context.fillRect(500, 495, 5, 5)
+    // context.fillStyle = 'white';
+    // context.fillRect(0, 5, 5, 5)
+    // context.fillRect(500, 495, 5, 5)
     clearInterval(kruskalCanvas.interval);
     kruskalCanvas.animate();
   });
@@ -71,20 +71,21 @@ document.addEventListener('DOMContentLoaded', () => {
     kruskalCanvas.clearCanvas();
   });
   let prims = document.getElementById('prims-run');
-  let primsCanvas = new Prims(100, 100);
-  let primsBFS = new BFS([0,0], [98, 98], 'canvas-7');
+  let primsCanvas = new Prims(60, 60);
+  // let primsBFS = new BFS([0,0], [58, 58], 'canvas-7');
   prims.addEventListener("click", () => {
     primsCanvas.clearCanvas();
-    primsBFS.clearCanvas();
+    // primsBFS.clearCanvas();
     clearInterval(primsCanvas.interval);
-    clearInterval(primsBFS.interval);
-    primsCanvas.animate(() => primsBFS.animate(primsCanvas.fill, 'lightgray', 0, 5));
+    // clearInterval(primsBFS.interval);
+    primsCanvas.animate(() => primsBFS.animate(primsCanvas.fill, 'lightgray', 0, 7));
+    console.log(primsCanvas.fill);
   })
   let primsReset = document.getElementById('prims-reset');
   primsReset.addEventListener("click", () => {
     primsBFS.clearCanvas();
     clearInterval(primsCanvas.interval);
-    clearInterval(primsBFS.interval);
+    // clearInterval(primsBFS.interval);
     primsCanvas.clearCanvas();
     }
   )

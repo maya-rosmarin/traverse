@@ -37,7 +37,6 @@ export default class Prims {
           this.frontier = this.filter(this.frontier);
         }
       }
-      let path = this.animatePath();
       return this.fill;
   }
 
@@ -190,7 +189,7 @@ export default class Prims {
     let fill = this.filter(this.animatePath())
     let i = 0;
     this.interval = setInterval( () => {
-      context.fillRect(5*fill[i][0], 5*fill[i][1], 5, 5);
+      context.fillRect(7*fill[i][0], 7*fill[i][1], 7, 7);
       i++;
       if (i >= fill.length) {
         clearInterval(this.interval);

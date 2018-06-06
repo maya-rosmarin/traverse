@@ -5,7 +5,7 @@ export default class BFS {
     this.startNode = startNode;
     this.targetNode = targetNode;
     this.canvasId = canvasId;
-    this.dfs = new DFS(100, 100, this.canvasId);
+    this.dfs = new DFS(60, 60, this.canvasId);
     this.maze = this.dfs.generatePaths([0,0]);
     this.mazePaths = this.moves();
     this.interval = null;
@@ -27,7 +27,7 @@ export default class BFS {
     let i = 0;
     this.interval = setInterval(() => {
         context.fillStyle=fillColor;
-        context.fillRect(5*path[i][0] + offset, 5*path[i][1] + offset, 5, 5);
+        context.fillRect(7*path[i][0] + offset, 7*path[i][1] + offset, 7, 7);
         i++;
         document.getElementById("solved").innerHTML = 'Solving...'
 
@@ -56,6 +56,7 @@ export default class BFS {
           path.push(neighbors[i]);
           visited.push(neighbors[i]);
           return path;
+          break;
         }
       }
     }

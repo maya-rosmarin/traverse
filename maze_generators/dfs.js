@@ -5,7 +5,7 @@ import * as DFSUtil from './dfs_util';
 export default class DFS {
   constructor (width, height, canvasId) {
     this.grid = createGridArray(width, height);
-    createGridGraphic(width*5, height*5);
+    createGridGraphic(width*7, height*7);
     this.canvasId = canvasId;
     this.width = width;
     this.height = height;
@@ -19,10 +19,10 @@ export default class DFS {
     context.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  animate (startNode, callback, fillColor, path) {
+  animate (startNode, callback, fillColor) {
     let canvas = document.getElementById(this.canvasId);
     let context = canvas.getContext("2d");
-    // let path = this.generatePaths(startNode);
+    let path = this.generatePaths(startNode);
     let connector;
     context.fillStyle='#B7979C'
     let i = 0;
@@ -33,9 +33,9 @@ export default class DFS {
         connector = DFSUtil.connector(path[i-1], path[i])
       }
       if (connector && !this.arrayIncludes(path, connector)) {
-        context.fillRect(5*connector[0] + 5, 5*connector[1] + 5, 5, 5)
+        context.fillRect(7*connector[0] + 7, 7*connector[1] + 7, 7, 7)
       }
-      context.fillRect(5*path[i][0] + 5, 5*path[i][1] + 5, 5, 5);
+      context.fillRect(7*path[i][0] + 7, 7*path[i][1] + 7, 7, 7);
       i++;
       if (i >= path.length) {
         clearInterval(this.interval);
@@ -47,10 +47,10 @@ export default class DFS {
         }
         context.fillStyle = '#B7979C';
         context.fillRect(width + 290, height + 290, 5, 5);
-        context.fillRect(0, 0, 5, 5);
+        context.fillRect(0, 0, 7, 7);
         return 'finished';
       }
-    }, 10);
+    }, 15);
   }
 
   generatePaths (startNode) {
